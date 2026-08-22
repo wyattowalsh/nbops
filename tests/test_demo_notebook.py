@@ -29,6 +29,7 @@ def test_demo_notebook_schema_layout_and_ids() -> None:
     assert kernelspec["name"] == "python3"
     assert kernelspec["display_name"] == "Python 3"
     assert notebook["metadata"]["language_info"]["name"] == "python"
+    assert notebook["metadata"]["language_info"]["version"] == "3.12"
     assert notebook["nbformat"] == 4
     assert notebook["nbformat_minor"] == 5
 

@@ -44,3 +44,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   defaults remain the stats-scaffold contract
 - `StatsRequest.notebook` keeps the original nbformat v4 field description
 - Pytest ignores Starlette's TestClient `httpx`/`httpx2` UserWarning so CI logs stay clean
+- Original shipped demo (`language_info.version` 3.12, omitted cell ids) is a fixture;
+  live `uvicorn nbops.api:app` is tested for `GET /health` and `POST /notebooks/stats`

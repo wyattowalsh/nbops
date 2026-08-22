@@ -27,6 +27,12 @@ batch, and optional execute.
   field description is the original stats-scaffold text
 - **WHEN** a caller opens `/docs`
 - **THEN** FastAPI serves the interactive API documentation advertised in the README
+- **WHEN** the original shipped `examples/demo.ipynb` from the stats scaffold is loaded
+  and saved
+- **THEN** omitted cell ids stay omitted, `language_info.version` remains `3.12`, and
+  stats remain 4/2/4
+- **WHEN** `uvicorn nbops.api:app` is started as in the original README
+- **THEN** `GET /health` and `POST /notebooks/stats` succeed against the live process
 
 ### Requirement: Lint catalog
 

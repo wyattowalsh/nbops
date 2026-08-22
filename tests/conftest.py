@@ -103,6 +103,72 @@ def original_scaffold_notebook_file(
 
 
 @pytest.fixture
+def original_shipped_demo_notebook() -> dict[str, Any]:
+    """Exact ``examples/demo.ipynb`` from ``cursor/setup-dev-environment-a5a8``.
+
+    Complete kernelspec, ``language_info.version`` 3.12, no cell ids or tags,
+    markdown/code/code/markdown layout.
+    """
+    return {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "# nbops demo notebook\n",
+                    "\n",
+                    "A tiny notebook used to demonstrate `nbops stats`.",
+                ],
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "import math\n",
+                    "\n",
+                    "def area(radius: float) -> float:\n",
+                    "    return math.pi * radius ** 2\n",
+                ],
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": ["print(area(2.0))"],
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": ["Done."],
+            },
+        ],
+        "metadata": {
+            "kernelspec": {
+                "display_name": "Python 3",
+                "language": "python",
+                "name": "python3",
+            },
+            "language_info": {"name": "python", "version": "3.12"},
+        },
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+
+
+@pytest.fixture
+def original_shipped_demo_notebook_file(
+    tmp_path: Path, original_shipped_demo_notebook: dict[str, Any]
+) -> Path:
+    """Write the original shipped demo notebook to a temporary ``.ipynb`` file."""
+    path = tmp_path / "original-demo.ipynb"
+    path.write_text(json.dumps(original_shipped_demo_notebook), encoding="utf-8")
+    return path
+
+
+@pytest.fixture
 def error_notebook() -> dict[str, Any]:
     return {
         "cells": [

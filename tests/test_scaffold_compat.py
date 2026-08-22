@@ -9,9 +9,14 @@ surface working after generalization.
 from __future__ import annotations
 
 import json
+import socket
+import subprocess
+import sys
+import time
 from pathlib import Path
 from typing import Any
 
+import httpx
 from fastapi.testclient import TestClient
 from typer.testing import CliRunner
 
@@ -20,6 +25,7 @@ from nbops.api import HealthResponse, StatsRequest, health
 from nbops.api import app as api_app
 from nbops.cli import app as cli_app
 from nbops.core import load_notebook, stats_for_file
+from nbops.io import save_notebook
 from nbops.models import HealthResponse as ModelHealthResponse
 from nbops.models import NotebookPayload
 
@@ -149,3 +155,99 @@ def test_original_scaffold_interactive_docs_available() -> None:
     response = client.get("/docs")
     assert response.status_code == 200
     assert "text/html" in response.headers.get("content-type", "")
+
+
+def test_original_shipped_demo_stats_and_omitted_ids(
+    original_shipped_demo_notebook: dict[str, Any],
+    original_shipped_demo_notebook_file: Path,
+    tmp_path: Path,
+) -> None:
+    result = compute_stats(original_shipped_demo_notebook)
+    assert result.total_cells == 4
+    assert result.code_cells == 2
+    assert result.markdown_cells == 2
+    assert result.raw_cells == 0
+    assert result.code_lines == 4
+    assert result.kernel == "Python 3"
+    assert result.kernel_name == "python3"
+    assert result.language == "python"
+
+    loaded = load_notebook(original_shipped_demo_notebook_file)
+    assert [cell.get("id") for cell in loaded["cells"]] == [None, None, None, None]
+    assert all("id" not in cell for cell in loaded["cells"])
+    assert loaded["metadata"]["language_info"]["version"] == "3.12"
+
+    out = tmp_path / "roundtrip.ipynb"
+    save_notebook(loaded, out, validate=True)
+    saved = json.loads(out.read_text(encoding="utf-8"))
+    assert all("id" not in cell for cell in saved["cells"])
+    assert saved["metadata"]["language_info"]["version"] == "3.12"
+
+    file_stats = stats_for_file(original_shipped_demo_notebook_file)
+    assert file_stats.total_cells == 4
+    assert file_stats.code_lines == 4
+
+
+def test_original_readme_uvicorn_health_and_stats(
+    original_shipped_demo_notebook: dict[str, Any],
+) -> None:
+    """Live ``uvicorn nbops.api:app`` as documented in the original README."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(("127.0.0.1", 0))
+        port = sock.getsockname()[1]
+    proc = subprocess.Popen(
+        [
+            sys.executable,
+            "-m",
+            "uvicorn",
+            "nbops.api:app",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            str(port),
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
+    )
+    url = f"http://127.0.0.1:{port}"
+    try:
+        deadline = time.monotonic() + 10
+        while time.monotonic() < deadline:
+            try:
+                probe = httpx.get(f"{url}/health", timeout=0.3)
+            except httpx.TransportError:
+                time.sleep(0.05)
+                continue
+            if probe.status_code == 200:
+                break
+        else:
+            stderr = proc.stderr.read().decode("utf-8", errors="replace") if proc.stderr else ""
+            raise AssertionError(f"uvicorn nbops.api:app did not become ready\n{stderr}")
+
+        health = httpx.get(f"{url}/health", timeout=2.0)
+        assert health.status_code == 200
+        assert health.json()["status"] == "ok"
+        assert health.json()["version"] == __version__
+
+        docs = httpx.get(f"{url}/docs", timeout=2.0)
+        assert docs.status_code == 200
+
+        stats = httpx.post(
+            f"{url}/notebooks/stats",
+            json={"notebook": original_shipped_demo_notebook},
+            timeout=2.0,
+        )
+        assert stats.status_code == 200
+        body = stats.json()
+        assert body["total_cells"] == 4
+        assert body["code_cells"] == 2
+        assert body["code_lines"] == 4
+        assert body["kernel"] == "Python 3"
+        assert body["language"] == "python"
+    finally:
+        proc.terminate()
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait(timeout=5)
