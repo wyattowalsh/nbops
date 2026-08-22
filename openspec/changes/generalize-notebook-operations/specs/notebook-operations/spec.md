@@ -59,8 +59,8 @@ the Typer app, and every catalog `api` value SHALL exist on the FastAPI app.
 ### Requirement: Inspect outputs and schema validate
 
 The library SHALL inventory code-cell outputs and validate notebooks against the
-nbformat schema. Concatenation SHALL assign unique cell ids when source notebooks
-share ids.
+nbformat schema. Concatenation SHALL uniquify duplicate *present* cell ids and
+SHALL leave omitted ids omitted.
 
 #### Scenario: Output inventory
 
@@ -75,13 +75,23 @@ share ids.
 
 ### Requirement: Percent-format tags and widget residue
 
-Percent-format conversion SHALL round-trip cell tags. Cleaning outputs SHALL
+Percent-format conversion SHALL round-trip cell tags, optional titles, present
+cell ids, and other JSON-serializable cell metadata encoded as `key=value` or a
+JSON object. Omitted cell ids SHALL stay omitted. Cleaning outputs SHALL
 remove notebook-level widget state.
 
 #### Scenario: Percent tag roundtrip
 
 - **WHEN** a notebook with cell `metadata.tags` is converted to percent Python and back
 - **THEN** the restored cells keep those tags
+
+#### Scenario: Percent generic metadata roundtrip
+
+- **WHEN** a notebook cell has `collapsed`, `slideshow`, or other JSON-serializable
+  metadata and is converted to percent Python and back
+- **THEN** those metadata keys are restored and omitted cell ids stay omitted
+- **WHEN** a percent header carries a JSON metadata object
+- **THEN** `from_percent_python` restores those fields onto the cell
 
 #### Scenario: Clean widget metadata
 

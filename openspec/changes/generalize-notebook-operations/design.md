@@ -25,8 +25,9 @@ CLI, and HTTP surfaces.
 - Load/save/execute/concat of v4 notebooks preserve omitted cell ids; `nbformat`
   must not silently reinsert them on returned documents (that would hide `NB009`
   and undo `clean --strip-ids`). Concat uniquifies colliding present ids only.
-  Percent convert emits/parses header `id=` and `from-py` does not fill omitted
-  ids. Optional Jupytext cell titles (`# %% Title [markdown]`) are parsed so the
+  Percent convert emits/parses header `id=`, optional titles, and other cell
+  metadata (`key=value` or a JSON object); `from-py` does not fill omitted ids.
+  Optional Jupytext cell titles (`# %% Title [markdown]`) are parsed so the
   bracketed type is not dropped. The kernel client may see temporary ids internally.
 - Optional execution is an extra so the default install stays kernel-free
 - Batch walks skip `.ipynb_checkpoints`
