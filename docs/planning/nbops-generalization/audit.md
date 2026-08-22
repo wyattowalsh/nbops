@@ -51,7 +51,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | `uv run ruff format --check src tests` | passed | passed (`lint` job) |
 | `uv run ty check` | passed | passed (`typecheck` job) |
 | `uv run pytest` | 102 passed, 95.58% | 102 passed on 3.12.14 **and** 3.13.15 |
-| `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke step on 3.12 and 3.13 (added with this revision) |
+| `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke on 3.12 and 3.13: `total_cells` 4, `code_cells` 2, `code_lines` 4 ([32585580529](https://github.com/wyattowalsh/nbops/actions/runs/32585580529)) |
 
 ## External
 

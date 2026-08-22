@@ -57,3 +57,5 @@ on `3e42ab2` concluded **success**. The Python matrix now honors `UV_PYTHON`:
 | `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed in the job), 102 passed, 95.58% coverage |
 
 Earlier run [32585325015](https://github.com/wyattowalsh/nbops/actions/runs/32585325015) on `b3606f2` had a false 3.13 job (uv used `.python-version` 3.12.3). That is fixed.
+
+Run [32585580529](https://github.com/wyattowalsh/nbops/actions/runs/32585580529) on `aaccdbf` also **success**, including Compatibility smoke (`nbops version` / `ops` / `stats` / `lint`) on both 3.12.14 and 3.13.15. Demo stats in CI: 4 cells / 2 code / 4 code lines.
