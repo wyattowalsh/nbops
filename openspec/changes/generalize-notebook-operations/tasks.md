@@ -30,3 +30,4 @@
 - [x] 1.28 Original shipped demo fixture (no ids, language_info 3.12) plus live `uvicorn nbops.api:app` health/stats
 - [x] 1.29 Frozen original stats-scaffold pytest suite; Dependabot `uv` ecosystem for `uv.lock`
 - [x] 1.30 Execute restores omitted v4 cell ids so `NB009` survives `nbops exec`
+- [x] 1.31 Concat uniquifies duplicate present ids without filling omitted ids; batch lint uses `NBOPS_MAX_OUTPUT_CHARS`

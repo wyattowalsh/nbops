@@ -248,6 +248,19 @@ def test_concat_kernel_diff(sample_notebook: dict[str, Any]) -> None:
     assert diff.json()["identical"] is True
 
 
+def test_concat_http_preserves_omitted_cell_ids(
+    original_shipped_demo_notebook: dict[str, Any],
+) -> None:
+    concat = client.post(
+        "/notebooks/concat",
+        json={"notebooks": [original_shipped_demo_notebook, original_shipped_demo_notebook]},
+    )
+    assert concat.status_code == 200
+    cells = concat.json()["notebook"]["cells"]
+    assert len(cells) == 8
+    assert all("id" not in cell for cell in cells)
+
+
 def test_inspect_and_clean_reject_invalid() -> None:
     inspect = client.post("/notebooks/inspect", json={"notebook": {"cells": "nope"}})
     assert inspect.status_code == 422

@@ -78,7 +78,7 @@ OPERATIONS: tuple[Operation, ...] = (
     ),
     Operation(
         name="concat",
-        summary="Concatenate notebooks cell-wise.",
+        summary="Concatenate notebooks cell-wise; uniquify duplicate present ids.",
         library="nbops.transform.concat_notebooks",
         cli="nbops concat",
         api="POST /notebooks/concat",

@@ -551,7 +551,10 @@ def batch_lint(
     """Lint every notebook under a directory."""
     items = map_notebooks(
         root,
-        lambda path: lint_notebook(load_notebook(path, validate=False)).model_dump(),
+        lambda path: lint_notebook(
+            load_notebook(path, validate=False),
+            max_output_chars=get_settings().max_output_chars,
+        ).model_dump(),
         progress=_want_progress(),
     )
     failed = False

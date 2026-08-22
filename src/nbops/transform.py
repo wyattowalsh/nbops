@@ -45,7 +45,8 @@ def concat_notebooks(notebooks: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     """Concatenate cells from one or more notebooks.
 
     Metadata and nbformat version come from the first notebook. Later notebooks
-    contribute cells only.
+    contribute cells only. Duplicate *present* cell ids are uniquified; omitted
+    ids stay omitted so lint ``NB009`` and ``clean --strip-ids`` remain visible.
     """
     items = [as_notebook_dict(notebook) for notebook in notebooks]
     if not items:
@@ -55,7 +56,7 @@ def concat_notebooks(notebooks: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     for extra in items[1:]:
         cells.extend(cells_of(extra))
     merged["cells"] = cells
-    return ensure_cell_ids(merged)
+    return _uniquify_duplicate_cell_ids(merged)
 
 
 def split_by_headings(
@@ -136,12 +137,34 @@ def ensure_cell_ids(notebook: Mapping[str, Any]) -> dict[str, Any]:
             continue
         cell_id = cell.get("id")
         if not isinstance(cell_id, str) or not cell_id or cell_id in seen:
-            cell_id = uuid.uuid4().hex[:12]
-            while cell_id in seen:
-                cell_id = uuid.uuid4().hex[:12]
+            cell_id = _new_cell_id(seen)
             cell["id"] = cell_id
         seen.add(cell_id)
     return updated
+
+
+def _uniquify_duplicate_cell_ids(notebook: Mapping[str, Any]) -> dict[str, Any]:
+    """Reassign colliding present ids only; leave omitted ids omitted."""
+    updated = as_notebook_dict(notebook)
+    seen: set[str] = set()
+    for cell in cells_of(updated):
+        if not isinstance(cell, dict):
+            continue
+        cell_id = cell.get("id")
+        if not isinstance(cell_id, str) or not cell_id:
+            continue
+        if cell_id in seen:
+            cell_id = _new_cell_id(seen)
+            cell["id"] = cell_id
+        seen.add(cell_id)
+    return updated
+
+
+def _new_cell_id(seen: set[str]) -> str:
+    cell_id = uuid.uuid4().hex[:12]
+    while cell_id in seen:
+        cell_id = uuid.uuid4().hex[:12]
+    return cell_id
 
 
 def add_tags(notebook: Mapping[str, Any], cell_index: int, tags: Sequence[str]) -> dict[str, Any]:

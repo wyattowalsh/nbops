@@ -707,3 +707,75 @@ def test_mutating_in_place_writes(tmp_path: Path, sample_notebook_file: Path) ->
     table = runner.invoke(app, ["batch", "clean", str(batch_dir)])
     assert table.exit_code == 0
     assert "demo.ipynb" in table.stdout
+
+
+def test_cli_concat_preserves_omitted_cell_ids(
+    tmp_path: Path, original_scaffold_notebook_file: Path
+) -> None:
+    left = tmp_path / "left.ipynb"
+    right = tmp_path / "right.ipynb"
+    payload = original_scaffold_notebook_file.read_text(encoding="utf-8")
+    left.write_text(payload, encoding="utf-8")
+    right.write_text(payload, encoding="utf-8")
+    merged = tmp_path / "merged.ipynb"
+    result = runner.invoke(app, ["concat", str(left), str(right), "-o", str(merged)])
+    assert result.exit_code == 0
+    cells = json.loads(merged.read_text(encoding="utf-8"))["cells"]
+    assert all("id" not in cell for cell in cells)
+
+
+def test_batch_lint_honors_max_output_chars(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from nbops.settings import get_settings
+
+    monkeypatch.setenv("NBOPS_MAX_OUTPUT_CHARS", "10")
+    get_settings.cache_clear()
+    try:
+        batch_dir = tmp_path / "sized-batch"
+        batch_dir.mkdir()
+        (batch_dir / "sized.ipynb").write_text(
+            json.dumps(
+                {
+                    "cells": [
+                        {
+                            "cell_type": "markdown",
+                            "id": "title",
+                            "metadata": {},
+                            "source": "# Title\n",
+                        },
+                        {
+                            "cell_type": "code",
+                            "id": "print",
+                            "execution_count": 1,
+                            "metadata": {},
+                            "outputs": [
+                                {
+                                    "name": "stdout",
+                                    "output_type": "stream",
+                                    "text": ["abcdefghijklmnop\n"],
+                                }
+                            ],
+                            "source": "print('abcdefghijklmnop')\n",
+                        },
+                    ],
+                    "metadata": {
+                        "kernelspec": {
+                            "display_name": "Python 3",
+                            "language": "python",
+                            "name": "python3",
+                        }
+                    },
+                    "nbformat": 4,
+                    "nbformat_minor": 5,
+                }
+            ),
+            encoding="utf-8",
+        )
+        result = runner.invoke(app, ["batch", "lint", str(batch_dir), "--json"])
+        assert result.exit_code == 0
+        payload = json.loads(result.stdout)
+        codes = {issue["code"] for issue in payload[0]["result"]["issues"]}
+        assert "NB006" in codes
+    finally:
+        get_settings.cache_clear()

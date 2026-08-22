@@ -6,6 +6,7 @@ from typing import Any
 
 import pytest
 
+from nbops.lint import lint_notebook
 from nbops.transform import (
     add_tags,
     concat_notebooks,
@@ -34,6 +35,7 @@ def test_concat_notebooks(sample_notebook: dict[str, Any]) -> None:
     }
     merged = concat_notebooks([sample_notebook, other])
     assert len(merged["cells"]) == 5
+    assert "id" not in merged["cells"][-1]
     empty = concat_notebooks([])
     assert empty["cells"] == []
 
@@ -43,6 +45,72 @@ def test_concat_assigns_unique_cell_ids(sample_notebook: dict[str, Any]) -> None
     ids = [cell["id"] for cell in merged["cells"]]
     assert len(ids) == 8
     assert len(set(ids)) == 8
+
+
+def test_concat_preserves_omitted_cell_ids(
+    original_shipped_demo_notebook: dict[str, Any],
+) -> None:
+    merged = concat_notebooks([original_shipped_demo_notebook, original_shipped_demo_notebook])
+    assert all("id" not in cell for cell in merged["cells"])
+    codes = {issue.code for issue in lint_notebook(merged).issues}
+    assert "NB009" in codes
+    assert "NB010" not in codes
+
+
+def test_concat_skips_non_mapping_cells(sample_notebook: dict[str, Any]) -> None:
+    weird = {
+        "cells": [
+            "skip",
+            {
+                "cell_type": "markdown",
+                "id": "shared",
+                "metadata": {},
+                "source": "# Shared\n",
+            },
+        ],
+        "metadata": sample_notebook["metadata"],
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    merged = concat_notebooks([weird, weird])
+    assert merged["cells"][0] == "skip"
+    present_ids = [cell["id"] for cell in merged["cells"] if isinstance(cell, dict)]
+    assert len(present_ids) == 2
+    assert len(set(present_ids)) == 2
+    assert all("id" not in cell for cell in merged["cells"] if not isinstance(cell, dict))
+
+
+def test_transform_preserves_omitted_cell_ids() -> None:
+    notebook = {
+        "cells": [
+            {"cell_type": "markdown", "metadata": {}, "source": "# Alpha\n"},
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "x = 1\n",
+                "outputs": [],
+                "execution_count": None,
+            },
+            {"cell_type": "markdown", "metadata": {}, "source": "# Beta\n"},
+        ],
+        "metadata": {
+            "kernelspec": {
+                "display_name": "Python 3",
+                "language": "python",
+                "name": "python3",
+            }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    filtered = filter_cells(notebook, cell_types=["code"])
+    assert all("id" not in cell for cell in filtered["cells"])
+    sections = split_by_headings(notebook, level=1)
+    assert all("id" not in cell for _, section in sections for cell in section["cells"])
+    kerned = set_kernelspec(notebook, name="python3")
+    assert all("id" not in cell for cell in kerned["cells"])
+    tagged = add_tags(notebook, 1, ["keep"])
+    assert all("id" not in cell for cell in tagged["cells"])
 
 
 def test_split_by_headings() -> None:

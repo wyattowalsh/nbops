@@ -12,7 +12,7 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Directory batch: `nbops batch {stats,lint,clean,validate}` (fail-closed on errors)
 - Percent-format roundtrip (`nbops convert --to py` / `nbops from-py`), including cell tags
   (`[md]` is accepted as markdown; tags with `]` inside quotes round-trip)
-- Concatenation assigns unique cell ids
+- Concatenation uniquifies duplicate present cell ids and leaves omitted ids omitted
 - Tag CLI/API can add or remove cell tags
 - Optional `nbops[execute]` extra (nbclient)
 - Compatibility with the stats-only scaffold: `compute_stats`, `nbops stats`,
@@ -50,3 +50,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Dependabot uses the `uv` ecosystem so `uv.lock` is updated with `pyproject.toml`
 - `execute_notebook` restores omitted v4 cell ids after the nbclient roundtrip so
   lint `NB009` remains observable
+- `concat_notebooks` no longer fills omitted cell ids (explicit `nbops ids` does)
+- `nbops batch lint` honors `NBOPS_MAX_OUTPUT_CHARS` like `nbops lint` and HTTP lint
