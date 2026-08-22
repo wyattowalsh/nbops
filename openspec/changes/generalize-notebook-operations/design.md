@@ -26,7 +26,8 @@ CLI, and HTTP surfaces.
   must not silently reinsert them on returned documents (that would hide `NB009`
   and undo `clean --strip-ids`). Concat uniquifies colliding present ids only.
   Percent convert emits/parses header `id=`, optional titles, other cell
-  metadata (`key=value` or a JSON object), and a kernelspec YAML front matter
+  metadata (`key=value` or a JSON object), nbformat cell `attachments`, and a
+  kernelspec YAML front matter
   (inferred language when omitted; `language_info.name` when there is no
   kernelspec name); `from-py` does not fill omitted ids.
   Optional Jupytext cell titles (`# %% Title [markdown]`) are parsed so the

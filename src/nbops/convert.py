@@ -116,7 +116,8 @@ def from_percent_python(text: str) -> dict[str, Any]:
     Cell ids present in ``# %%`` headers are restored. Omitted ids stay omitted;
     use :func:`nbops.transform.ensure_cell_ids` / ``nbops ids`` to assign them.
     Jupytext optional titles, ``key=value`` cell metadata, and JSON metadata
-    objects are restored onto the cell.
+    objects are restored onto the cell. Header ``attachments`` values are restored
+    as the nbformat cell ``attachments`` field, not cell metadata.
     """
     notebook = new_notebook()
     kernelspec = _kernelspec_from_jupytext_front_matter(text)
@@ -157,6 +158,7 @@ def from_percent_python(text: str) -> dict[str, Any]:
         metadata = dict(current_meta)
         if current_title:
             metadata["title"] = current_title
+        attachments = metadata.pop("attachments", None)
         if current_kind in {"markdown", "raw"}:
             source = _unquote_percent_comment(source)
             cell: dict[str, Any] = {
@@ -174,6 +176,8 @@ def from_percent_python(text: str) -> dict[str, Any]:
             }
         if current_id:
             cell["id"] = current_id
+        if isinstance(attachments, dict) and attachments:
+            cell["attachments"] = attachments
         cells.append(cell)
         current_lines = []
 
@@ -208,11 +212,20 @@ def _percent_cell_header(cell: Mapping[str, Any]) -> str:
     tags = cell_tags(cell)
     if tags:
         parts.append(f"tags={json.dumps(tags)}")
+    attachments = cell.get("attachments")
+    emitted_attachments = False
+    if isinstance(attachments, dict) and attachments:
+        encoded_attachments = _percent_meta_item("attachments", attachments)
+        if encoded_attachments is not None:
+            parts.append(encoded_attachments)
+            emitted_attachments = True
     metadata = cell.get("metadata")
     if isinstance(metadata, dict):
         skipped = {"id", "tags"}
         if title is not None:
             skipped.add("title")
+        if emitted_attachments:
+            skipped.add("attachments")
         for key in sorted(metadata):
             if key in skipped:
                 continue

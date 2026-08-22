@@ -181,6 +181,105 @@ def test_percent_roundtrip_preserves_tags() -> None:
     assert all("id" not in cell for cell in restored["cells"])
 
 
+def test_percent_roundtrip_preserves_attachments() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "See note\n",
+                "attachments": {"note.txt": {"text/plain": "hello"}},
+            }
+        ]
+    }
+    text = to_percent_python(notebook)
+    assert "attachments=" in text
+    restored = from_percent_python(text)
+    assert restored["cells"][0]["attachments"] == {"note.txt": {"text/plain": "hello"}}
+    assert "attachments" not in restored["cells"][0]["metadata"]
+
+
+def test_percent_omits_empty_attachments() -> None:
+    text = to_percent_python(
+        {
+            "cells": [
+                {
+                    "cell_type": "markdown",
+                    "metadata": {},
+                    "source": "Hi\n",
+                    "attachments": {},
+                }
+            ]
+        }
+    )
+    assert "attachments=" not in text
+
+
+def test_from_percent_promotes_metadata_attachments() -> None:
+    text = '# %% [markdown] attachments={"note.txt": {"text/plain": "hello"}}\n# See note\n'
+    notebook = from_percent_python(text)
+    assert notebook["cells"][0]["attachments"] == {"note.txt": {"text/plain": "hello"}}
+    assert "attachments" not in notebook["cells"][0]["metadata"]
+
+
+def test_percent_prefers_cell_attachments_over_metadata() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {"attachments": {"meta.txt": {"text/plain": "meta"}}},
+                "source": "Hi\n",
+                "attachments": {"cell.txt": {"text/plain": "cell"}},
+            }
+        ]
+    }
+    text = to_percent_python(notebook)
+    assert "cell.txt" in text
+    assert "meta.txt" not in text
+    restored = from_percent_python(text)
+    assert restored["cells"][0]["attachments"] == {"cell.txt": {"text/plain": "cell"}}
+
+
+def test_to_percent_skips_non_dict_attachments() -> None:
+    text = to_percent_python(
+        {
+            "cells": [
+                {
+                    "cell_type": "markdown",
+                    "metadata": {},
+                    "source": "Hi\n",
+                    "attachments": "nope",
+                }
+            ]
+        }
+    )
+    assert "attachments=" not in text
+
+
+def test_from_percent_ignores_non_dict_attachments() -> None:
+    notebook = from_percent_python('# %% [markdown] attachments="nope"\n# Hi\n')
+    assert "attachments" not in notebook["cells"][0]
+    assert "attachments" not in notebook["cells"][0]["metadata"]
+
+
+def test_percent_skips_unserializable_attachments() -> None:
+    attachments: dict[str, Any] = {}
+    attachments["self"] = attachments
+    text = to_percent_python(
+        {
+            "cells": [
+                {
+                    "cell_type": "markdown",
+                    "metadata": {},
+                    "source": "Hi\n",
+                    "attachments": attachments,
+                }
+            ]
+        }
+    )
+    assert "attachments=" not in text
+
+
 def test_percent_roundtrip_preserves_omitted_cell_ids() -> None:
     notebook = {
         "cells": [

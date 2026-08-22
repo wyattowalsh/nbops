@@ -76,14 +76,21 @@ SHALL leave omitted ids omitted.
 ### Requirement: Percent-format tags and widget residue
 
 Percent-format conversion SHALL round-trip cell tags, optional titles, present
-cell ids, and other JSON-serializable cell metadata encoded as `key=value` or a
-JSON object. Omitted cell ids SHALL stay omitted. Cleaning outputs SHALL
-remove notebook-level widget state.
+cell ids, nbformat cell `attachments`, and other JSON-serializable cell metadata
+encoded as `key=value` or a JSON object. Omitted cell ids SHALL stay omitted.
+Cleaning outputs SHALL remove notebook-level widget state.
 
 #### Scenario: Percent tag roundtrip
 
 - **WHEN** a notebook with cell `metadata.tags` is converted to percent Python and back
 - **THEN** the restored cells keep those tags
+
+#### Scenario: Percent attachments roundtrip
+
+- **WHEN** a markdown or raw cell has nbformat `attachments`
+- **THEN** convert→from-py restores those attachments on the cell, not in `metadata`
+- **WHEN** `attachments` is empty or absent
+- **THEN** percent output does not include an `attachments=` header
 
 #### Scenario: Percent generic metadata roundtrip
 

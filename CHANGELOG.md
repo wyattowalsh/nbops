@@ -73,3 +73,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   default Python `language_info` hide a non-Python kernelspec name
 - `compute_stats` / `nbops stats` report that same inferred language (so `ir` is `r`,
   not a leftover `python`)
+- Percent convert round-trips nbformat cell `attachments` as header JSON and restores
+  them on the cell, not in `metadata`

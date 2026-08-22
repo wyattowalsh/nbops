@@ -41,3 +41,4 @@
 - [x] 1.39 Infer `ir` / `julia*` / `rust` from kernelspec name when language is omitted; Markdown fences use that language
 - [x] 1.40 Percent convert round-trips inferred kernelspec language and `language_info.name` without a kernelspec name
 - [x] 1.41 `compute_stats.language` uses the same declared/inferred language as lint/convert
+- [x] 1.42 Percent convert round-trips nbformat cell `attachments` (not as cell metadata)

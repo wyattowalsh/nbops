@@ -61,7 +61,8 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   `nbops ids` / `POST /notebooks/ids` assign missing ids. Percent convert
   emits/parses header `id=` values, optional Jupytext cell titles, other
   cell metadata (`key=value` or a JSON object), and a kernelspec YAML
-  front matter, and does not fill omitted ids on `from-py`.
+  front matter, and does not fill omitted ids on `from-py`. Cell `attachments`
+  round-trip as header JSON onto the cell field.
 - `NB007` and `extract_imports` parse Python cells through IPython-aware magics/await
   handling and skip non-Python cell magics plus notebooks whose declared language is
   not Python. Kernelspec names `python*`, `ir`, `julia*`, and `rust` are inferred when
