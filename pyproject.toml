@@ -1,0 +1,130 @@
+[build-system]
+requires = ["hatchling>=1.29"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nbops"
+version = "0.2.0"
+description = "General notebook operations toolkit: inspect, lint, clean, transform, convert, diff, execute, CLI, and HTTP API."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+authors = [{ name = "Wyatt Walsh", email = "wyattowalsh@gmail.com" }]
+keywords = [
+    "jupyter",
+    "notebook",
+    "nbformat",
+    "cli",
+    "fastapi",
+    "lint",
+    "nbops",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "fastapi>=0.115.6",
+    "loguru>=0.7.3",
+    "nbformat>=5.10.4",
+    "pydantic>=2.10.4",
+    "pydantic-settings>=2.7.0",
+    "tenacity>=9.0.0",
+    "tqdm>=4.67.1",
+    "typer>=0.15.1",
+    "uvicorn[standard]>=0.34.0",
+]
+
+[project.optional-dependencies]
+execute = [
+    "ipykernel>=6.29.0",
+    "nbclient>=0.10.2",
+]
+
+[project.scripts]
+nbops = "nbops.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/wyattowalsh/nbops"
+Repository = "https://github.com/wyattowalsh/nbops"
+Issues = "https://github.com/wyattowalsh/nbops/issues"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.9.1",
+    "ty>=0.0.58",
+]
+
+[tool.uv]
+required-version = ">=0.4"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nbops"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+extend-exclude = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["A001"]
+
+[tool.ty.src]
+include = ["src"]
+
+[tool.ty.environment]
+python-version = "3.12"
+
+[tool.ty.rules]
+unused-ignore-comment = "warn"
+redundant-cast = "warn"
+
+[tool.ty.analysis]
+respect-type-ignore-comments = true
+allowed-unresolved-imports = ["nbclient"]
+
+[[tool.ty.overrides]]
+include = ["tests/**"]
+[tool.ty.overrides.rules]
+possibly-missing-attribute = "ignore"
+possibly-missing-import = "ignore"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers --cov=nbops --cov-report=term-missing --cov-fail-under=85 --import-mode=importlib"
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks tests requiring optional extras or kernels",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["nbops"]
+branch = true
+omit = ["src/nbops/__main__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]
