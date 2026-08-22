@@ -21,4 +21,5 @@ Or `just check` / `just quality-gates` (includes demo compatibility smoke).
 8. GitHub labels used by Dependabot (`.github/dependabot.yml`) and release notes
    (`.github/release.yml`) are catalogued in `.github/labels.yml`. Apply matching
    names in the GitHub UI; the YAML file is the catalog and does not sync labels
-   by itself.
+   by itself. Dependabot uses the `uv` ecosystem so `uv.lock` stays in sync with
+   `pyproject.toml`.

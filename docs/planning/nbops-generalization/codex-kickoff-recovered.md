@@ -28,15 +28,15 @@
 | TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py` |
 | TASK-011 | Typer CLI for every catalog operation | done | `src/nbops/cli.py`; system commands `version`/`serve` are not catalog ops |
 | TASK-012 | FastAPI surface + `GET /operations` | done | `src/nbops/api.py` |
-| TASK-013 | Preserve stats scaffold contract | done | `core.py`, `stats`, `/notebooks/stats`; original seven-row CLI table; `uvicorn nbops.api:app` and `/docs` in README; `HealthResponse()` defaults; OpenAPI `StatsRequest`; original shipped demo; live uvicorn |
-| TASK-014 | Tests mirroring src, coverage ≥90% | done | `tests/`, `--cov-fail-under=90` |
+| TASK-013 | Preserve stats scaffold contract | done | `core.py`, `stats`, `/notebooks/stats`; original seven-row CLI table; `uvicorn nbops.api:app` and `/docs` in README; `HealthResponse()` defaults; OpenAPI `StatsRequest`; original shipped demo; live uvicorn; frozen original suite in `tests/original_scaffold/` |
+| TASK-014 | Tests mirroring src, coverage ≥90% | done | `tests/` including `tests/original_scaffold/`; `--cov-fail-under=90` |
 | TASK-015 | CI: actionlint + ruff + ty + pytest 3.12/3.13 | done | `.github/workflows/ci.yml` |
 | TASK-016 | AGENTS.md, CONTRIBUTING.md, README, CHANGELOG | done | repo root + `CODE_OF_CONDUCT.md` + `CLAUDE.md` |
 | TASK-017 | uv lockfile + justfile | done | `uv.lock`, `justfile` (`check`, `quality-gates`, `smoke`) |
 | TASK-018 | Shared operations catalog | done | `src/nbops/operations.py` |
 | TASK-019 | `NBOPS_` pydantic-settings + optional `.env` | done | `src/nbops/settings.py`; `.env.example` |
 | TASK-020 | SECURITY.md | done | `SECURITY.md` |
-| TASK-021 | Dependabot (pip + github-actions) | done | `.github/dependabot.yml`; `.github/labels.yml` catalogs referenced label names |
+| TASK-021 | Dependabot (uv + github-actions) | done | `.github/dependabot.yml` `uv` ecosystem (updates `uv.lock`); `.github/labels.yml` catalogs referenced label names |
 | TASK-022 | Pre-commit (hooks + ruff) | done | `.pre-commit-config.yaml` |
 | TASK-023 | Ruff TCH + nbadb-like select | done | `pyproject.toml` |
 

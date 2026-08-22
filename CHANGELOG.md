@@ -46,3 +46,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Pytest ignores Starlette's TestClient `httpx`/`httpx2` UserWarning so CI logs stay clean
 - Original shipped demo (`language_info.version` 3.12, omitted cell ids) is a fixture;
   live `uvicorn nbops.api:app` is tested for `GET /health` and `POST /notebooks/stats`
+- Frozen original stats-scaffold pytest suite under `tests/original_scaffold/`
+- Dependabot uses the `uv` ecosystem so `uv.lock` is updated with `pyproject.toml`

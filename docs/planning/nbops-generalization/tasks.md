@@ -18,6 +18,6 @@
 - [x] G18 Shared operations catalog (`nbops ops`)
 - [x] G19 `NBOPS_` pydantic-settings + loguru configuration (`.env.example`)
 - [x] G20 SECURITY.md
-- [x] G21 Dependabot (pip + github-actions)
+- [x] G21 Dependabot (`uv` lockfile ecosystem + github-actions)
 - [x] G22 Pre-commit (file hygiene + ruff)
 - [x] G23 Coverage ≥90% and actionlint CI job

@@ -30,6 +30,8 @@ def test_label_catalog_covers_dependabot_and_release_names() -> None:
     assert '"dependencies"' in dependabot
     assert '"python"' in dependabot
     assert '"github-actions"' in dependabot
+    assert 'package-ecosystem: "uv"' in dependabot
+    assert 'package-ecosystem: "pip"' not in dependabot
     assert "skip-changelog" in release
     assert "github-actions" in release
     assert "- ci\n" in release

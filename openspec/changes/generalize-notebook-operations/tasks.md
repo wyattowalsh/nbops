@@ -28,3 +28,4 @@
 - [x] 1.26 Original `HealthResponse()` defaults, `StatsRequest` OpenAPI name, GitHub label catalog for Dependabot/release names
 - [x] 1.27 Original `/docs` README sentence, StatsRequest nbformat v4 field description, OpenAPI health defaults
 - [x] 1.28 Original shipped demo fixture (no ids, language_info 3.12) plus live `uvicorn nbops.api:app` health/stats
+- [x] 1.29 Frozen original stats-scaffold pytest suite; Dependabot `uv` ecosystem for `uv.lock`
