@@ -1,8 +1,7 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e`.
-Local gates at the current tree: **144 passed**, coverage **98.87%**.
-GitHub Actions for the pre-coverage-follow-up SHA is recorded below when available.
+Recorded on branch `cursor/nbops-generalization-673e` at `a9672fe`.
+Local and GitHub gates are **144 passed**, coverage **98.87%**.
 
 ## Tooling
 
@@ -44,15 +43,15 @@ and are **not** a substitute for the original dump.
 
 ## GitHub Actions
 
-Run [32588732104](https://github.com/wyattowalsh/nbops/actions/runs/32588732104)
-on `b884224` concluded **success** (all 5 jobs):
+Run [32589716713](https://github.com/wyattowalsh/nbops/actions/runs/32589716713)
+on `a9672fe` concluded **success** (all 5 jobs):
 
 | Job | Result | Interpreter / notes |
 | --- | ------ | ------------------- |
 | `workflow-lint` | success | actionlint |
 | `lint` | success | ruff check + format |
 | `typecheck` | success | ty |
-| `test (3.12)` | success | CPython **3.12.14**, **128 passed**; Compatibility smoke includes `python -m nbops version`, `nbops --version`, `nbops validate`, `nbops outputs`, `nbops batch validate examples`, `nbops serve --help`; demo stats 4 / 2 / 4 |
-| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed `3.13.15`), **128 passed**; same Compatibility smoke |
+| `test (3.12)` | success | CPython **3.12.14**, **144 passed**, coverage **98.87%**; Compatibility smoke includes `python -m nbops version`, `nbops --version`, `nbops validate`, `nbops outputs`, `nbops batch validate examples`, `nbops serve --help`; demo stats 4 / 2 / 4 |
+| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed `3.13.15`), **144 passed**; same Compatibility smoke |
 
-Prior verified runs on this branch include [32588626150](https://github.com/wyattowalsh/nbops/actions/runs/32588626150) (`24290d8`, serve + fail-closed writes), [32587917364](https://github.com/wyattowalsh/nbops/actions/runs/32587917364) (`afd8400`, 118 tests), and [32588007650](https://github.com/wyattowalsh/nbops/actions/runs/32588007650) (`6756640`).
+Prior verified runs on this branch include [32589531386](https://github.com/wyattowalsh/nbops/actions/runs/32589531386) (`631544d`, 137 tests; percent tags + widget clean), [32588732104](https://github.com/wyattowalsh/nbops/actions/runs/32588732104) (`b884224`, 128 tests), [32588626150](https://github.com/wyattowalsh/nbops/actions/runs/32588626150) (`24290d8`, serve + fail-closed writes), [32587917364](https://github.com/wyattowalsh/nbops/actions/runs/32587917364) (`afd8400`, 118 tests), and [32588007650](https://github.com/wyattowalsh/nbops/actions/runs/32588007650) (`6756640`).
