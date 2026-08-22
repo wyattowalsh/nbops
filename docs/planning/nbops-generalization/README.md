@@ -43,3 +43,7 @@ the exhaustive program derived from:
 | G21 | Dependabot for pip and GitHub Actions | `.github/dependabot.yml` |
 | G22 | Pre-commit hooks + ruff | `.pre-commit-config.yaml` |
 | G23 | Coverage gate 90% + actionlint CI | `pyproject.toml`, `.github/workflows/ci.yml` |
+
+See [tasks.md](./tasks.md), [codex-kickoff-recovered.md](./codex-kickoff-recovered.md),
+[validation.md](./validation.md), [validation-report.md](./validation-report.md),
+and [audit.md](./audit.md).
