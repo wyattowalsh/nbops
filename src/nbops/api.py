@@ -148,7 +148,7 @@ def notebook_stats(request: NotebookPayload) -> NotebookStats:
 
 @app.post("/notebooks/inspect", response_model=InspectResponse, tags=["notebooks"])
 def notebook_inspect(request: NotebookPayload) -> InspectResponse:
-    """Return stats, headings, and imports for a posted notebook."""
+    """Return stats, headings, imports, and outputs for a posted notebook."""
     try:
         document = request.notebook
         return InspectResponse(

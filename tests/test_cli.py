@@ -20,6 +20,26 @@ def test_version_command() -> None:
     assert __version__ in result.stdout
 
 
+def test_version_flag() -> None:
+    result = runner.invoke(app, ["--version"])
+    assert result.exit_code == 0
+    assert __version__ in result.stdout
+
+
+def test_python_module_invocation() -> None:
+    import subprocess
+    import sys
+
+    completed = subprocess.run(
+        [sys.executable, "-m", "nbops", "version"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0
+    assert __version__ in completed.stdout
+
+
 def test_demo_notebook_stats_contract() -> None:
     demo = Path(__file__).resolve().parents[1] / "examples" / "demo.ipynb"
     result = runner.invoke(app, ["stats", str(demo), "--json"])
@@ -322,6 +342,57 @@ def test_ops_filter_tag_ids_and_batch_clean(tmp_path: Path, sample_notebook_file
     validated = runner.invoke(app, ["batch", "validate", str(ok_dir), "--json"])
     assert validated.exit_code == 0
     assert json.loads(validated.stdout)[0]["ok"] is True
+    table = runner.invoke(app, ["batch", "validate", str(ok_dir)])
+    assert table.exit_code == 0
+    assert "fresh.ipynb" in table.stdout
+
+    stripped = tmp_path / "stripped.ipynb"
+    payload = json.loads(sample_notebook_file.read_text(encoding="utf-8"))
+    payload["cells"][1]["metadata"]["custom"] = 1
+    tagged_meta = tmp_path / "meta.ipynb"
+    tagged_meta.write_text(json.dumps(payload), encoding="utf-8")
+    strip = runner.invoke(
+        app,
+        [
+            "clean",
+            str(tagged_meta),
+            "--strip-metadata",
+            "custom",
+            "-o",
+            str(stripped),
+        ],
+    )
+    assert strip.exit_code == 0
+    cleaned = json.loads(stripped.read_text(encoding="utf-8"))
+    assert "custom" not in cleaned["cells"][1]["metadata"]
+
+
+def test_split_slug_collapses_punctuation(tmp_path: Path) -> None:
+    notebook = tmp_path / "headed.ipynb"
+    notebook.write_text(
+        json.dumps(
+            {
+                "cells": [
+                    {
+                        "cell_type": "markdown",
+                        "id": "h1",
+                        "metadata": {},
+                        "source": "# Hello -- World\n",
+                    }
+                ],
+                "metadata": {"kernelspec": {"name": "python3"}},
+                "nbformat": 4,
+                "nbformat_minor": 5,
+            }
+        ),
+        encoding="utf-8",
+    )
+    out = tmp_path / "parts"
+    result = runner.invoke(app, ["split", str(notebook), "-o", str(out)])
+    assert result.exit_code == 0
+    written = list(out.glob("*.ipynb"))
+    assert len(written) == 1
+    assert "hello-world" in written[0].name
 
 
 def test_filter_and_tag_require_output(sample_notebook_file: Path) -> None:
@@ -394,3 +465,11 @@ def test_cli_error_paths(tmp_path: Path, sample_notebook_file: Path) -> None:
     assert batch_stats.exit_code != 0
     batch_validate = runner.invoke(app, ["batch", "validate", str(batch_dir)])
     assert batch_validate.exit_code != 0
+    batch_stats_json = runner.invoke(app, ["batch", "stats", str(batch_dir), "--json"])
+    assert batch_stats_json.exit_code != 0
+    batch_lint_json = runner.invoke(app, ["batch", "lint", str(batch_dir), "--json"])
+    assert batch_lint_json.exit_code != 0
+    batch_clean_json = runner.invoke(app, ["batch", "clean", str(batch_dir), "--json"])
+    assert batch_clean_json.exit_code != 0
+    batch_validate_json = runner.invoke(app, ["batch", "validate", str(batch_dir), "--json"])
+    assert batch_validate_json.exit_code != 0

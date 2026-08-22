@@ -12,3 +12,4 @@
 - [x] 1.10 Catalog↔CLI↔API invariant plus percent-format roundtrip
 - [x] 1.11 Validate + output inventory catalog surfaces; concat unique cell ids
 - [x] 1.12 Batch validate plus fail-closed batch stats/clean JSON errors
+- [x] 1.13 `.env.example`, CLI `--version` / `--strip-metadata`, `python -m nbops`

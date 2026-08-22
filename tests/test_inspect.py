@@ -37,6 +37,16 @@ def test_compute_stats_reads_metadata(sample_notebook: dict[str, Any]) -> None:
     assert result.language == "python"
 
 
+def test_compute_stats_empty_cells_and_widgets(sample_notebook: dict[str, Any]) -> None:
+    sample_notebook["cells"].append(
+        {"cell_type": "code", "id": "empty", "metadata": {}, "source": "", "outputs": []}
+    )
+    sample_notebook["metadata"]["widgets"] = {"state": {"x": {}}}
+    result = compute_stats(sample_notebook)
+    assert result.empty_cells == 1
+    assert result.has_widgets is True
+
+
 def test_compute_stats_empty_notebook() -> None:
     result = compute_stats({"cells": []})
     assert result.total_cells == 0
@@ -109,6 +119,10 @@ def test_list_outputs_stream_and_error(
     display = list_outputs(display_notebook)
     assert display[0].output_type == "execute_result"
     assert display[0].preview == "42"
+    empty_output = list_outputs(
+        {"cells": [{"cell_type": "code", "metadata": {}, "source": "x", "outputs": [{}]}]}
+    )
+    assert empty_output[0].preview is None
     stats = compute_stats(error_notebook)
     assert stats.error_outputs == 1
     assert compute_stats(display_notebook).display_outputs == 1

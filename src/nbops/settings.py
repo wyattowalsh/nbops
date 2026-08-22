@@ -12,7 +12,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class NbopsSettings(BaseSettings):
     """Runtime settings loaded from environment variables."""
 
-    model_config = SettingsConfigDict(env_prefix="NBOPS_", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_prefix="NBOPS_",
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
     log_level: str = "INFO"
     max_output_chars: int = 100_000

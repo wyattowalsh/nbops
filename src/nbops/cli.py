@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, NoReturn
 
 import typer
 from loguru import logger
@@ -42,7 +42,7 @@ batch_app = typer.Typer(help="Run an operation across a directory of notebooks."
 app.add_typer(batch_app, name="batch")
 
 
-def _fail(message: str, code: int = 1) -> None:
+def _fail(message: str, code: int = 1) -> NoReturn:
     typer.secho(message, err=True, fg=typer.colors.RED)
     raise typer.Exit(code)
 
@@ -51,9 +51,24 @@ def _want_progress() -> bool:
     return bool(get_settings().progress and sys.stderr.isatty())
 
 
+def _version_callback(value: bool) -> None:
+    if value:
+        typer.echo(__version__)
+        raise typer.Exit()
+
+
 @app.callback()
 def _root(
     verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Enable debug logging.")] = False,
+    _version: Annotated[
+        bool,
+        typer.Option(
+            "--version",
+            help="Show the installed nbops version and exit.",
+            callback=_version_callback,
+            is_eager=True,
+        ),
+    ] = False,
 ) -> None:
     configure_logging("DEBUG" if verbose else None)
 
@@ -70,7 +85,6 @@ def _load(path: Path, *, validate: bool = False) -> dict[str, Any]:
         return load_notebook(path, validate=validate)
     except (OSError, NbopsError, ValueError) as exc:
         _fail(str(exc))
-        raise  # pragma: no cover
 
 
 @app.command()
@@ -113,7 +127,7 @@ def stats(
 def inspect_cmd(
     notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
 ) -> None:
-    """Emit the full inspect payload (stats, outline, imports) as JSON."""
+    """Emit the full inspect payload (stats, outline, imports, outputs) as JSON."""
     document = _load(notebook, validate=False)
     payload = {
         "stats": compute_stats(document).model_dump(),
@@ -211,6 +225,10 @@ def clean(
     keep_counts: Annotated[bool, typer.Option("--keep-counts")] = False,
     strip_ids: Annotated[bool, typer.Option("--strip-ids")] = False,
     drop_empty: Annotated[bool, typer.Option("--drop-empty")] = False,
+    strip_metadata: Annotated[
+        list[str] | None,
+        typer.Option("--strip-metadata", help="Remove these extra cell metadata keys."),
+    ] = None,
 ) -> None:
     """Strip outputs, execution counts, and optional cell residue."""
     if output is None and not in_place:
@@ -223,6 +241,7 @@ def clean(
             execution_counts=not keep_counts,
             cell_ids=strip_ids,
             empty_cells=drop_empty,
+            metadata_keys=list(strip_metadata or []),
         ),
     )
     dest = notebook if in_place else output
@@ -339,7 +358,6 @@ def validate(
         validate_notebook(document)
     except (OSError, NbopsError, ValueError) as exc:
         _fail(str(exc))
-        return
     typer.echo("ok")
 
 
@@ -388,7 +406,6 @@ def exec_cmd(
         )
     except (MissingExtraError, ExecuteError, InvalidNotebookError) as exc:
         _fail(str(exc))
-        return
     save_notebook(executed, dest, validate=False)
     typer.echo(str(dest))
 
@@ -448,7 +465,6 @@ def tag_cmd(
         updated = add_tags(_load(notebook, validate=False), cell, tags)
     except (IndexError, TypeError) as exc:
         _fail(str(exc))
-        return
     dest = notebook if in_place else output
     assert dest is not None
     save_notebook(updated, dest, validate=False)

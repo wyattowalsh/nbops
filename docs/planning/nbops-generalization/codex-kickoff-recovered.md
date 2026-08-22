@@ -34,7 +34,7 @@
 | TASK-016 | AGENTS.md, CONTRIBUTING.md, README, CHANGELOG | done | repo root + `CODE_OF_CONDUCT.md` |
 | TASK-017 | uv lockfile + justfile | done | `uv.lock`, `justfile` |
 | TASK-018 | Shared operations catalog | done | `src/nbops/operations.py` |
-| TASK-019 | `NBOPS_` pydantic-settings | done | `src/nbops/settings.py` |
+| TASK-019 | `NBOPS_` pydantic-settings + optional `.env` | done | `src/nbops/settings.py`; `.env.example` |
 | TASK-020 | SECURITY.md | done | `SECURITY.md` |
 | TASK-021 | Dependabot (pip + github-actions) | done | `.github/dependabot.yml` |
 | TASK-022 | Pre-commit (hooks + ruff) | done | `.pre-commit-config.yaml` |
@@ -49,6 +49,8 @@ uv run ruff format --check src tests
 uv run ty check
 uv run pytest
 uv run nbops stats examples/demo.ipynb --json
+uv run nbops --version
+uv run python -m nbops version
 ```
 
 Compatibility invariant: `compute_stats`, `nbops stats`, `POST /notebooks/stats`.

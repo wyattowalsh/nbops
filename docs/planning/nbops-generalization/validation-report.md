@@ -1,6 +1,8 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e` at `b3045f3`.
+Recorded on branch `cursor/nbops-generalization-673e` after adding `.env.example`,
+CLI `--version` / `--strip-metadata`, and `python -m nbops`. Local gates are
+**118 passed**, coverage **97.83%**. GitHub CI for this revision is pending push.
 
 ## Tooling
 
@@ -10,14 +12,15 @@ Recorded on branch `cursor/nbops-generalization-673e` at `b3045f3`.
 | `uv run ruff check src tests` | All checks passed |
 | `uv run ruff format --check src tests` | files already formatted |
 | `uv run ty check` | All checks passed |
-| `uv run pytest` | **113 passed**, coverage **96.45%** (fail-under 90) |
-| `uvx pre-commit run --all-files` | Passed (whitespace/EOF hygiene + ruff) |
+| `uv run pytest` | **118 passed**, coverage **97.83%** (fail-under 90) |
 
 ## Runtime smoke
 
 | Command | Result |
 | ------- | ------ |
 | `uv run nbops version` | `0.2.0` |
+| `uv run nbops --version` | `0.2.0` |
+| `uv run python -m nbops version` | `0.2.0` |
 | `uv run nbops ops` | **20** operations listed (including `outputs` and `validate`) |
 | `uv run nbops stats examples/demo.ipynb --json` | `total_cells` 4, `code_cells` 2, `code_lines` 4, `kernel` Python 3, `language` python |
 | `uv run nbops lint examples/demo.ipynb` | 2 info `NB005` findings, 0 errors |
@@ -30,14 +33,15 @@ Compatibility invariants (`compute_stats`, `nbops stats`, `POST /notebooks/stats
 ## Kickoff artifact
 
 `nbops-generalization-codex-kickoff-context-20260822` was not found in this
-repository, sibling Wyatt clones under `/tmp/research`, public GitHub search,
-gists (API 403), Drive/Gmail/Linear (MCP unauthenticated), or this run's
-transcript (filename only). Recovered TASK-001–023 live in
+repository, sibling Wyatt clones under `/tmp/research`, public GitHub search
+(HTTP 429/empty), gists (API 403), Drive/Gmail/Linear/Tavily (MCP
+unauthenticated), sibling nbops cloud-agent transcripts (role/text only), or this
+run's transcript (filename only). Recovered TASK-001–023 live in
 `codex-kickoff-recovered.md` and are **not** a substitute for the original dump.
 
 ## GitHub Actions
 
-Run [32587289076](https://github.com/wyattowalsh/nbops/actions/runs/32587289076)
+Prior verified run [32587289076](https://github.com/wyattowalsh/nbops/actions/runs/32587289076)
 on `b3045f3` concluded **success** (all 5 jobs):
 
 | Job | Result | Interpreter / notes |
@@ -48,4 +52,4 @@ on `b3045f3` concluded **success** (all 5 jobs):
 | `test (3.12)` | success | CPython **3.12.14**, **113 passed**; Compatibility smoke includes `nbops validate`, `nbops outputs`, `nbops batch validate examples`; demo stats 4 / 2 / 4 |
 | `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed), **113 passed**; same Compatibility smoke |
 
-Prior verified runs on this branch: [32587098439](https://github.com/wyattowalsh/nbops/actions/runs/32587098439) (`b22df3c`, 112 tests) and [32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790) (`e257f87`, 107 tests).
+This revision adds `python -m nbops version` and `nbops --version` to Compatibility smoke.

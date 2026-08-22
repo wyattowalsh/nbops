@@ -92,18 +92,32 @@ def test_filter_predicate_and_kernelspec_without_metadata() -> None:
     assert tagged["cells"][0]["metadata"]["tags"] == ["t"]
 
 
+def test_filter_skips_non_mapping_cells() -> None:
+    notebook = {
+        "cells": [
+            "skip",
+            {"cell_type": "code", "metadata": {}, "source": "x = 1\n", "outputs": []},
+        ]
+    }
+    filtered = filter_cells(notebook, cell_types=["code"])
+    assert len(filtered["cells"]) == 1
+    skipped = filter_cells(notebook, cell_types=["markdown"])
+    assert skipped["cells"] == []
+
+
 def test_ensure_cell_ids_fills_missing_and_duplicates() -> None:
     notebook = {
         "cells": [
             {"cell_type": "markdown", "metadata": {}, "source": "# A\n"},
             {"cell_type": "code", "id": "dup", "metadata": {}, "source": "x = 1\n", "outputs": []},
             {"cell_type": "code", "id": "dup", "metadata": {}, "source": "y = 2\n", "outputs": []},
+            "skip",
         ],
         "metadata": {},
         "nbformat": 4,
         "nbformat_minor": 5,
     }
     updated = ensure_cell_ids(notebook)
-    ids = [cell["id"] for cell in updated["cells"]]
+    ids = [cell["id"] for cell in updated["cells"] if isinstance(cell, dict)]
     assert all(isinstance(cell_id, str) and cell_id for cell_id in ids)
     assert len(set(ids)) == 3

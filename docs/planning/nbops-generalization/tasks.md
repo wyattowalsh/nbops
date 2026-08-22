@@ -16,7 +16,7 @@
 - [x] G16 README, AGENTS.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md
 - [x] G17 uv project + justfile
 - [x] G18 Shared operations catalog (`nbops ops`)
-- [x] G19 `NBOPS_` pydantic-settings + loguru configuration
+- [x] G19 `NBOPS_` pydantic-settings + loguru configuration (`.env.example`)
 - [x] G20 SECURITY.md
 - [x] G21 Dependabot (pip + github-actions)
 - [x] G22 Pre-commit (file hygiene + ruff)

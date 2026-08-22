@@ -38,7 +38,7 @@ the exhaustive program derived from:
 | G16 | Agent/contributor docs | `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `CODE_OF_CONDUCT.md` |
 | G17 | uv lockfile and justfile | `uv.lock`, `justfile` |
 | G18 | Shared operations catalog | `src/nbops/operations.py` |
-| G19 | Environment-backed settings (`NBOPS_`) | `src/nbops/settings.py` |
+| G19 | Environment-backed settings (`NBOPS_`) | `src/nbops/settings.py`; `.env.example` |
 | G20 | SECURITY.md | `SECURITY.md` |
 | G21 | Dependabot for pip and GitHub Actions | `.github/dependabot.yml` |
 | G22 | Pre-commit hooks + ruff | `.pre-commit-config.yaml` |

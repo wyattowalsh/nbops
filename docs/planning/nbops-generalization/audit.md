@@ -31,12 +31,12 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G11 / TASK-011 | Typer CLI for every catalog op | `test_catalog_cli_and_api_surfaces_exist` (20 ops) | verified (recovered) |
 | G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test | verified (recovered) |
 | G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI | verified (recovered) |
-| G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules including `test_models.py` and `test_exceptions.py`; 112 passed, 96.50% | verified (recovered) |
+| G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules including `test_models.py` and `test_exceptions.py`; 118 passed, 97.83% | verified (recovered) |
 | G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32587289076](https://github.com/wyattowalsh/nbops/actions/runs/32587289076) on `b3045f3`: **113 passed** on CPython **3.12.14** and **3.13.15**, including `nbops batch validate examples` | verified (recovered) |
 | G16 / TASK-016 | AGENTS, CONTRIBUTING, README, CHANGELOG | plus `CODE_OF_CONDUCT.md`, issue/PR templates, CODEOWNERS | verified (recovered) |
 | G17 / TASK-017 | uv lockfile + justfile | `uv.lock`, `justfile` | verified (recovered) |
 | G18 / TASK-018 | Shared operations catalog | `src/nbops/operations.py`; **20** ops | verified (recovered) |
-| G19 / TASK-019 | `NBOPS_` pydantic-settings | `src/nbops/settings.py`; `tests/test_settings.py` | verified (recovered) |
+| G19 / TASK-019 | `NBOPS_` pydantic-settings | `src/nbops/settings.py`; `.env.example`; optional `.env`; `tests/test_settings.py` | verified (recovered) |
 | G20 / TASK-020 | SECURITY.md | `SECURITY.md` | verified (recovered) |
 | G21 / TASK-021 | Dependabot pip + github-actions | `.github/dependabot.yml` | verified (recovered) |
 | G22 / TASK-022 | Pre-commit | `.pre-commit-config.yaml`; `uvx pre-commit run --all-files` passed | verified (recovered) |
@@ -50,9 +50,10 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | `uv run ruff check src tests` | passed | passed (`lint` job) |
 | `uv run ruff format --check src tests` | passed | passed (`lint` job) |
 | `uv run ty check` | passed | passed (`typecheck` job) |
-| `uv run pytest` | 113 passed, 96.45% | 113 passed on 3.12.14 **and** 3.13.15 at `b3045f3` ([32587289076](https://github.com/wyattowalsh/nbops/actions/runs/32587289076)) |
+| `uv run pytest` | 118 passed, 97.83% | pending this revision on GitHub; prior 113 passed on 3.12.14 **and** 3.13.15 at `b3045f3` ([32587289076](https://github.com/wyattowalsh/nbops/actions/runs/32587289076)) |
 | `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke on both interpreters |
 | `uv run nbops validate examples/demo.ipynb` | `ok` | CI Compatibility smoke on 3.12.14 and 3.13.15 |
+| `uv run nbops --version` / `python -m nbops version` | `0.2.0` | added to Compatibility smoke |
 
 ## External
 

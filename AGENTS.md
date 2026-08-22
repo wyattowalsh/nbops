@@ -22,6 +22,8 @@ uv run ruff format src tests
 uv run ty check
 uv run pytest
 uv run nbops --help
+uv run nbops --version
+uv run python -m nbops version
 uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
 ```
 
@@ -36,7 +38,8 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
 - Keep `compute_stats`, `nbops stats`, and `POST /notebooks/stats` as a
   compatibility surface for the original scaffold.
 - Coverage gate is `--cov-fail-under=90`.
-- Runtime settings use the `NBOPS_` prefix (`NBOPS_LOG_LEVEL`, `NBOPS_EXECUTE_TIMEOUT`).
+- Runtime settings use the `NBOPS_` prefix (`NBOPS_LOG_LEVEL`, `NBOPS_EXECUTE_TIMEOUT`,
+  `NBOPS_MAX_OUTPUT_CHARS`, `NBOPS_PROGRESS`). See `.env.example`.
 - Lint codes `NB000`–`NB011` are defined in `nbops.lint.ISSUE_CATALOG`.
 - Inspect: stats, outline, imports, and output inventory (`nbops outputs` /
   `POST /notebooks/outputs`).

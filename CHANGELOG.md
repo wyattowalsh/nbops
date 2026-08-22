@@ -16,4 +16,6 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Compatibility with the stats-only scaffold: `compute_stats`, `nbops stats`,
   `POST /notebooks/stats`
 - Operations catalog (`nbops ops`, `GET /operations`)
-- `NBOPS_` environment settings
+- `NBOPS_` environment settings (optional working-directory `.env`; see `.env.example`)
+- CLI `--version` and `python -m nbops`
+- CLI `--strip-metadata` for extra cell metadata keys (`CleanOptions.metadata_keys`)

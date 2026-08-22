@@ -76,6 +76,7 @@ def error_notebook() -> dict[str, Any]:
         "cells": [
             {
                 "cell_type": "code",
+                "id": "err-raise",
                 "execution_count": 1,
                 "metadata": {},
                 "outputs": [

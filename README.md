@@ -48,6 +48,8 @@ print(convert_notebook(notebook, "md").text)
 ## CLI
 
 ```bash
+uv run nbops --version
+uv run python -m nbops version
 uv run nbops stats examples/demo.ipynb
 uv run nbops stats examples/demo.ipynb --json
 uv run nbops inspect examples/demo.ipynb
@@ -57,6 +59,7 @@ uv run nbops outputs examples/demo.ipynb
 uv run nbops lint examples/demo.ipynb
 uv run nbops validate examples/demo.ipynb
 uv run nbops clean examples/demo.ipynb -o /tmp/clean.ipynb
+uv run nbops clean examples/demo.ipynb --strip-metadata collapsed -o /tmp/clean.ipynb
 uv run nbops convert examples/demo.ipynb --to md
 uv run nbops convert examples/demo.ipynb --to py -o /tmp/demo.py
 uv run nbops from-py /tmp/demo.py -o /tmp/from-py.ipynb
@@ -86,7 +89,7 @@ uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
 | `GET` | `/health` | Liveness |
 | `GET` | `/operations` | Operations catalog |
 | `POST` | `/notebooks/stats` | Cell/code statistics |
-| `POST` | `/notebooks/inspect` | Stats + outline + imports |
+| `POST` | `/notebooks/inspect` | Stats + outline + imports + outputs |
 | `POST` | `/notebooks/headings` | Markdown heading outline |
 | `POST` | `/notebooks/imports` | Top-level imports |
 | `POST` | `/notebooks/outputs` | Code-cell output inventory |
@@ -118,6 +121,9 @@ uv run pytest
 ```
 
 Or `just check`.
+
+Runtime settings use the `NBOPS_` prefix and can be placed in a working-directory
+`.env` file. See [`.env.example`](./.env.example).
 
 ## Layout
 

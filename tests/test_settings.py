@@ -26,11 +26,13 @@ def test_settings_from_env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("NBOPS_LOG_LEVEL", "DEBUG")
     monkeypatch.setenv("NBOPS_EXECUTE_TIMEOUT", "30")
     monkeypatch.setenv("NBOPS_PROGRESS", "false")
+    monkeypatch.setenv("NBOPS_MAX_OUTPUT_CHARS", "12")
     get_settings.cache_clear()
     settings = get_settings()
     assert settings.log_level == "DEBUG"
     assert settings.execute_timeout == 30
     assert settings.progress is False
+    assert settings.max_output_chars == 12
 
 
 def test_configure_logging_does_not_raise() -> None:

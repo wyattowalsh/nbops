@@ -95,6 +95,8 @@ jobs:
       - run: uv run pytest
       - name: Compatibility smoke
         run: |
+          uv run python -m nbops version
+          uv run nbops --version
           uv run nbops version
           uv run nbops ops
           uv run nbops stats examples/demo.ipynb --json
