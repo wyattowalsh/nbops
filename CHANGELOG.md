@@ -55,3 +55,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - `nbops batch lint` honors `NBOPS_MAX_OUTPUT_CHARS` like `nbops lint` and HTTP lint
 - Percent convert emits/parses Jupytext `id=` cell headers; `from-py` does not assign missing ids
 - Percent convert parses Jupytext optional cell titles (`# %% Title [markdown]`) and round-trips `metadata.title`
+- Percent convert emits/parses Jupytext cell metadata beyond `id`/`tags`/`title`
+  (`key=value` pairs and JSON objects, including dotted keys and `collapsed`/`slideshow`)

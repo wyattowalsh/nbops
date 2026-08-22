@@ -8,10 +8,16 @@ import pytest
 
 from nbops.cells import cell_source
 from nbops.convert import (
+    _at_percent_metadata,
+    _consume_quoted_string,
     _leading_list_literal,
+    _leading_object_literal,
     _leading_scalar_literal,
+    _parse_key_equal_values,
+    _percent_cell_header,
     _percent_cell_id,
     _percent_cell_metadata,
+    _percent_meta_item,
     convert_notebook,
     from_percent_python,
     to_markdown,
@@ -243,7 +249,7 @@ def test_percent_roundtrip_preserves_cell_titles() -> None:
 
 
 def test_percent_title_helpers_reject_unsafe_and_non_string_titles() -> None:
-    from nbops.convert import _percent_cell_header, _percent_title_text
+    from nbops.convert import _percent_title_text
 
     assert _percent_title_text(None) is None
     assert _percent_title_text("  ") is None
@@ -252,9 +258,9 @@ def test_percent_title_helpers_reject_unsafe_and_non_string_titles() -> None:
     unsafe = _percent_cell_header(
         {"cell_type": "code", "metadata": {"title": "bad=title"}, "source": "x"}
     )
-    assert "bad=title" not in unsafe
+    assert unsafe == '# %% title="bad=title"'
     numbered = _percent_cell_header({"cell_type": "code", "metadata": {"title": 12}, "source": "x"})
-    assert numbered == "# %%"
+    assert numbered == "# %% title=12"
     missing = _percent_cell_header({"cell_type": "code", "metadata": None, "source": "x"})
     assert missing == "# %%"
 
@@ -365,14 +371,24 @@ def test_convert_skips_non_mapping_cells() -> None:
 def test_percent_metadata_helpers_reject_empty_and_unbalanced_lists() -> None:
     assert _percent_cell_metadata(None) == {}
     assert _percent_cell_metadata("   ") == {}
-    assert _percent_cell_metadata(" key=1") == {}
+    assert _percent_cell_metadata(" key=1") == {"key": 1}
     assert _percent_cell_id(None) is None
     assert _percent_cell_id("   ") is None
     assert _percent_cell_id(" key=1") is None
+    assert _percent_cell_id(" id=12") == "12"
+    assert _percent_cell_id(" id=true") is None
+    assert _percent_cell_id(' {"id": "cell-1"}') == "cell-1"
     assert _leading_list_literal("[[]") is None
+    assert _leading_object_literal("{") is None
+    assert _leading_object_literal("x") is None
     assert _leading_scalar_literal("") is None
     assert _leading_scalar_literal("   ") is None
     assert _leading_scalar_literal("'unterminated") is None
+    assert _leading_scalar_literal('"hello"') == "hello"
+    assert _leading_scalar_literal("area") == "area"
+    assert _leading_scalar_literal("!!!") is None
+    assert _at_percent_metadata("", 0) is False
+    assert _parse_key_equal_values("collapsed=true  ") == {"collapsed": True}
     notebook = from_percent_python("# %% tags=[[]\nprint(1)\n")
     assert notebook["cells"][0]["metadata"] == {}
 
@@ -385,3 +401,149 @@ def test_percent_metadata_rejects_non_list_decoded_tags(monkeypatch: pytest.Monk
 def test_percent_id_rejects_non_string_decoded_scalar(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("nbops.convert.json.loads", lambda _raw: 12)
     assert _leading_scalar_literal('"x"') is None
+
+
+def test_from_percent_python_parses_generic_key_value_metadata() -> None:
+    notebook = from_percent_python(
+        '# %% [markdown] collapsed=true slideshow={"slide_type": "slide"} '
+        'foo.bar=1 tags=["intro"]\n# Hello\n'
+    )
+    metadata = notebook["cells"][0]["metadata"]
+    assert notebook["cells"][0]["cell_type"] == "markdown"
+    assert metadata["collapsed"] is True
+    assert metadata["slideshow"] == {"slide_type": "slide"}
+    assert metadata["foo.bar"] == 1
+    assert metadata["tags"] == ["intro"]
+    assert "id" not in notebook["cells"][0]
+
+
+def test_from_percent_python_parses_json_cell_metadata() -> None:
+    notebook = from_percent_python(
+        '# %% [markdown] {"tags": ["intro"], "collapsed": true, "id": "title"}\n# Hello\n'
+    )
+    cell = notebook["cells"][0]
+    assert cell["cell_type"] == "markdown"
+    assert cell["id"] == "title"
+    assert cell["metadata"]["tags"] == ["intro"]
+    assert cell["metadata"]["collapsed"] is True
+    assert "id" not in cell["metadata"]
+    listed = from_percent_python("# %% [markdown] [1, 2]\n# Hello\n")
+    assert listed["cells"][0]["cell_type"] == "code"
+    assert "# %% [markdown] [1, 2]" in cell_source(listed["cells"][0])
+    not_dict = from_percent_python("# %% {1, 2}\nprint(1)\n")
+    assert not_dict["cells"][0]["metadata"] == {}
+    unclosed = from_percent_python('# %% {"tags": ["intro"]\nprint(1)\n')
+    assert unclosed["cells"][0]["metadata"] == {}
+
+
+def test_from_percent_python_parses_title_then_key_value_metadata() -> None:
+    notebook = from_percent_python("# %% Plot collapsed=true\nprint(1)\n")
+    assert notebook["cells"][0]["cell_type"] == "code"
+    assert notebook["cells"][0]["metadata"]["title"] == "Plot"
+    assert notebook["cells"][0]["metadata"]["collapsed"] is True
+    attached = from_percent_python("# %% Plot[markdown]\n# Hello\n")
+    assert attached["cells"][0]["cell_type"] == "markdown"
+    assert attached["cells"][0]["metadata"]["title"] == "Plot"
+
+
+def test_from_percent_python_ignores_trailing_non_metadata_tokens() -> None:
+    notebook = from_percent_python("# %% collapsed=true oops\nprint(1)\n")
+    assert notebook["cells"][0]["metadata"] == {"collapsed": True}
+    leftover = from_percent_python("# %% collapsed=true $foo\nprint(1)\n")
+    assert leftover["cells"][0]["metadata"] == {"collapsed": True}
+    unclosed = from_percent_python("# %% slideshow={\nprint(1)\n")
+    assert unclosed["cells"][0]["metadata"] == {}
+    unsafe_title = from_percent_python("# %% foo [has space]\nprint(1)\n")
+    assert "# %% foo [has space]" in cell_source(unsafe_title["cells"][0])
+
+
+def test_from_percent_python_parses_title_key_value() -> None:
+    notebook = from_percent_python('# %% title="Intro" collapsed=false\nprint(1)\n')
+    assert notebook["cells"][0]["cell_type"] == "code"
+    assert notebook["cells"][0]["metadata"]["title"] == "Intro"
+    assert notebook["cells"][0]["metadata"]["collapsed"] is False
+
+
+def test_percent_roundtrip_preserves_generic_cell_metadata() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "id": "t",
+                "metadata": {
+                    "title": "Intro",
+                    "tags": ["intro"],
+                    "collapsed": True,
+                    "slideshow": {"slide_type": "slide"},
+                },
+                "source": "# Hello\n",
+            },
+            {
+                "cell_type": "code",
+                "metadata": {"title": "a=b", "name": "plot"},
+                "source": "print(1)\n",
+            },
+        ]
+    }
+    text = to_percent_python(notebook)
+    assert "# %% Intro [markdown]" in text
+    assert "collapsed=true" in text
+    assert "slideshow=" in text
+    assert 'title="a=b"' in text
+    assert 'name="plot"' in text
+    restored = from_percent_python(text)
+    right = restored["cells"][0]["metadata"]
+    assert right["title"] == "Intro"
+    assert right["tags"] == ["intro"]
+    assert right["collapsed"] is True
+    assert right["slideshow"] == {"slide_type": "slide"}
+    assert restored["cells"][0]["id"] == "t"
+    assert restored["cells"][1]["metadata"]["title"] == "a=b"
+    assert restored["cells"][1]["metadata"]["name"] == "plot"
+    assert "id" not in restored["cells"][1]
+
+
+def test_percent_header_skips_unserializable_and_invalid_metadata_keys() -> None:
+    header = _percent_cell_header(
+        {
+            "cell_type": "code",
+            "metadata": {"ok": 1, "bad": {1, 2}, "not a key": True},
+            "source": "x",
+        }
+    )
+    assert "ok=1" in header
+    assert "bad=" not in header
+    assert "not a key" not in header
+
+
+def test_from_percent_python_ignores_non_header_percent_lookalikes() -> None:
+    glued = from_percent_python("# %%foo\nprint(1)\n")
+    assert glued["cells"][0]["cell_type"] == "code"
+    assert "# %%foo" in cell_source(glued["cells"][0])
+    junk = from_percent_python("# %% [markdown] Hello\nprint(1)\n")
+    source = cell_source(junk["cells"][0])
+    assert "# %% [markdown] Hello" in source
+    assert "print(1)" in source
+    assert junk["cells"][0]["cell_type"] == "code"
+
+
+def test_from_percent_python_parses_spaces_around_metadata_equals() -> None:
+    notebook = from_percent_python("# %% collapsed = true\nprint(1)\n")
+    assert notebook["cells"][0]["metadata"]["collapsed"] is True
+    empty_value = from_percent_python("# %% key=\nprint(1)\n")
+    assert empty_value["cells"][0]["metadata"] == {}
+    odd_value = from_percent_python("# %% key=$\nprint(1)\n")
+    assert odd_value["cells"][0]["metadata"] == {}
+
+
+def test_percent_header_skips_circular_metadata_values() -> None:
+    cyclic: dict[str, Any] = {}
+    cyclic["self"] = cyclic
+    header = _percent_cell_header(
+        {"cell_type": "code", "metadata": {"loop": cyclic, "ok": False}, "source": "x"}
+    )
+    assert "ok=false" in header
+    assert "loop=" not in header
+    assert _percent_meta_item("ok", True) == "ok=true"
+    assert _consume_quoted_string("", 0) is None
+    assert _consume_quoted_string("x", 0) is None

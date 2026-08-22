@@ -74,13 +74,12 @@ def convert_notebook(notebook: Mapping[str, Any], fmt: str) -> ConvertResult:
     raise ValueError(f"Unsupported conversion format: {fmt}")
 
 
-_PERCENT_HEADER = re.compile(
-    r"^# %%(?:\s+(?P<title>(?:(?!\s*\[)(?!\s*\w+=).)+))?"
-    r"(?:\s*\[(?P<kind>[\w-]+)\])?(?P<meta>\s+\w+=.*)?\s*$"
-)
-_PERCENT_TAGS = re.compile(r"\btags\s*=\s*")
-_PERCENT_ID = re.compile(r"\bid\s*=\s*")
+_PERCENT_KIND = re.compile(r"\[(?P<kind>[\w-]+)\]")
+_META_KEY = re.compile(r"[A-Za-z0-9_\.@/-]+")
+_VALID_META_KEY = re.compile(r"^[A-Za-z0-9_\.@/-]+$")
+_UNQUOTED_VALUE = re.compile(r"[A-Za-z0-9_.+-]+")
 _UNQUOTED_ID = re.compile(r"[A-Za-z0-9_-]+")
+_JSONISH_ERROR = object()
 _JUPYTEXT_FENCE = "# ---"
 
 
@@ -89,6 +88,8 @@ def from_percent_python(text: str) -> dict[str, Any]:
 
     Cell ids present in ``# %%`` headers are restored. Omitted ids stay omitted;
     use :func:`nbops.transform.ensure_cell_ids` / ``nbops ids`` to assign them.
+    Jupytext optional titles, ``key=value`` cell metadata, and JSON metadata
+    objects are restored onto the cell.
     """
     notebook = new_notebook()
     kernelspec = _kernelspec_from_jupytext_front_matter(text)
@@ -137,15 +138,16 @@ def from_percent_python(text: str) -> dict[str, Any]:
         current_lines = []
 
     for line in _strip_jupytext_front_matter(text).splitlines():
-        match = _PERCENT_HEADER.match(line)
-        if match is not None:
+        parsed = _parse_percent_header(line)
+        if parsed is not None:
             if started or current_lines:
                 flush()
             started = True
-            current_kind = _percent_kind(match.group("kind"))
-            current_meta = _percent_cell_metadata(match.group("meta"))
-            current_id = _percent_cell_id(match.group("meta"))
-            current_title = _percent_title_text(match.group("title"))
+            title, kind, meta = parsed
+            current_kind = _percent_kind(kind)
+            current_meta = _percent_cell_metadata(meta)
+            current_id = _percent_cell_id(meta)
+            current_title = _percent_title_text(title)
             continue
         current_lines.append(line)
     if started or any(line.strip() for line in current_lines):
@@ -166,6 +168,17 @@ def _percent_cell_header(cell: Mapping[str, Any]) -> str:
     tags = cell_tags(cell)
     if tags:
         parts.append(f"tags={json.dumps(tags)}")
+    metadata = cell.get("metadata")
+    if isinstance(metadata, dict):
+        skipped = {"id", "tags"}
+        if title is not None:
+            skipped.add("title")
+        for key in sorted(metadata):
+            if key in skipped:
+                continue
+            encoded = _percent_meta_item(key, metadata[key])
+            if encoded is not None:
+                parts.append(encoded)
     suffix = f" {' '.join(parts)}" if parts else ""
     return f"# %%{title_part}{kind}{suffix}"
 
@@ -196,37 +209,228 @@ def _percent_kind(kind: str | None) -> str:
     return "code"
 
 
-def _percent_cell_metadata(meta: str | None) -> dict[str, Any]:
+def _percent_meta_item(key: str, value: Any) -> str | None:
+    if not _VALID_META_KEY.match(key):
+        return None
+    try:
+        return f"{key}={json.dumps(value)}"
+    except (TypeError, ValueError):
+        return None
+
+
+def _parse_percent_header(line: str) -> tuple[str | None, str | None, str | None] | None:
+    """Split a ``# %%`` line into optional title, cell kind, and metadata text."""
+    if not line.startswith("# %%"):
+        return None
+    rest = line[4:]
+    if rest and rest[0] not in " \t" and not rest.startswith("["):
+        return None
+    text = rest.rstrip()
+    index = 0
+    length = len(text)
+    while index < length and text[index] in " \t":
+        index += 1
+    if index >= length:
+        return None, None, None
+
+    title: str | None = None
+    kind, kind_end = _try_percent_kind(text, index)
+    if kind is not None:
+        index = kind_end
+    elif _at_percent_metadata(text, index):
+        title = None
+    else:
+        title_start = index
+        title_end = length
+        found_tail = False
+        scan = index
+        while scan < length:
+            kind_token, kind_end = _try_percent_kind(text, scan)
+            if kind_token is not None:
+                title_end = scan
+                kind = kind_token
+                index = kind_end
+                found_tail = True
+                break
+            if text[scan] in " \t":
+                skip = scan
+                while skip < length and text[skip] in " \t":
+                    skip += 1
+                if _at_percent_metadata(text, skip):
+                    title_end = scan
+                    index = skip
+                    found_tail = True
+                    break
+                scan = skip
+                continue
+            scan += 1
+        if not found_tail:
+            stripped_title = text[title_start:].strip() or None
+            if stripped_title and _percent_title_text(stripped_title) is None:
+                return None
+            return stripped_title, None, None
+        title = text[title_start:title_end].strip() or None
+
+    while index < length and text[index] in " \t":
+        index += 1
+    meta = text[index:] if index < length else None
+    if not meta:
+        return title, kind, None
+    if meta.startswith("{") or _at_percent_metadata(meta, 0):
+        return title, kind, meta
+    return None
+
+
+def _try_percent_kind(text: str, index: int) -> tuple[str | None, int]:
+    match = _PERCENT_KIND.match(text, index)
+    if match is None:
+        return None, index
+    return match.group("kind"), match.end()
+
+
+def _at_percent_metadata(text: str, index: int) -> bool:
+    if index >= len(text):
+        return False
+    if text[index] == "{":
+        return True
+    match = _META_KEY.match(text, index)
+    if match is None:
+        return False
+    position = match.end()
+    while position < len(text) and text[position] in " \t":
+        position += 1
+    return position < len(text) and text[position] == "="
+
+
+def _percent_header_pairs(meta: str | None) -> dict[str, Any]:
     if not meta or not meta.strip():
         return {}
-    match = _PERCENT_TAGS.search(meta)
-    if match is None:
-        return {}
-    raw = _leading_list_literal(meta[match.end() :])
-    if raw is None:
-        return {}
-    try:
-        tags = json.loads(raw)
-    except json.JSONDecodeError:
-        try:
-            tags = ast.literal_eval(raw)
-        except (SyntaxError, ValueError):
+    stripped = meta.strip()
+    if stripped.startswith("{"):
+        raw = _leading_object_literal(stripped)
+        if raw is None:
             return {}
-    if not isinstance(tags, list):
-        return {}
-    return {"tags": [str(tag) for tag in tags]}
+        decoded = _decode_jsonish(raw)
+        return dict(decoded) if isinstance(decoded, dict) else {}
+    return _parse_key_equal_values(stripped)
+
+
+def _percent_cell_metadata(meta: str | None) -> dict[str, Any]:
+    pairs = dict(_percent_header_pairs(meta))
+    pairs.pop("id", None)
+    if "tags" in pairs:
+        tags = pairs["tags"]
+        if not isinstance(tags, list):
+            del pairs["tags"]
+        else:
+            pairs["tags"] = [str(tag) for tag in tags]
+    return pairs
 
 
 def _percent_cell_id(meta: str | None) -> str | None:
-    if not meta or not meta.strip():
+    value = _percent_header_pairs(meta).get("id")
+    if isinstance(value, str) and value:
+        return value
+    if isinstance(value, int) and not isinstance(value, bool):
+        return str(value)
+    return None
+
+
+def _parse_key_equal_values(text: str) -> dict[str, Any]:
+    index = 0
+    length = len(text)
+    pairs: dict[str, Any] = {}
+    while index < length:
+        while index < length and text[index] in " \t":
+            index += 1
+        if index >= length:
+            break
+        key_match = _META_KEY.match(text, index)
+        if key_match is None:
+            break
+        position = key_match.end()
+        while position < length and text[position] in " \t":
+            position += 1
+        if position >= length or text[position] != "=":
+            break
+        index = position + 1
+        while index < length and text[index] in " \t":
+            index += 1
+        consumed = _consume_meta_value(text, index)
+        if consumed is None:
+            break
+        pairs[key_match.group(0)] = consumed[0]
+        index = consumed[1]
+    return pairs
+
+
+def _consume_meta_value(text: str, index: int) -> tuple[Any, int] | None:
+    if index >= len(text):
         return None
-    match = _PERCENT_ID.search(meta)
+    char = text[index]
+    if char == "{":
+        raw = _leading_object_literal(text[index:])
+        if raw is None:
+            return None
+        decoded = _decode_jsonish(raw)
+        if decoded is _JSONISH_ERROR:
+            return None
+        return decoded, index + len(raw)
+    if char == "[":
+        raw = _leading_list_literal(text[index:])
+        if raw is None:
+            return None
+        decoded = _decode_jsonish(raw)
+        if decoded is _JSONISH_ERROR:
+            return None
+        return decoded, index + len(raw)
+    if char in {'"', "'"}:
+        quoted = _consume_quoted_string(text, index)
+        if quoted is None:
+            return None
+        return quoted
+    match = _UNQUOTED_VALUE.match(text, index)
     if match is None:
         return None
-    value = _leading_scalar_literal(meta[match.end() :])
-    if not isinstance(value, str) or not value:
+    token = match.group(0)
+    decoded = _decode_jsonish(token)
+    if decoded is _JSONISH_ERROR:
+        return token, match.end()
+    return decoded, match.end()
+
+
+def _decode_jsonish(raw: str) -> Any:
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        try:
+            return ast.literal_eval(raw)
+        except (SyntaxError, ValueError):
+            return _JSONISH_ERROR
+
+
+def _consume_quoted_string(text: str, index: int) -> tuple[str, int] | None:
+    if index >= len(text) or text[index] not in {'"', "'"}:
         return None
-    return value
+    quote = text[index]
+    escape = False
+    for offset, char in enumerate(text[index + 1 :], start=index + 1):
+        if escape:
+            escape = False
+            continue
+        if char == "\\":
+            escape = True
+            continue
+        if char == quote:
+            raw = text[index : offset + 1]
+            try:
+                value = json.loads(raw) if quote == '"' else ast.literal_eval(raw)
+            except (json.JSONDecodeError, SyntaxError, ValueError):
+                return None
+            if not isinstance(value, str):
+                return None
+            return value, offset + 1
+    return None
 
 
 def _leading_scalar_literal(text: str) -> str | None:
@@ -234,30 +438,15 @@ def _leading_scalar_literal(text: str) -> str | None:
     if not stripped:
         return None
     if stripped[0] in {'"', "'"}:
-        quote = stripped[0]
-        escape = False
-        for index, char in enumerate(stripped[1:], start=1):
-            if escape:
-                escape = False
-                continue
-            if char == "\\":
-                escape = True
-                continue
-            if char == quote:
-                raw = stripped[: index + 1]
-                try:
-                    value = json.loads(raw) if quote == '"' else ast.literal_eval(raw)
-                except (json.JSONDecodeError, SyntaxError, ValueError):
-                    return None
-                return value if isinstance(value, str) else None
-        return None
+        quoted = _consume_quoted_string(stripped, 0)
+        return quoted[0] if quoted is not None else None
     match = _UNQUOTED_ID.match(stripped)
     return match.group(0) if match else None
 
 
-def _leading_list_literal(text: str) -> str | None:
+def _leading_bracket_literal(text: str, opener: str, closer: str) -> str | None:
     stripped = text.lstrip()
-    if not stripped.startswith("["):
+    if not stripped.startswith(opener):
         return None
     quote: str | None = None
     escape = False
@@ -276,14 +465,22 @@ def _leading_list_literal(text: str) -> str | None:
         if char in {'"', "'"}:
             quote = char
             continue
-        if char == "[":
+        if char == opener:
             depth += 1
             continue
-        if char == "]":
+        if char == closer:
             depth -= 1
             if depth == 0:
                 return stripped[: index + 1]
     return None
+
+
+def _leading_list_literal(text: str) -> str | None:
+    return _leading_bracket_literal(text, "[", "]")
+
+
+def _leading_object_literal(text: str) -> str | None:
+    return _leading_bracket_literal(text, "{", "}")
 
 
 def _jupytext_front_matter_span(lines: list[str]) -> tuple[int, int] | None:

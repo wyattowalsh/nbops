@@ -33,3 +33,4 @@
 - [x] 1.31 Concat uniquifies duplicate present ids without filling omitted ids; batch lint uses `NBOPS_MAX_OUTPUT_CHARS`
 - [x] 1.32 Percent convert round-trips present cell ids and leaves omitted ids omitted on `from-py`
 - [x] 1.33 Percent convert parses Jupytext optional cell titles so `[markdown]`/`[raw]` after a title keep the right cell type
+- [x] 1.34 Percent convert emits/parses generic Jupytext cell metadata (`key=value` and JSON objects) without filling omitted ids

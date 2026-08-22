@@ -123,6 +123,25 @@ def test_inspect_headings_imports_from_py(sample_notebook: dict[str, Any]) -> No
     assert [cell["cell_type"] for cell in cells] == ["markdown", "code"]
     assert all("id" not in cell for cell in cells)
 
+    json_meta = client.post(
+        "/notebooks/from-py",
+        json={
+            "text": (
+                '# %% [markdown] {"tags": ["intro"], "collapsed": true}\n'
+                "# Hello\n\n"
+                "# %% collapsed=false\n"
+                "print(1)\n"
+            )
+        },
+    )
+    assert json_meta.status_code == 200
+    json_cells = json_meta.json()["notebook"]["cells"]
+    assert json_cells[0]["cell_type"] == "markdown"
+    assert json_cells[0]["metadata"]["tags"] == ["intro"]
+    assert json_cells[0]["metadata"]["collapsed"] is True
+    assert json_cells[1]["metadata"]["collapsed"] is False
+    assert all("id" not in cell for cell in json_cells)
+
 
 def test_inspect_lint_clean_convert(sample_notebook: dict[str, Any]) -> None:
     inspect = client.post("/notebooks/inspect", json={"notebook": sample_notebook})
