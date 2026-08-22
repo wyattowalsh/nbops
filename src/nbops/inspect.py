@@ -12,6 +12,7 @@ from nbops.cells import (
     cell_source,
     cell_tags,
     cells_of,
+    declared_code_language,
     is_empty_cell,
     is_python_notebook,
     nested_mapping,
@@ -74,7 +75,6 @@ def compute_stats(notebook: Mapping[str, Any] | Any) -> NotebookStats:
 
     metadata = as_mapping(notebook.get("metadata"))
     kernelspec = nested_mapping(metadata, "kernelspec")
-    language_info = nested_mapping(metadata, "language_info")
     widgets = metadata.get("widgets")
     has_widgets = isinstance(widgets, dict) and bool(widgets)
 
@@ -95,7 +95,7 @@ def compute_stats(notebook: Mapping[str, Any] | Any) -> NotebookStats:
         display_outputs=display_outputs,
         kernel=kernelspec.get("display_name"),
         kernel_name=kernelspec.get("name"),
-        language=language_info.get("name") or kernelspec.get("language"),
+        language=declared_code_language(notebook),
         nbformat_major=major if isinstance(major, int) else None,
         nbformat_minor=minor if isinstance(minor, int) else None,
         has_widgets=has_widgets,

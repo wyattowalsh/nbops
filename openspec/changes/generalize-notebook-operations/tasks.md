@@ -40,3 +40,4 @@
 - [x] 1.38 `to_script` / `convert --to script` strips IPython magics and omits non-Python cell magics
 - [x] 1.39 Infer `ir` / `julia*` / `rust` from kernelspec name when language is omitted; Markdown fences use that language
 - [x] 1.40 Percent convert round-trips inferred kernelspec language and `language_info.name` without a kernelspec name
+- [x] 1.41 `compute_stats.language` uses the same declared/inferred language as lint/convert

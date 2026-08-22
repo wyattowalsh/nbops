@@ -210,6 +210,8 @@ SHALL fence code cells with the declared or inferred language id.
 - **THEN** lint does not report `NB007` for R source and `extract_imports` returns no records
 - **WHEN** a notebook has kernelspec name `ir` and omits language fields
 - **THEN** lint does not report `NB007` for R source
+- **WHEN** `compute_stats` runs on that notebook
+- **THEN** `language` is `r` even if `language_info.name` is a leftover `python`
 
 #### Scenario: Script conversion strips IPython magics
 

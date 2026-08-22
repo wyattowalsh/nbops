@@ -71,3 +71,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Percent convert infers missing kernelspec language from well-known names (`ir` → `r`),
   round-trips `language_info.name` when there is no kernelspec name, and does not let a
   default Python `language_info` hide a non-Python kernelspec name
+- `compute_stats` / `nbops stats` report that same inferred language (so `ir` is `r`,
+  not a leftover `python`)

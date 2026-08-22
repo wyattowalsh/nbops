@@ -52,6 +52,26 @@ def test_compute_stats_empty_notebook() -> None:
     assert result.total_cells == 0
     assert result.code_lines == 0
     assert result.kernel is None
+    assert result.language is None
+
+
+def test_compute_stats_infers_language_from_kernelspec_name() -> None:
+    result = compute_stats({"cells": [], "metadata": {"kernelspec": {"name": "ir"}}})
+    assert result.kernel_name == "ir"
+    assert result.language == "r"
+
+
+def test_compute_stats_does_not_let_python_language_info_hide_ir() -> None:
+    result = compute_stats(
+        {
+            "cells": [],
+            "metadata": {
+                "kernelspec": {"name": "ir"},
+                "language_info": {"name": "python"},
+            },
+        }
+    )
+    assert result.language == "r"
 
 
 @pytest.mark.parametrize("bad", [None, {}, {"cells": "nope"}, [], 42])
@@ -132,6 +152,14 @@ def test_extract_imports_skips_non_python_notebooks() -> None:
                 "source": "import should_ignore\n",
             }
         ],
+    }
+    assert extract_imports(notebook) == []
+
+
+def test_extract_imports_skips_ir_kernelspec_name_without_language() -> None:
+    notebook = {
+        "metadata": {"kernelspec": {"name": "ir"}},
+        "cells": [{"cell_type": "code", "metadata": {}, "source": "import should_ignore\n"}],
     }
     assert extract_imports(notebook) == []
 
