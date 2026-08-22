@@ -66,3 +66,38 @@ def test_lint_empty_notebook() -> None:
     report = lint_notebook({"cells": []})
     assert any(issue.code == "NB001" for issue in report.issues)
     assert report.passed is False
+
+
+def test_lint_output_size_and_non_mapping_outputs() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "id": "title",
+                "metadata": {},
+                "source": "# Title\n",
+            },
+            {
+                "cell_type": "code",
+                "id": "sized",
+                "execution_count": 1,
+                "metadata": {},
+                "source": "print(1)\n",
+                "outputs": [
+                    "skip",
+                    {"output_type": "stream", "name": "stdout", "text": "x" * 20},
+                    {"output_type": "error"},
+                    {"output_type": "display_data", "metadata": {}},
+                ],
+            },
+        ],
+        "metadata": {"kernelspec": {"name": "python3"}},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    report = lint_notebook(notebook, max_output_chars=10)
+    codes = {issue.code for issue in report.issues}
+    assert "NB006" in codes
+    assert "NB004" in codes
+    nameless = [issue for issue in report.issues if issue.code == "NB004"]
+    assert nameless[0].message.endswith("(error).")

@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
 
 from nbops.api import app
+from nbops.io import load_notebook
 
 client = TestClient(app)
 
@@ -32,6 +34,22 @@ def test_notebook_stats_endpoint(sample_notebook: dict[str, Any]) -> None:
 def test_notebook_stats_rejects_invalid() -> None:
     response = client.post("/notebooks/stats", json={"notebook": {"cells": "nope"}})
     assert response.status_code == 422
+
+
+def test_demo_notebook_stats_http_contract() -> None:
+    demo = load_notebook(
+        Path(__file__).resolve().parents[1] / "examples" / "demo.ipynb",
+        validate=True,
+    )
+    response = client.post("/notebooks/stats", json={"notebook": demo})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total_cells"] == 4
+    assert body["code_cells"] == 2
+    assert body["code_lines"] == 4
+    assert body["kernel"] == "Python 3"
+    assert body["language"] == "python"
+    assert body["tags"] == ["demo"]
 
 
 def test_inspect_headings_imports_from_py(sample_notebook: dict[str, Any]) -> None:

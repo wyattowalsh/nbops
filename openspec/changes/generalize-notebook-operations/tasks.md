@@ -20,3 +20,4 @@
 - [x] 1.18 Tag add/remove on CLI and HTTP (`remove_tags`)
 - [x] 1.19 `nbops new` Python 3 display name; Jupytext YAML kernelspec; output-linked clean keys
 - [x] 1.20 Demo notebook contract tests; `just quality-gates` / `just smoke`
+- [x] 1.21 HTTP demo stats contract; lint output-size / non-mapping output edges
