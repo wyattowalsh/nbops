@@ -46,3 +46,22 @@ def test_clean_skips_non_mapping_notebook_metadata() -> None:
     notebook = {"cells": [], "metadata": ["nope"]}
     cleaned = clean_notebook(notebook)
     assert cleaned["metadata"] == ["nope"]
+
+
+def test_clean_skips_non_mapping_cell_metadata() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "id": "x",
+                "metadata": None,
+                "source": "x = 1\n",
+                "outputs": [{"output_type": "stream", "name": "stdout", "text": "1\n"}],
+            }
+        ],
+        "metadata": {},
+    }
+    cleaned = clean_notebook(notebook, CleanOptions(cell_ids=True))
+    assert cleaned["cells"][0]["outputs"] == []
+    assert "id" not in cleaned["cells"][0]
+    assert cleaned["cells"][0]["metadata"] is None

@@ -1,7 +1,8 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e` at `b884224`.
-Local and GitHub gates are **128 passed**, coverage **98.64%**.
+Recorded on branch `cursor/nbops-generalization-673e`.
+Local gates at the current tree: **144 passed**, coverage **98.87%**.
+GitHub Actions for the pre-coverage-follow-up SHA is recorded below when available.
 
 ## Tooling
 
@@ -11,7 +12,7 @@ Local and GitHub gates are **128 passed**, coverage **98.64%**.
 | `uv run ruff check src tests` | All checks passed |
 | `uv run ruff format --check src tests` | files already formatted |
 | `uv run ty check` | All checks passed |
-| `uv run pytest` | **128 passed**, coverage **98.64%** (fail-under 90) |
+| `uv run pytest` | **144 passed**, coverage **98.87%** (fail-under 90); `src/nbops/convert.py` and `src/nbops/clean.py` at **100%** |
 
 ## Runtime smoke
 
@@ -25,7 +26,7 @@ Local and GitHub gates are **128 passed**, coverage **98.64%**.
 | `uv run nbops stats examples/demo.ipynb --json` | `total_cells` 4, `code_cells` 2, `code_lines` 4, `kernel` Python 3, `language` python |
 | `uv run nbops lint examples/demo.ipynb` | 2 info `NB005` findings, 0 errors |
 | `uv run nbops validate examples/demo.ipynb` | `ok` |
-| `uv run nbops outputs examples/demo.ipynb --json` | `[]` (demo code cells have no outputs) |
+| `uv run nbops convert examples/demo.ipynb --to py` | percent script includes `tags=["demo"]` |
 | `uv run nbops batch validate examples` | succeeds in CI Compatibility smoke |
 
 Compatibility invariants (`compute_stats`, `nbops stats`, `POST /notebooks/stats`) hold.

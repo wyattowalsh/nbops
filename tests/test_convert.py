@@ -8,6 +8,8 @@ import pytest
 
 from nbops.cells import cell_source
 from nbops.convert import (
+    _leading_list_literal,
+    _percent_cell_metadata,
     convert_notebook,
     from_percent_python,
     to_markdown,
@@ -130,6 +132,26 @@ def test_from_percent_python_stringifies_non_string_tags() -> None:
     assert notebook["cells"][0]["metadata"]["tags"] == ["1", "2"]
 
 
+def test_from_percent_python_ignores_identifier_tags() -> None:
+    notebook = from_percent_python("# %% tags=[foo]\nprint(1)\n")
+    assert notebook["cells"][0]["metadata"] == {}
+
+
+def test_from_percent_python_parses_escaped_quotes_in_tags() -> None:
+    notebook = from_percent_python('# %% tags=["say \\"hi\\""]\nprint(1)\n')
+    assert notebook["cells"][0]["metadata"]["tags"] == ['say "hi"']
+
+
+def test_from_percent_python_whitespace_only_header_meta() -> None:
+    notebook = from_percent_python("# %%   \nprint(1)\n")
+    assert notebook["cells"][0]["cell_type"] == "code"
+    assert "print(1)" in cell_source(notebook["cells"][0])
+
+
+def test_to_script_skips_empty_code_cells() -> None:
+    assert to_script({"cells": [{"cell_type": "code", "source": "  \n"}]}) == ""
+
+
 def test_from_percent_python_treats_md_as_markdown() -> None:
     notebook = from_percent_python("# %% [md]\n# Hello\n")
     assert notebook["cells"][0]["cell_type"] == "markdown"
@@ -184,3 +206,17 @@ def test_convert_skips_non_mapping_cells() -> None:
     assert to_script(notebook).strip() == "x = 1"
     markdown = to_markdown(notebook)
     assert "```python" in markdown
+
+
+def test_percent_metadata_helpers_reject_empty_and_unbalanced_lists() -> None:
+    assert _percent_cell_metadata(None) == {}
+    assert _percent_cell_metadata("   ") == {}
+    assert _percent_cell_metadata(" key=1") == {}
+    assert _leading_list_literal("[[]") is None
+    notebook = from_percent_python("# %% tags=[[]\nprint(1)\n")
+    assert notebook["cells"][0]["metadata"] == {}
+
+
+def test_percent_metadata_rejects_non_list_decoded_tags(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("nbops.convert.json.loads", lambda _raw: {"hide": True})
+    assert _percent_cell_metadata(' tags=["x"]') == {}
