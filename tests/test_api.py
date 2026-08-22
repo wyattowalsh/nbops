@@ -14,6 +14,50 @@ from nbops.io import load_notebook
 client = TestClient(app)
 
 
+def test_lint_and_clean_preserve_missing_cell_ids() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "# Title\n",
+            }
+        ],
+        "metadata": {
+            "kernelspec": {
+                "display_name": "Python 3",
+                "language": "python",
+                "name": "python3",
+            }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    lint = client.post("/notebooks/lint", json={"notebook": notebook})
+    assert lint.status_code == 200
+    assert any(issue["code"] == "NB009" for issue in lint.json()["issues"])
+
+    cleaned = client.post(
+        "/notebooks/clean",
+        json={
+            "notebook": {
+                **notebook,
+                "cells": [
+                    {
+                        "cell_type": "markdown",
+                        "id": "keep-me",
+                        "metadata": {},
+                        "source": "# Title\n",
+                    }
+                ],
+            },
+            "options": {"cell_ids": True, "outputs": False, "execution_counts": False},
+        },
+    )
+    assert cleaned.status_code == 200
+    assert "id" not in cleaned.json()["notebook"]["cells"][0]
+
+
 def test_health() -> None:
     response = client.get("/health")
     assert response.status_code == 200

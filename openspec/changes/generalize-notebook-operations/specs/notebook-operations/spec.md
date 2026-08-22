@@ -110,8 +110,12 @@ Pre-v4 documents MAY be upgraded to v4.
 - **THEN** the cell still has no `id`
 - **WHEN** `nbops lint` is run on that file
 - **THEN** it reports `NB009`
+- **WHEN** `POST /notebooks/lint` is given that document
+- **THEN** the report includes `NB009`
 - **WHEN** `nbops clean --strip-ids` writes an output file
 - **THEN** the written cells have no `id`
+- **WHEN** `POST /notebooks/clean` is given `options.cell_ids=true`
+- **THEN** the returned cells have no `id`
 
 ### Requirement: Demo notebook contract
 

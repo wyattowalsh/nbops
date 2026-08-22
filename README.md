@@ -60,6 +60,7 @@ uv run nbops outputs examples/demo.ipynb
 uv run nbops lint examples/demo.ipynb
 uv run nbops validate examples/demo.ipynb
 uv run nbops clean examples/demo.ipynb -o /tmp/clean.ipynb
+uv run nbops clean examples/demo.ipynb --strip-ids -o /tmp/noid.ipynb
 uv run nbops clean examples/demo.ipynb --strip-metadata collapsed -o /tmp/clean.ipynb
 uv run nbops convert examples/demo.ipynb --to md
 uv run nbops convert examples/demo.ipynb --to py -o /tmp/demo.py
