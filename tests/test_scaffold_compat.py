@@ -16,9 +16,12 @@ from fastapi.testclient import TestClient
 from typer.testing import CliRunner
 
 from nbops import NotebookStats, __version__, compute_stats
+from nbops.api import HealthResponse, StatsRequest, health
 from nbops.api import app as api_app
 from nbops.cli import app as cli_app
 from nbops.core import load_notebook, stats_for_file
+from nbops.models import HealthResponse as ModelHealthResponse
+from nbops.models import NotebookPayload
 
 ROOT = Path(__file__).resolve().parents[1]
 runner = CliRunner()
@@ -67,6 +70,7 @@ def test_original_scaffold_cli_table_prints_seven_rows(
 ) -> None:
     result = runner.invoke(cli_app, ["stats", str(original_scaffold_notebook_file)])
     assert result.exit_code == 0
+    assert f"Notebook: {original_scaffold_notebook_file}" in result.stdout
     assert "Total cells   : 4" in result.stdout
     assert "Code cells    : 2" in result.stdout
     assert "Markdown cells: 1" in result.stdout
@@ -111,3 +115,21 @@ def test_original_scaffold_http_health_and_stats(
     assert stats["code_lines"] == 4
     assert stats["kernel"] == "Python 3"
     assert stats["language"] == "python"
+
+
+def test_original_scaffold_health_response_defaults() -> None:
+    payload = HealthResponse()
+    assert payload.status == "ok"
+    assert payload.version == __version__
+    assert health() == payload
+    assert ModelHealthResponse is HealthResponse
+
+
+def test_original_scaffold_stats_request_openapi_name() -> None:
+    assert issubclass(StatsRequest, NotebookPayload)
+    schema = api_app.openapi()
+    assert "StatsRequest" in schema["components"]["schemas"]
+    health_schema = schema["components"]["schemas"]["HealthResponse"]
+    required = set(health_schema.get("required") or [])
+    assert "status" not in required
+    assert "version" not in required

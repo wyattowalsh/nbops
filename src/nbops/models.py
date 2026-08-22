@@ -2,9 +2,16 @@
 
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as package_version
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
+
+try:
+    _NBOPS_VERSION = package_version("nbops")
+except PackageNotFoundError:  # pragma: no cover - only during local, uninstalled use
+    _NBOPS_VERSION = "0.0.0.dev0"
 
 
 class NotebookStats(BaseModel):
@@ -137,8 +144,10 @@ class BatchItem[T](BaseModel):
 
 
 class HealthResponse(BaseModel):
+    """Liveness payload matching the original stats-scaffold defaults."""
+
     status: str = "ok"
-    version: str
+    version: str = _NBOPS_VERSION
 
 
 class NotebookPayload(BaseModel):

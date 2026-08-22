@@ -18,7 +18,12 @@ batch, and optional execute.
   curl examples for `GET /health` and `POST /notebooks/stats`
 - **WHEN** `nbops stats` prints a table for the original stats-scaffold fixture
 - **THEN** the original seven rows are present (total/code/markdown/raw cells, code
-  lines, kernel, language)
+  lines, kernel, language) and the output includes the `Notebook:` path prefix
+- **WHEN** a caller constructs `HealthResponse()` with no arguments, or `GET /health`
+  returns its body
+- **THEN** `status` is `ok` and `version` is the installed package version
+- **WHEN** a client reads the OpenAPI schema for `POST /notebooks/stats`
+- **THEN** the request body model is named `StatsRequest`
 
 ### Requirement: Lint catalog
 

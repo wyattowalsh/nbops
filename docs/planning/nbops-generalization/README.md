@@ -32,7 +32,7 @@ the exhaustive program derived from:
 | G10 | Optional execute extra | `src/nbops/execute.py` + `[execute]` extra |
 | G11 | Typer CLI covering every catalog operation | `src/nbops/cli.py`, `nbops ops` |
 | G12 | FastAPI surface covering the operations | `src/nbops/api.py`, `GET /operations` |
-| G13 | Compatibility with the stats scaffold | `src/nbops/core.py`, `stats`, `/notebooks/stats`; original seven-row CLI table; README `uvicorn nbops.api:app` |
+| G13 | Compatibility with the stats scaffold | `src/nbops/core.py`, `stats`, `/notebooks/stats`; original seven-row CLI table; README `uvicorn nbops.api:app`; `HealthResponse()` defaults; OpenAPI `StatsRequest` |
 | G14 | Tests mirroring src, coverage gate | `tests/`, `--cov-fail-under=90` |
 | G15 | Ruff + ty + pytest CI on 3.12/3.13 | `.github/workflows/ci.yml` |
 | G16 | Agent/contributor docs | `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `CODE_OF_CONDUCT.md` |
@@ -40,7 +40,7 @@ the exhaustive program derived from:
 | G18 | Shared operations catalog | `src/nbops/operations.py` |
 | G19 | Environment-backed settings (`NBOPS_`) | `src/nbops/settings.py`; `.env.example` |
 | G20 | SECURITY.md | `SECURITY.md` |
-| G21 | Dependabot for pip and GitHub Actions | `.github/dependabot.yml` |
+| G21 | Dependabot for pip and GitHub Actions | `.github/dependabot.yml`; label names catalogued in `.github/labels.yml` |
 | G22 | Pre-commit hooks + ruff | `.pre-commit-config.yaml` |
 | G23 | Coverage gate 90% + actionlint CI | `pyproject.toml`, `.github/workflows/ci.yml` |
 

@@ -35,3 +35,8 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   `GET /health` and `POST /notebooks/stats`
 - `nbops stats` reports invalid JSON through the same fail-closed CLI error path as
   inspect/validate (no unhandled traceback)
+- Original `GET /health` still constructs `HealthResponse()` with `status="ok"` and
+  the installed package version as the default
+- `POST /notebooks/stats` keeps the original OpenAPI request name `StatsRequest`
+- GitHub labels referenced by Dependabot and `.github/release.yml` are catalogued in
+  `.github/labels.yml`

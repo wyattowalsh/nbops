@@ -25,3 +25,4 @@
 - [x] 1.23 Preserve omitted v4 cell ids through load/save (`NB009`, `clean --strip-ids`)
 - [x] 1.24 `load_notebook` defaults to schema-lenient parse like the original scaffold
 - [x] 1.25 Original stats-scaffold docs/tests: uvicorn `nbops.api:app`, curl health/stats, seven-row CLI table, incomplete kernelspec fixture
+- [x] 1.26 Original `HealthResponse()` defaults, `StatsRequest` OpenAPI name, GitHub label catalog for Dependabot/release names

@@ -59,6 +59,10 @@ app = FastAPI(
 )
 
 
+class StatsRequest(NotebookPayload):
+    """Request body carrying a raw notebook document."""
+
+
 class InspectResponse(BaseModel):
     stats: NotebookStats
     outline: list[Heading]
@@ -130,7 +134,7 @@ class FromPyRequest(BaseModel):
 @app.get("/health", response_model=HealthResponse, tags=["system"])
 def health() -> HealthResponse:
     """Liveness/readiness probe."""
-    return HealthResponse(version=__version__)
+    return HealthResponse()
 
 
 @app.get("/operations", response_model=list[Operation], tags=["system"])
@@ -140,7 +144,7 @@ def list_operations() -> list[Operation]:
 
 
 @app.post("/notebooks/stats", response_model=NotebookStats, tags=["notebooks"])
-def notebook_stats(request: NotebookPayload) -> NotebookStats:
+def notebook_stats(request: StatsRequest) -> NotebookStats:
     """Compute statistics for a posted notebook document."""
     try:
         return compute_stats(request.notebook)

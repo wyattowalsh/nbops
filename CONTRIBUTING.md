@@ -18,3 +18,7 @@ Or `just check` / `just quality-gates` (includes demo compatibility smoke).
 6. Follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
 7. CI runs `pytest` on Python 3.12 and 3.13. Keep `.python-version` at 3.12 so local
    `uv` matches the default interpreter; do not drop the 3.13 matrix job.
+8. GitHub labels used by Dependabot (`.github/dependabot.yml`) and release notes
+   (`.github/release.yml`) are catalogued in `.github/labels.yml`. Apply matching
+   names in the GitHub UI; the YAML file is the catalog and does not sync labels
+   by itself.
