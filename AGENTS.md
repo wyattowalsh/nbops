@@ -42,6 +42,7 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   `POST /notebooks/outputs`).
 - Validate notebooks against the nbformat schema (`nbops validate` /
   `POST /notebooks/validate`).
+- Directory batch operations: `nbops batch {stats,lint,clean,validate}`.
 - The operations catalog (`nbops ops` / `GET /operations`) is the shared CLI/API inventory.
 
 ## Out of scope unless explicitly requested

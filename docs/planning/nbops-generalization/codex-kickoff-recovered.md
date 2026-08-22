@@ -24,7 +24,7 @@
 | TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py` |
 | TASK-007 | Convert to percent py / script / md, plus percent roundtrip | done | `src/nbops/convert.py` |
 | TASK-008 | Cell-level diff | done | `src/nbops/diff.py` |
-| TASK-009 | Directory batch + tqdm | done | `src/nbops/batch.py` |
+| TASK-009 | Directory batch + tqdm | done | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}` |
 | TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py` |
 | TASK-011 | Typer CLI for every catalog operation | done | `src/nbops/cli.py` |
 | TASK-012 | FastAPI surface + `GET /operations` | done | `src/nbops/api.py` |

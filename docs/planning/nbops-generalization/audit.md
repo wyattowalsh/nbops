@@ -26,13 +26,13 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G6 / TASK-006 | Lint NB000–NB011 | `ISSUE_CATALOG` length 12; tests cover NB000–NB011 | verified (recovered) |
 | G7 / TASK-007 | Convert py/script/md + percent roundtrip | `to_percent_python` / `from_percent_python`; public export | verified (recovered) |
 | G8 / TASK-008 | Cell-level diff | `src/nbops/diff.py`; `tests/test_diff.py` | verified (recovered) |
-| G9 / TASK-009 | Batch directory + tqdm | `src/nbops/batch.py`; `nbops batch {stats,lint,clean}` | verified (recovered) |
+| G9 / TASK-009 | Batch directory + tqdm | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}`; stats/clean fail-closed | verified (recovered) |
 | G10 / TASK-010 | Optional execute extra | `pyproject.toml` `[execute]`; extra mocked in default tests | verified (recovered) |
 | G11 / TASK-011 | Typer CLI for every catalog op | `test_catalog_cli_and_api_surfaces_exist` (20 ops) | verified (recovered) |
 | G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test | verified (recovered) |
 | G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI | verified (recovered) |
 | G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules including `test_models.py` and `test_exceptions.py`; 112 passed, 96.50% | verified (recovered) |
-| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790) on `e257f87`: actionlint, ruff, ty, pytest **3.12.14** and **3.13.15**, 107 passed | verified (recovered) |
+| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32587098439](https://github.com/wyattowalsh/nbops/actions/runs/32587098439) on `b22df3c`: **112 passed** on CPython **3.12.14** and **3.13.15** | verified (recovered) |
 | G16 / TASK-016 | AGENTS, CONTRIBUTING, README, CHANGELOG | plus `CODE_OF_CONDUCT.md`, issue/PR templates, CODEOWNERS | verified (recovered) |
 | G17 / TASK-017 | uv lockfile + justfile | `uv.lock`, `justfile` | verified (recovered) |
 | G18 / TASK-018 | Shared operations catalog | `src/nbops/operations.py`; **20** ops | verified (recovered) |
@@ -50,7 +50,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | `uv run ruff check src tests` | passed | passed (`lint` job) |
 | `uv run ruff format --check src tests` | passed | passed (`lint` job) |
 | `uv run ty check` | passed | passed (`typecheck` job) |
-| `uv run pytest` | 112 passed, 96.50% | 107 passed on 3.12.14 **and** 3.13.15 at `e257f87` ([32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790)); this revision adds model/exception mirror tests |
+| `uv run pytest` | 113 passed, 96.45% | 112 passed on 3.12.14 **and** 3.13.15 at `b22df3c` ([32587098439](https://github.com/wyattowalsh/nbops/actions/runs/32587098439)); this revision adds batch validate |
 | `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke on both interpreters |
 | `uv run nbops validate examples/demo.ipynb` | `ok` | CI Compatibility smoke on 3.12.14 and 3.13.15 |
 

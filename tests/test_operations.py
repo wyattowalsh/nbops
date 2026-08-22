@@ -84,6 +84,24 @@ def test_catalog_cli_and_api_surfaces_exist() -> None:
     assert notebook_routes == catalog_http
 
 
+def test_catalog_batch_surfaces_exist() -> None:
+    click_group = get_command(cli_app)
+    for item in OPERATIONS:
+        if not item.batch:
+            continue
+        parts = item.batch.split()
+        assert parts[0] == "nbops", f"batch catalog must start with nbops: {item.batch}"
+        current = click_group
+        for token in parts[1:]:
+            commands = getattr(current, "commands", None)
+            assert commands is not None, f"missing CLI group for {item.batch}"
+            assert token in commands, f"missing CLI command {item.batch}"
+            current = commands[token]
+    assert {"stats", "lint", "clean", "validate"} <= {
+        item.name for item in OPERATIONS if item.batch
+    }
+
+
 def test_catalog_parsers_reject_malformed_entries() -> None:
     with pytest.raises(ValueError, match="nbops"):
         catalog_cli_argv(Operation(name="x", summary="x", library="x", cli="wrong stats"))

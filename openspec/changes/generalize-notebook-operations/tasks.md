@@ -11,3 +11,4 @@
 - [x] 1.9 SECURITY.md, Dependabot, pre-commit, CHANGELOG, actionlint, coverage 90
 - [x] 1.10 Catalog↔CLI↔API invariant plus percent-format roundtrip
 - [x] 1.11 Validate + output inventory catalog surfaces; concat unique cell ids
+- [x] 1.12 Batch validate plus fail-closed batch stats/clean JSON errors

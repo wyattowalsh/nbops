@@ -28,7 +28,7 @@ the exhaustive program derived from:
 | G6 | Structural lint catalog NB000–NB011 | `src/nbops/lint.py` `ISSUE_CATALOG` |
 | G7 | Convert to percent py, script, markdown, and percent roundtrip | `src/nbops/convert.py` |
 | G8 | Cell-level diff | `src/nbops/diff.py` |
-| G9 | Directory batch operations | `src/nbops/batch.py` + `nbops batch {stats,lint,clean}` |
+| G9 | Directory batch operations | `src/nbops/batch.py` + `nbops batch {stats,lint,clean,validate}` |
 | G10 | Optional execute extra | `src/nbops/execute.py` + `[execute]` extra |
 | G11 | Typer CLI covering every catalog operation | `src/nbops/cli.py`, `nbops ops` |
 | G12 | FastAPI surface covering the operations | `src/nbops/api.py`, `GET /operations` |

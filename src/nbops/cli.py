@@ -484,12 +484,18 @@ def batch_stats(
     )
     if as_json:
         _emit_json([item.model_dump() for item in items])
+        if any(not item.ok for item in items):
+            raise typer.Exit(1)
         return
+    failed = False
     for item in items:
         if item.ok and item.result is not None:
             typer.echo(f"{item.path}: {item.result['total_cells']} cells")
         else:
+            failed = True
             typer.echo(f"{item.path}: ERROR {item.error}")
+    if failed:
+        raise typer.Exit(1)
 
 
 @batch_app.command("lint")
@@ -538,6 +544,8 @@ def batch_clean(
     items = map_notebooks(root, _clean, progress=_want_progress())
     if as_json:
         _emit_json([item.model_dump() for item in items])
+        if any(not item.ok for item in items):
+            raise typer.Exit(1)
         return
     failed = False
     for item in items:
@@ -547,6 +555,30 @@ def batch_clean(
             failed = True
             typer.echo(f"{item.path}: ERROR {item.error}")
     if failed:
+        raise typer.Exit(1)
+
+
+@batch_app.command("validate")
+def batch_validate(
+    root: Annotated[Path, typer.Argument(exists=True, readable=True)],
+    as_json: Annotated[bool, typer.Option("--json")] = False,
+) -> None:
+    """Validate every notebook under a directory against the nbformat schema."""
+
+    def _validate(path: Path) -> str:
+        validate_notebook(load_notebook(path, validate=False))
+        return str(path)
+
+    items = map_notebooks(root, _validate, progress=_want_progress())
+    if as_json:
+        _emit_json([item.model_dump() for item in items])
+    else:
+        for item in items:
+            if item.ok:
+                typer.echo(item.path)
+            else:
+                typer.echo(f"{item.path}: ERROR {item.error}")
+    if any(not item.ok for item in items):
         raise typer.Exit(1)
 
 

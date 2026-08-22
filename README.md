@@ -72,6 +72,7 @@ uv run nbops ops
 uv run nbops batch stats examples --json
 uv run nbops batch lint examples
 uv run nbops batch clean examples
+uv run nbops batch validate examples
 ```
 
 ## HTTP API

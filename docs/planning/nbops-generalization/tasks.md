@@ -6,7 +6,7 @@
 - [x] G6 Lint issue catalog (NB000–NB011, including NB009 missing ids)
 - [x] G7 Convert to percent Python, script, Markdown, and percent roundtrip
 - [x] G8 Cell-level notebook diff
-- [x] G9 Batch directory operations (`stats`, `lint`, `clean`)
+- [x] G9 Batch directory operations (`stats`, `lint`, `clean`, `validate`)
 - [x] G10 Optional nbclient execute extra
 - [x] G11 Typer CLI for every catalog operation
 - [x] G12 FastAPI endpoints covering the catalog (plus `GET /operations`)

@@ -1,8 +1,8 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e` after the models/exceptions
-mirror tests. GitHub run [32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790)
-verified `e257f87` (107 tests) on CPython 3.12.14 and 3.13.15.
+Recorded on branch `cursor/nbops-generalization-673e` after adding `nbops batch validate`.
+GitHub run [32587098439](https://github.com/wyattowalsh/nbops/actions/runs/32587098439)
+verified `b22df3c` (**112 tests**) on CPython 3.12.14 and 3.13.15.
 
 ## Tooling
 

@@ -101,3 +101,4 @@ jobs:
           uv run nbops lint examples/demo.ipynb
           uv run nbops validate examples/demo.ipynb
           uv run nbops outputs examples/demo.ipynb --json
+          uv run nbops batch validate examples

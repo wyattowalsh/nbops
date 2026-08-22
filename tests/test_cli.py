@@ -115,6 +115,14 @@ def test_clean_convert_concat_diff_new(tmp_path: Path, sample_notebook_file: Pat
     diff = runner.invoke(app, ["diff", str(sample_notebook_file), str(cleaned)])
     assert diff.exit_code == 0
 
+    changed = tmp_path / "changed.ipynb"
+    payload = json.loads(sample_notebook_file.read_text(encoding="utf-8"))
+    payload["cells"][0]["source"] = "# Different\n"
+    changed.write_text(json.dumps(payload), encoding="utf-8")
+    diff_changed = runner.invoke(app, ["diff", str(sample_notebook_file), str(changed)])
+    assert diff_changed.exit_code == 0
+    assert "changed" in diff_changed.stdout
+
     created = tmp_path / "fresh.ipynb"
     new = runner.invoke(app, ["new", str(created)])
     assert new.exit_code == 0
@@ -306,6 +314,15 @@ def test_ops_filter_tag_ids_and_batch_clean(tmp_path: Path, sample_notebook_file
     payload = json.loads(target.read_text(encoding="utf-8"))
     assert payload["cells"][1]["outputs"] == []
 
+    ok_dir = tmp_path / "ok-batch"
+    ok_dir.mkdir()
+    created = ok_dir / "fresh.ipynb"
+    new = runner.invoke(app, ["new", str(created)])
+    assert new.exit_code == 0
+    validated = runner.invoke(app, ["batch", "validate", str(ok_dir), "--json"])
+    assert validated.exit_code == 0
+    assert json.loads(validated.stdout)[0]["ok"] is True
+
 
 def test_filter_and_tag_require_output(sample_notebook_file: Path) -> None:
     filt = runner.invoke(app, ["filter", str(sample_notebook_file), "--type", "code"])
@@ -373,3 +390,7 @@ def test_cli_error_paths(tmp_path: Path, sample_notebook_file: Path) -> None:
     assert batch_lint.exit_code != 0
     batch_clean = runner.invoke(app, ["batch", "clean", str(batch_dir)])
     assert batch_clean.exit_code != 0
+    batch_stats = runner.invoke(app, ["batch", "stats", str(batch_dir)])
+    assert batch_stats.exit_code != 0
+    batch_validate = runner.invoke(app, ["batch", "validate", str(batch_dir)])
+    assert batch_validate.exit_code != 0

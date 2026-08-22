@@ -110,6 +110,7 @@ OPERATIONS: tuple[Operation, ...] = (
         library="nbops.io.validate_notebook",
         cli="nbops validate",
         api="POST /notebooks/validate",
+        batch="nbops batch validate",
     ),
     Operation(
         name="kernel",
