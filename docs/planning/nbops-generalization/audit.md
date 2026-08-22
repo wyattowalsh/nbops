@@ -32,7 +32,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test; live uvicorn smoke | verified (recovered) |
 | G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI | verified (recovered) |
 | G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules; 102 passed, 95.58% | verified (recovered) |
-| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Workflow exists; 3.13 job previously used 3.12 via `.python-version` — **fix in flight** | incomplete until 3.13 job prints 3.13 |
+| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32585486835](https://github.com/wyattowalsh/nbops/actions/runs/32585486835): actionlint, ruff, ty, pytest **3.12.14** and **3.13.15** (102 passed, 95.58%) | verified (recovered) |
 | G16 / TASK-016 | AGENTS, CONTRIBUTING, README, CHANGELOG | files at repo root | verified (recovered) |
 | G17 / TASK-017 | uv lockfile + justfile | `uv.lock`, `justfile`; `uv sync --locked` | verified (recovered) |
 | G18 / TASK-018 | Shared operations catalog | `src/nbops/operations.py`; 18 ops | verified (recovered) |
@@ -50,8 +50,8 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | `uv run ruff check src tests` | passed | passed (`lint` job) |
 | `uv run ruff format --check src tests` | passed | passed (`lint` job) |
 | `uv run ty check` | passed | passed (`typecheck` job) |
-| `uv run pytest` | 102 passed, 95.58% | 102 passed on 3.12.14; 3.13 job not yet a 3.13 interpreter |
-| `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | not a CI step (covered by tests) |
+| `uv run pytest` | 102 passed, 95.58% | 102 passed on 3.12.14 **and** 3.13.15 |
+| `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke step on 3.12 and 3.13 (added with this revision) |
 
 ## External
 

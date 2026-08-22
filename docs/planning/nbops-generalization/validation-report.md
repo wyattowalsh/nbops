@@ -45,16 +45,15 @@ for the original dump.
 
 ## GitHub Actions
 
-Run [32585325015](https://github.com/wyattowalsh/nbops/actions/runs/32585325015)
-on `b3606f2` concluded **success** for:
+Run [32585486835](https://github.com/wyattowalsh/nbops/actions/runs/32585486835)
+on `3e42ab2` concluded **success**. The Python matrix now honors `UV_PYTHON`:
 
-| Job | Result | Note |
-| --- | ------ | ---- |
+| Job | Result | Interpreter |
+| --- | ------ | ----------- |
 | `workflow-lint` | success | actionlint |
 | `lint` | success | ruff check + format |
 | `typecheck` | success | ty |
-| `test (3.12)` | success | 102 passed, 95.58% coverage, Python 3.12.14 |
-| `test (3.13)` | success | **not a 3.13 interpreter** — `uv` honored `.python-version` (3.12.3) |
+| `test (3.12)` | success | CPython **3.12.14**, 102 passed, 95.58% coverage |
+| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed in the job), 102 passed, 95.58% coverage |
 
-The matrix is being fixed so `UV_PYTHON` / `--python` override `.python-version`
-and the 3.13 job actually runs 3.13.
+Earlier run [32585325015](https://github.com/wyattowalsh/nbops/actions/runs/32585325015) on `b3606f2` had a false 3.13 job (uv used `.python-version` 3.12.3). That is fixed.
