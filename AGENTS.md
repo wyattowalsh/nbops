@@ -27,6 +27,7 @@ uv run python -m nbops version
 uv run nbops serve --host 0.0.0.0 --port 8000
 just check
 just quality-gates
+# If just is not installed: uvx --from rust-just just quality-gates
 ```
 
 Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`.

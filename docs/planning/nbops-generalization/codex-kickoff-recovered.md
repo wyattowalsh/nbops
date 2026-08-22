@@ -32,7 +32,7 @@
 | TASK-014 | Tests mirroring src, coverage ≥90% | done | `tests/`, `--cov-fail-under=90` |
 | TASK-015 | CI: actionlint + ruff + ty + pytest 3.12/3.13 | done | `.github/workflows/ci.yml` |
 | TASK-016 | AGENTS.md, CONTRIBUTING.md, README, CHANGELOG | done | repo root + `CODE_OF_CONDUCT.md` + `CLAUDE.md` |
-| TASK-017 | uv lockfile + justfile | done | `uv.lock`, `justfile` |
+| TASK-017 | uv lockfile + justfile | done | `uv.lock`, `justfile` (`check`, `quality-gates`, `smoke`) |
 | TASK-018 | Shared operations catalog | done | `src/nbops/operations.py` |
 | TASK-019 | `NBOPS_` pydantic-settings + optional `.env` | done | `src/nbops/settings.py`; `.env.example` |
 | TASK-020 | SECURITY.md | done | `SECURITY.md` |

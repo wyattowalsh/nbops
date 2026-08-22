@@ -36,7 +36,7 @@ the exhaustive program derived from:
 | G14 | Tests mirroring src, coverage gate | `tests/`, `--cov-fail-under=90` |
 | G15 | Ruff + ty + pytest CI on 3.12/3.13 | `.github/workflows/ci.yml` |
 | G16 | Agent/contributor docs | `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `CODE_OF_CONDUCT.md` |
-| G17 | uv lockfile and justfile | `uv.lock`, `justfile` |
+| G17 | uv lockfile and justfile | `uv.lock`, `justfile` (`check`, `quality-gates`, `smoke`) |
 | G18 | Shared operations catalog | `src/nbops/operations.py` |
 | G19 | Environment-backed settings (`NBOPS_`) | `src/nbops/settings.py`; `.env.example` |
 | G20 | SECURITY.md | `SECURITY.md` |
