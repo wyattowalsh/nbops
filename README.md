@@ -149,7 +149,7 @@ src/nbops/
   clean.py      strip outputs / counts / ids
   transform.py  filter, concat, split, kernel, tags
   lint.py       structural quality
-  convert.py    percent Python, script, Markdown
+  convert.py    percent Python, script, Markdown (inlines attachments)
   diff.py       cell-level diff
   batch.py      directory walks
   execute.py    optional nbclient execution

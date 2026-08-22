@@ -30,6 +30,7 @@ CLI, and HTTP surfaces.
   kernelspec YAML front matter
   (inferred language when omitted; `language_info.name` when there is no
   kernelspec name); `from-py` does not fill omitted ids.
+  Markdown conversion inlines `attachment:` links as `data:` URIs.
   Optional Jupytext cell titles (`# %% Title [markdown]`) are parsed so the
   bracketed type is not dropped. The kernel client may see temporary ids internally.
 - `NB007` / `extract_imports` parse Python as IPython notebook code (line magics,

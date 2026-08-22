@@ -75,3 +75,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   not a leftover `python`)
 - Percent convert round-trips nbformat cell `attachments` as header JSON and restores
   them on the cell, not in `metadata`
+- Markdown conversion (`to_markdown` / `convert --to md`) inlines `attachment:` and
+  `attachment://` links as `data:` URIs from cell attachments

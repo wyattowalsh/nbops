@@ -6,6 +6,7 @@ import ast
 import json
 import re
 from typing import TYPE_CHECKING, Any
+from urllib.parse import quote, unquote
 
 from nbops.cells import (
     as_mapping,
@@ -73,7 +74,12 @@ def to_script(notebook: Mapping[str, Any]) -> str:
 
 
 def to_markdown(notebook: Mapping[str, Any]) -> str:
-    """Render a notebook as Markdown with fenced code cells."""
+    """Render a notebook as Markdown with fenced code cells.
+
+    ``attachment:`` / ``attachment://`` links in markdown and raw cells are
+    rewritten to ``data:`` URIs from that cell's nbformat attachments so the
+    converted file is self-contained. Unknown names are left unchanged.
+    """
     language = notebook_code_language(notebook)
     chunks: list[str] = []
     for cell in cells_of(notebook):
@@ -83,7 +89,7 @@ def to_markdown(notebook: Mapping[str, Any]) -> str:
         source = cell_source(cell).rstrip()
         if cell_type == "markdown" or cell_type == "raw":
             if source:
-                chunks.append(source)
+                chunks.append(_inline_attachment_references(source, _cell_attachments(cell)))
         else:
             chunks.append(f"```{language}\n{source}\n```" if source else f"```{language}\n```")
     return ("\n\n".join(chunks).rstrip() + "\n") if chunks else ""
@@ -668,3 +674,140 @@ def _unquote_percent_comment(source: str) -> str:
         else:
             lines.append(line)
     return "\n".join(lines)
+
+
+_MD_ATTACHMENT_RE = re.compile(
+    r"(?P<pre>!?\[[^\]]*\]\()"
+    r"(?P<scheme>attachment:(?://)?)"
+    r"(?P<name>[^)\s]+)"
+    r"(?P<title>\s+(?:\"[^\"]*\"|'[^']*'))?"
+    r"(?P<post>\))",
+    re.IGNORECASE,
+)
+_HTML_ATTACHMENT_RE = re.compile(
+    r"(?P<pre>src\s*=\s*)"
+    r"(?P<quote>[\"'])"
+    r"(?P<scheme>attachment:(?://)?)"
+    r"(?P<name>[^\"']+)"
+    r"(?P=quote)",
+    re.IGNORECASE,
+)
+_REF_ATTACHMENT_RE = re.compile(
+    r"(?P<pre>\]:\s*)"
+    r"(?P<scheme>attachment:(?://)?)"
+    r"(?P<name>[^\s]+)",
+    re.IGNORECASE,
+)
+
+
+def _cell_attachments(cell: Mapping[str, Any]) -> Any:
+    attachments = cell.get("attachments")
+    if isinstance(attachments, dict) and attachments:
+        return attachments
+    metadata = cell.get("metadata")
+    if isinstance(metadata, dict):
+        nested = metadata.get("attachments")
+        if isinstance(nested, dict) and nested:
+            return nested
+    return attachments
+
+
+def _attachment_lookup_keys(filename: str) -> list[str]:
+    keys: list[str] = []
+    for candidate in (filename, unquote(filename)):
+        if candidate and candidate not in keys:
+            keys.append(candidate)
+        base = candidate.rsplit("/", 1)[-1]
+        if base and base not in keys:
+            keys.append(base)
+    return keys
+
+
+def _payload_text(payload: Any) -> str | None:
+    if isinstance(payload, str):
+        text = payload
+    elif isinstance(payload, list):
+        text = "".join(str(part) for part in payload)
+    else:
+        return None
+    return text if text else None
+
+
+def _payload_data_uri(mime: str, payload: Any) -> str | None:
+    text = _payload_text(payload)
+    if text is None:
+        return None
+    mime = mime.strip() or "application/octet-stream"
+    stripped = text.strip()
+    if stripped.startswith("data:"):
+        return stripped
+    if "svg" in mime.lower() and stripped.lstrip().startswith("<"):
+        return f"data:{mime};charset=utf-8,{quote(text, safe='')}"
+    b64 = "".join(text.split())
+    if not b64:
+        return None
+    return f"data:{mime};base64,{b64}"
+
+
+def _mime_bundle_data_uri(bundle: dict[str, Any]) -> str | None:
+    items = [(str(key), value) for key, value in bundle.items()]
+    images = [(key, value) for key, value in items if key.lower().startswith("image/")]
+    others = [(key, value) for key, value in items if not key.lower().startswith("image/")]
+    for mime, payload in images + others:
+        uri = _payload_data_uri(mime, payload)
+        if uri is not None:
+            return uri
+    return None
+
+
+def _attachment_data_uris(attachments: Any) -> dict[str, str]:
+    if not isinstance(attachments, dict):
+        return {}
+    uris: dict[str, str] = {}
+    for filename, bundle in attachments.items():
+        if not isinstance(filename, str) or not filename or not isinstance(bundle, dict):
+            continue
+        uri = _mime_bundle_data_uri(bundle)
+        if uri is None:
+            continue
+        for key in _attachment_lookup_keys(filename):
+            uris.setdefault(key, uri)
+    return uris
+
+
+def _lookup_attachment_uri(name: str, uris: dict[str, str]) -> str | None:
+    for key in _attachment_lookup_keys(name):
+        uri = uris.get(key)
+        if uri is not None:
+            return uri
+    return None
+
+
+def _inline_attachment_references(source: str, attachments: Any) -> str:
+    uris = _attachment_data_uris(attachments)
+    if not uris or not source:
+        return source
+
+    def replace_markdown(match: re.Match[str]) -> str:
+        uri = _lookup_attachment_uri(match.group("name"), uris)
+        if uri is None:
+            return match.group(0)
+        title = match.group("title") or ""
+        return f"{match.group('pre')}{uri}{title}{match.group('post')}"
+
+    def replace_html(match: re.Match[str]) -> str:
+        uri = _lookup_attachment_uri(match.group("name"), uris)
+        if uri is None:
+            return match.group(0)
+        quote_char = match.group("quote")
+        return f"{match.group('pre')}{quote_char}{uri}{quote_char}"
+
+    def replace_reference(match: re.Match[str]) -> str:
+        uri = _lookup_attachment_uri(match.group("name"), uris)
+        if uri is None:
+            return match.group(0)
+        return f"{match.group('pre')}{uri}"
+
+    rewritten = _MD_ATTACHMENT_RE.sub(replace_markdown, source)
+    rewritten = _HTML_ATTACHMENT_RE.sub(replace_html, rewritten)
+    return _REF_ATTACHMENT_RE.sub(replace_reference, rewritten)

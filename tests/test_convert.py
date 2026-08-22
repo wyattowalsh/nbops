@@ -280,6 +280,160 @@ def test_percent_skips_unserializable_attachments() -> None:
     assert "attachments=" not in text
 
 
+def _markdown_with_attachments(source: str, attachments: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": source,
+                "attachments": attachments,
+            }
+        ]
+    }
+
+
+def test_to_markdown_inlines_attachment_image() -> None:
+    notebook = _markdown_with_attachments(
+        "![plot](attachment:plot.png)\n",
+        {"plot.png": {"image/png": "aaa"}},
+    )
+    markdown = to_markdown(notebook)
+    assert "attachment:plot.png" not in markdown
+    assert "data:image/png;base64,aaa" in markdown
+    assert convert_notebook(notebook, "md").text == markdown
+
+
+def test_to_markdown_inlines_attachment_slash_slash_and_title() -> None:
+    notebook = _markdown_with_attachments(
+        '![plot](attachment://plot.png "Plot")\n',
+        {"plot.png": {"image/png": "aaa"}},
+    )
+    markdown = to_markdown(notebook)
+    assert '![plot](data:image/png;base64,aaa "Plot")' in markdown
+
+
+def test_to_markdown_leaves_unknown_attachment_ref() -> None:
+    notebook = _markdown_with_attachments(
+        "![missing](attachment:missing.png)\n",
+        {"plot.png": {"image/png": "aaa"}},
+    )
+    assert "attachment:missing.png" in to_markdown(notebook)
+
+
+def test_to_markdown_prefers_image_mime_over_text() -> None:
+    notebook = _markdown_with_attachments(
+        "![plot](attachment:plot.png)\n",
+        {"plot.png": {"text/plain": "note", "image/png": "aaa"}},
+    )
+    markdown = to_markdown(notebook)
+    assert "data:image/png;base64,aaa" in markdown
+    assert "data:text/plain" not in markdown
+
+
+def test_to_markdown_inlines_html_img_src() -> None:
+    notebook = _markdown_with_attachments(
+        '<img src="attachment:plot.png" alt="plot">\n',
+        {"plot.png": {"image/png": "aaa"}},
+    )
+    assert '<img src="data:image/png;base64,aaa" alt="plot">' in to_markdown(notebook)
+
+
+def test_to_markdown_inlines_reference_definition() -> None:
+    notebook = _markdown_with_attachments(
+        "![plot][fig]\n\n[fig]: attachment:plot.png\n",
+        {"plot.png": {"image/png": "aaa"}},
+    )
+    markdown = to_markdown(notebook)
+    assert "[fig]: data:image/png;base64,aaa" in markdown
+
+
+def test_to_markdown_inlines_raw_cell_attachments() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "raw",
+                "metadata": {},
+                "source": "![plot](attachment:plot.png)\n",
+                "attachments": {"plot.png": {"image/png": "aaa"}},
+            }
+        ]
+    }
+    assert "data:image/png;base64,aaa" in to_markdown(notebook)
+
+
+def test_to_markdown_does_not_rewrite_code_cells() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": 'print("attachment:plot.png")\n',
+                "attachments": {"plot.png": {"image/png": "aaa"}},
+            }
+        ]
+    }
+    markdown = to_markdown(notebook)
+    assert "attachment:plot.png" in markdown
+    assert "data:image/png" not in markdown
+
+
+def test_to_markdown_inlines_list_payload_and_url_encoded_name() -> None:
+    notebook = _markdown_with_attachments(
+        "![plot](attachment:my%20plot.png)\n",
+        {"my plot.png": {"image/png": ["aa", "a"]}},
+    )
+    assert "data:image/png;base64,aaa" in to_markdown(notebook)
+
+
+def test_to_markdown_inlines_svg_text_payload() -> None:
+    svg = "<svg xmlns='http://www.w3.org/2000/svg'></svg>"
+    notebook = _markdown_with_attachments(
+        "![mark](attachment:mark.svg)\n",
+        {"mark.svg": {"image/svg+xml": svg}},
+    )
+    markdown = to_markdown(notebook)
+    assert "data:image/svg+xml;charset=utf-8," in markdown
+    assert "attachment:mark.svg" not in markdown
+
+
+def test_to_markdown_uses_metadata_attachments_fallback() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {"attachments": {"plot.png": {"image/png": "aaa"}}},
+                "source": "![plot](attachment:plot.png)\n",
+            }
+        ]
+    }
+    assert "data:image/png;base64,aaa" in to_markdown(notebook)
+
+
+def test_to_markdown_skips_non_dict_attachments() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "![plot](attachment:plot.png)\n",
+                "attachments": "nope",
+            }
+        ]
+    }
+    assert "attachment:plot.png" in to_markdown(notebook)
+
+
+def test_percent_keeps_attachment_refs_in_source() -> None:
+    notebook = _markdown_with_attachments(
+        "![plot](attachment:plot.png)\n",
+        {"plot.png": {"image/png": "aaa"}},
+    )
+    text = to_percent_python(notebook)
+    assert "attachment:plot.png" in text
+    assert "data:image/png" not in text
+
+
 def test_percent_roundtrip_preserves_omitted_cell_ids() -> None:
     notebook = {
         "cells": [

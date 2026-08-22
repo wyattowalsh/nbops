@@ -193,7 +193,11 @@ omitted. Top-level `await` is valid on the supported Python 3.12+ parsers.
 `to_script` / `convert --to script` SHALL strip those magics on Python notebooks
 and omit non-Python cell magics so the emitted file is parseable Python.
 Percent-format conversion SHALL keep magics in cell source. Markdown conversion
-SHALL fence code cells with the declared or inferred language id.
+SHALL fence code cells with the declared or inferred language id and SHALL
+rewrite `attachment:` / `attachment://` references in markdown and raw cells to
+`data:` URIs from that cell's nbformat attachments, preferring `image/*` MIME
+types. Unknown attachment names SHALL be left unchanged. Percent conversion
+SHALL keep `attachment:` references in cell source.
 
 #### Scenario: IPython magics are not syntax errors
 
@@ -218,3 +222,12 @@ SHALL fence code cells with the declared or inferred language id.
 - **THEN** the magics remain in the percent source
 - **WHEN** a notebook has kernelspec name `ir`
 - **THEN** Markdown code fences use `r` and script conversion leaves R source unchanged
+
+#### Scenario: Markdown inlines cell attachments
+
+- **WHEN** a markdown or raw cell has `![plot](attachment:plot.png)` and that file in `attachments`
+- **THEN** `to_markdown` / `convert --to md` emits a `data:` URI (preferring `image/*`)
+- **WHEN** the same notebook is converted to percent Python
+- **THEN** the `attachment:` reference remains in cell source
+- **WHEN** a markdown cell references `attachment:missing.png`
+- **THEN** the unknown reference is unchanged
