@@ -4,7 +4,7 @@
 - [x] G4 Clean outputs / execution counts / ids / empty cells
 - [x] G5 Transform: filter, concat, split, kernelspec, tags, cell ids
 - [x] G6 Lint issue catalog (NB000–NB011, including NB009 missing ids)
-- [x] G7 Convert to percent Python, script, Markdown
+- [x] G7 Convert to percent Python, script, Markdown, and percent roundtrip
 - [x] G8 Cell-level notebook diff
 - [x] G9 Batch directory operations (`stats`, `lint`, `clean`)
 - [x] G10 Optional nbclient execute extra

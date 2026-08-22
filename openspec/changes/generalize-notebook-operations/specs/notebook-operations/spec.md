@@ -24,9 +24,11 @@ as defined in `nbops.lint.ISSUE_CATALOG`.
 ### Requirement: Shared operations catalog
 
 Library, CLI, and HTTP surfaces SHALL be inventoried in `nbops.operations.OPERATIONS`,
-exposed as `nbops ops` and `GET /operations`.
+exposed as `nbops ops` and `GET /operations`. Every catalog `cli` value SHALL exist on
+the Typer app, and every catalog `api` value SHALL exist on the FastAPI app.
 
 #### Scenario: Catalog listing
 
 - **WHEN** a caller requests the catalog
 - **THEN** every implemented operation includes its library path and CLI/API names
+  and those names resolve on the live CLI and HTTP surfaces

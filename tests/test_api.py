@@ -34,6 +34,28 @@ def test_notebook_stats_rejects_invalid() -> None:
     assert response.status_code == 422
 
 
+def test_inspect_headings_imports_from_py(sample_notebook: dict[str, Any]) -> None:
+    inspect = client.post("/notebooks/inspect", json={"notebook": sample_notebook})
+    assert inspect.status_code == 200
+    assert inspect.json()["outline"][0]["title"] == "Title"
+
+    headings = client.post("/notebooks/headings", json={"notebook": sample_notebook})
+    assert headings.status_code == 200
+    assert headings.json()[0]["title"] == "Title"
+
+    imports = client.post("/notebooks/imports", json={"notebook": sample_notebook})
+    assert imports.status_code == 200
+    assert imports.json()[0]["module"] == "os"
+
+    from_py = client.post(
+        "/notebooks/from-py",
+        json={"text": "# %% [markdown]\n# Hello\n\n# %%\nprint(1)\n"},
+    )
+    assert from_py.status_code == 200
+    cells = from_py.json()["notebook"]["cells"]
+    assert [cell["cell_type"] for cell in cells] == ["markdown", "code"]
+
+
 def test_inspect_lint_clean_convert(sample_notebook: dict[str, Any]) -> None:
     inspect = client.post("/notebooks/inspect", json={"notebook": sample_notebook})
     assert inspect.status_code == 200
@@ -61,6 +83,7 @@ def test_operations_split_filter_tag_ids_new(sample_notebook: dict[str, Any]) ->
     assert "stats" in names
     assert "exec" in names
     assert "ops" in names
+    assert "from-py" in names
 
     split = client.post("/notebooks/split", json={"notebook": sample_notebook, "level": 1})
     assert split.status_code == 200

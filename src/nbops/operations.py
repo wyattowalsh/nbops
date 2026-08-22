@@ -37,12 +37,14 @@ OPERATIONS: tuple[Operation, ...] = (
         summary="Markdown heading outline.",
         library="nbops.inspect.outline",
         cli="nbops headings",
+        api="POST /notebooks/headings",
     ),
     Operation(
         name="imports",
         summary="Top-level imports from code cells.",
         library="nbops.inspect.extract_imports",
         cli="nbops imports",
+        api="POST /notebooks/imports",
     ),
     Operation(
         name="lint",
@@ -93,6 +95,7 @@ OPERATIONS: tuple[Operation, ...] = (
         summary="Create an empty nbformat v4 notebook.",
         library="nbops.io.new_notebook",
         cli="nbops new",
+        api="POST /notebooks/new",
     ),
     Operation(
         name="kernel",
@@ -130,6 +133,13 @@ OPERATIONS: tuple[Operation, ...] = (
         api="POST /notebooks/ids",
     ),
     Operation(
+        name="from-py",
+        summary="Parse a Jupytext-style percent Python script into a notebook.",
+        library="nbops.convert.from_percent_python",
+        cli="nbops from-py",
+        api="POST /notebooks/from-py",
+    ),
+    Operation(
         name="ops",
         summary="List the operations catalog.",
         library="nbops.operations.OPERATIONS",
@@ -142,3 +152,23 @@ OPERATIONS: tuple[Operation, ...] = (
 def operation_names() -> list[str]:
     """Return catalog names in declaration order."""
     return [item.name for item in OPERATIONS]
+
+
+def catalog_cli_argv(item: Operation) -> list[str] | None:
+    """Return Typer argv tokens for a catalog CLI entry (after ``nbops``)."""
+    if item.cli is None:
+        return None
+    parts = item.cli.split()
+    if not parts or parts[0] != "nbops":
+        raise ValueError(f"Catalog CLI must start with 'nbops': {item.cli}")
+    return parts[1:]
+
+
+def catalog_http_route(item: Operation) -> tuple[str, str] | None:
+    """Return ``(METHOD, path)`` for a catalog HTTP entry."""
+    if item.api is None:
+        return None
+    method, _, path = item.api.partition(" ")
+    if not method or not path.startswith("/"):
+        raise ValueError(f"Catalog API must look like 'METHOD /path': {item.api}")
+    return method.upper(), path

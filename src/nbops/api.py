@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 
 from nbops import __version__
 from nbops.clean import clean_notebook
-from nbops.convert import convert_notebook
+from nbops.convert import convert_notebook, from_percent_python
 from nbops.diff import diff_notebooks
 from nbops.exceptions import ExecuteError, MissingExtraError
 from nbops.inspect import compute_stats, extract_imports, outline
@@ -20,6 +20,8 @@ from nbops.models import (
     CleanOptions,
     ConvertResult,
     HealthResponse,
+    Heading,
+    ImportRecord,
     LintReport,
     NotebookDiff,
     NotebookPayload,
@@ -116,6 +118,10 @@ class ExecuteRequest(NotebookPayload):
     allow_errors: bool = False
 
 
+class FromPyRequest(BaseModel):
+    text: str
+
+
 @app.get("/health", response_model=HealthResponse, tags=["system"])
 def health() -> HealthResponse:
     """Liveness/readiness probe."""
@@ -149,6 +155,18 @@ def notebook_inspect(request: NotebookPayload) -> InspectResponse:
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/notebooks/headings", response_model=list[Heading], tags=["notebooks"])
+def notebook_headings(request: NotebookPayload) -> list[Heading]:
+    """Return markdown headings for a posted notebook."""
+    return outline(request.notebook)
+
+
+@app.post("/notebooks/imports", response_model=list[ImportRecord], tags=["notebooks"])
+def notebook_imports(request: NotebookPayload) -> list[ImportRecord]:
+    """Return top-level imports for a posted notebook."""
+    return extract_imports(request.notebook)
 
 
 @app.post("/notebooks/lint", response_model=LintReport, tags=["notebooks"])
@@ -267,3 +285,9 @@ def notebook_execute(request: ExecuteRequest) -> NotebookDocument:
 def notebook_new() -> NotebookDocument:
     """Return a new empty nbformat v4 notebook."""
     return NotebookDocument(notebook=new_notebook())
+
+
+@app.post("/notebooks/from-py", response_model=NotebookDocument, tags=["notebooks"])
+def notebook_from_py(request: FromPyRequest) -> NotebookDocument:
+    """Parse a percent-format Python script into a notebook."""
+    return NotebookDocument(notebook=from_percent_python(request.text))

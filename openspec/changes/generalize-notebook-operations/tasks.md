@@ -9,3 +9,4 @@
 - [x] 1.7 Operations catalog + `NBOPS_` settings
 - [x] 1.8 Lint codes NB000–NB011 (NB009 missing cell ids)
 - [x] 1.9 SECURITY.md, Dependabot, pre-commit, CHANGELOG, actionlint, coverage 90
+- [x] 1.10 Catalog↔CLI↔API invariant plus percent-format roundtrip

@@ -20,6 +20,18 @@ def test_version_command() -> None:
     assert __version__ in result.stdout
 
 
+def test_demo_notebook_stats_contract() -> None:
+    demo = Path(__file__).resolve().parents[1] / "examples" / "demo.ipynb"
+    result = runner.invoke(app, ["stats", str(demo), "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["total_cells"] == 4
+    assert payload["code_cells"] == 2
+    assert payload["code_lines"] == 4
+    assert payload["kernel"] == "Python 3"
+    assert payload["language"] == "python"
+
+
 def test_stats_command_table(sample_notebook_file: Path) -> None:
     result = runner.invoke(app, ["stats", str(sample_notebook_file)])
     assert result.exit_code == 0
@@ -75,6 +87,11 @@ def test_clean_convert_concat_diff_new(tmp_path: Path, sample_notebook_file: Pat
     )
     assert to_py.exit_code == 0
     assert out_py.read_text(encoding="utf-8").startswith("# %%")
+
+    restored = tmp_path / "from-py.ipynb"
+    from_py = runner.invoke(app, ["from-py", str(out_py), "-o", str(restored)])
+    assert from_py.exit_code == 0
+    assert json.loads(restored.read_text(encoding="utf-8"))["cells"]
 
     merged = tmp_path / "merged.ipynb"
     concat = runner.invoke(

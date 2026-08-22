@@ -26,14 +26,14 @@ the exhaustive program derived from:
 | G4 | Clean outputs, counts, ids, empty cells | `src/nbops/clean.py` |
 | G5 | Transform: filter, concat, split, kernel, tags, cell ids | `src/nbops/transform.py` |
 | G6 | Structural lint catalog NB000–NB011 | `src/nbops/lint.py` `ISSUE_CATALOG` |
-| G7 | Convert to percent py, script, markdown | `src/nbops/convert.py` |
+| G7 | Convert to percent py, script, markdown, and percent roundtrip | `src/nbops/convert.py` |
 | G8 | Cell-level diff | `src/nbops/diff.py` |
 | G9 | Directory batch operations | `src/nbops/batch.py` + `nbops batch {stats,lint,clean}` |
 | G10 | Optional execute extra | `src/nbops/execute.py` + `[execute]` extra |
 | G11 | Typer CLI covering every catalog operation | `src/nbops/cli.py`, `nbops ops` |
 | G12 | FastAPI surface covering the operations | `src/nbops/api.py`, `GET /operations` |
 | G13 | Compatibility with the stats scaffold | `src/nbops/core.py`, `stats`, `/notebooks/stats` |
-| G14 | Tests mirroring src, coverage gate | `tests/`, `--cov-fail-under=85` |
+| G14 | Tests mirroring src, coverage gate | `tests/`, `--cov-fail-under=90` |
 | G15 | Ruff + ty + pytest CI on 3.12/3.13 | `.github/workflows/ci.yml` |
 | G16 | Agent/contributor docs | `AGENTS.md`, `CONTRIBUTING.md`, `README.md` |
 | G17 | uv lockfile and justfile | `uv.lock`, `justfile` |

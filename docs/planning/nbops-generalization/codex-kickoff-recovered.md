@@ -22,7 +22,7 @@
 | TASK-004 | Clean outputs/counts/ids/empty cells | done | `src/nbops/clean.py` |
 | TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py` |
 | TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py` |
-| TASK-007 | Convert to percent py / script / md | done | `src/nbops/convert.py` |
+| TASK-007 | Convert to percent py / script / md, plus percent roundtrip | done | `src/nbops/convert.py` |
 | TASK-008 | Cell-level diff | done | `src/nbops/diff.py` |
 | TASK-009 | Directory batch + tqdm | done | `src/nbops/batch.py` |
 | TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py` |

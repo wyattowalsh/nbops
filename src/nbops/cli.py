@@ -13,7 +13,7 @@ from loguru import logger
 from nbops import __version__
 from nbops.batch import map_notebooks
 from nbops.clean import clean_notebook
-from nbops.convert import convert_notebook
+from nbops.convert import convert_notebook, from_percent_python
 from nbops.diff import diff_notebooks
 from nbops.exceptions import ExecuteError, InvalidNotebookError, MissingExtraError, NbopsError
 from nbops.inspect import compute_stats, extract_imports, outline, stats_for_file
@@ -224,6 +224,17 @@ def convert(
         typer.echo(result.text, nl=False)
         return
     output.write_text(result.text, encoding="utf-8")
+    typer.echo(str(output))
+
+
+@app.command("from-py")
+def from_py_cmd(
+    script: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
+    output: Annotated[Path, typer.Option("--output", "-o")],
+) -> None:
+    """Build a notebook from a Jupytext-style percent Python script."""
+    notebook = from_percent_python(script.read_text(encoding="utf-8"))
+    save_notebook(notebook, output, validate=False)
     typer.echo(str(output))
 
 
