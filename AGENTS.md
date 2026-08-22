@@ -66,6 +66,9 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   handling and skip non-Python cell magics plus notebooks whose declared language is
   not Python. Do not add IPython as a dependency.
 - `nbops serve` and `nbops version` are system commands, not catalog operations.
+- OpenSpec baseline requirements live in `openspec/specs/`; the
+  `generalize-notebook-operations` change stays open until the original kickoff
+  dump can be applied.
 
 ## Out of scope unless explicitly requested
 

@@ -35,7 +35,7 @@ the exhaustive program derived from:
 | G13 | Compatibility with the stats scaffold | `src/nbops/core.py`, `stats`, `/notebooks/stats`; original seven-row CLI table; README `uvicorn nbops.api:app` and `/docs`; `HealthResponse()` defaults; OpenAPI `StatsRequest`; original shipped demo fixture; live uvicorn health/stats; frozen original suite in `tests/original_scaffold/` |
 | G14 | Tests mirroring src, coverage gate | `tests/`, `--cov-fail-under=90` |
 | G15 | Ruff + ty + pytest CI on 3.12/3.13 | `.github/workflows/ci.yml` |
-| G16 | Agent/contributor docs | `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `CODE_OF_CONDUCT.md` |
+| G16 | Agent/contributor docs | `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `CODE_OF_CONDUCT.md`; OpenSpec baseline `openspec/specs/` |
 | G17 | uv lockfile and justfile | `uv.lock`, `justfile` (`check`, `quality-gates`, `smoke`) |
 | G18 | Shared operations catalog | `src/nbops/operations.py` |
 | G19 | Environment-backed settings (`NBOPS_`) | `src/nbops/settings.py`; `.env.example` |

@@ -31,7 +31,7 @@
 | TASK-013 | Preserve stats scaffold contract | done | `core.py`, `stats`, `/notebooks/stats`; original seven-row CLI table; `uvicorn nbops.api:app` and `/docs` in README; `HealthResponse()` defaults; OpenAPI `StatsRequest`; original shipped demo; live uvicorn; frozen original suite in `tests/original_scaffold/` |
 | TASK-014 | Tests mirroring src, coverage ≥90% | done | `tests/` including `tests/original_scaffold/`; `--cov-fail-under=90` |
 | TASK-015 | CI: actionlint + ruff + ty + pytest 3.12/3.13 | done | `.github/workflows/ci.yml` |
-| TASK-016 | AGENTS.md, CONTRIBUTING.md, README, CHANGELOG | done | repo root + `CODE_OF_CONDUCT.md` + `CLAUDE.md` |
+| TASK-016 | AGENTS.md, CONTRIBUTING.md, README, CHANGELOG | done | repo root + `CODE_OF_CONDUCT.md` + `CLAUDE.md`; OpenSpec baseline in `openspec/specs/` |
 | TASK-017 | uv lockfile + justfile | done | `uv.lock`, `justfile` (`check`, `quality-gates`, `smoke`) |
 | TASK-018 | Shared operations catalog | done | `src/nbops/operations.py` |
 | TASK-019 | `NBOPS_` pydantic-settings + optional `.env` | done | `src/nbops/settings.py`; `.env.example` |
