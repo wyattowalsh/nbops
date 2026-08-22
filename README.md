@@ -64,6 +64,7 @@ uv run nbops clean examples/demo.ipynb --strip-ids -o /tmp/noid.ipynb
 uv run nbops clean examples/demo.ipynb --strip-metadata collapsed -o /tmp/clean.ipynb
 uv run nbops convert examples/demo.ipynb --to md
 uv run nbops convert examples/demo.ipynb --to py -o /tmp/demo.py
+uv run nbops convert examples/demo.ipynb --to script
 uv run nbops from-py /tmp/demo.py -o /tmp/from-py.ipynb
 uv run nbops concat a.ipynb b.ipynb -o merged.ipynb
 uv run nbops split examples/demo.ipynb -o /tmp/parts

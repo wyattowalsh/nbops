@@ -167,3 +167,23 @@ def test_lint_skips_python_syntax_for_non_python_kernels() -> None:
     report = lint_notebook(notebook)
     assert "NB007" not in {issue.code for issue in report.issues}
     assert report.passed is True
+
+
+def test_lint_infers_r_from_kernelspec_name_without_language() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "id": "r-code",
+                "execution_count": 1,
+                "metadata": {},
+                "outputs": [],
+                "source": "library(ggplot2)\n",
+            }
+        ],
+        "metadata": {"kernelspec": {"name": "ir", "display_name": "R"}},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    report = lint_notebook(notebook)
+    assert "NB007" not in {issue.code for issue in report.issues}

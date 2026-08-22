@@ -80,6 +80,8 @@ def test_strip_ipython_magics_and_parse_code_cell() -> None:
 
 
 def test_is_python_notebook_defaults_and_declared_languages() -> None:
+    from nbops.cells import declared_code_language, notebook_code_language
+
     assert is_python_notebook({"cells": []}) is True
     assert is_python_notebook({"metadata": {"language_info": {"name": "Python"}}}) is True
     assert is_python_notebook({"metadata": {"language_info": {"name": "ipython"}}}) is True
@@ -87,3 +89,17 @@ def test_is_python_notebook_defaults_and_declared_languages() -> None:
     assert is_python_notebook({"metadata": {"language_info": {"name": 3}}}) is True
     assert is_python_notebook({"metadata": {"kernelspec": {"language": "r"}}}) is False
     assert is_python_notebook({"metadata": {"language_info": {"name": "r"}}}) is False
+    assert is_python_notebook({"metadata": {"kernelspec": {"name": "python3"}}}) is True
+    assert is_python_notebook({"metadata": {"kernelspec": {"name": "ipython"}}}) is True
+    assert is_python_notebook({"metadata": {"kernelspec": {"name": "pypy3"}}}) is True
+    assert is_python_notebook({"metadata": {"kernelspec": {"name": "ir"}}}) is False
+    assert is_python_notebook({"metadata": {"kernelspec": {"name": "julia-1.10"}}}) is False
+    assert is_python_notebook({"metadata": {"kernelspec": {"name": "rust"}}}) is False
+    assert is_python_notebook({"metadata": {"kernelspec": {"name": "octave"}}}) is False
+    assert is_python_notebook({"metadata": {"kernelspec": {"name": "mystery"}}}) is True
+    assert declared_code_language({"metadata": {"kernelspec": {"name": "ir"}}}) == "r"
+    assert declared_code_language({"metadata": {"kernelspec": {"name": "  "}}}) is None
+    assert notebook_code_language({"cells": []}) == "python"
+    assert notebook_code_language({"metadata": {"language_info": {"name": "ipython"}}}) == "python"
+    assert notebook_code_language({"metadata": {"kernelspec": {"name": "julia-1.10"}}}) == "julia"
+    assert notebook_code_language({"metadata": {"kernelspec": {"name": "octave"}}}) == "octave"

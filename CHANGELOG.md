@@ -63,3 +63,8 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   assignment magics, and top-level `await` (accepted by Python 3.12+ `ast.parse`);
   non-Python cell magics and non-Python kernels (for example `ir` / `R`) are skipped
   instead of being treated as invalid Python
+- `convert --to script` / `to_script` strips those IPython magics (and omits non-Python
+  cell magics) so the emitted file is parseable Python; percent format still keeps magics
+- Markdown conversion fences code cells with the declared or inferred language (`r` for
+  `ir`, `julia` for `julia-*`); kernelspec names `ir` / `julia*` / `rust` are treated as
+  non-Python when language fields are omitted

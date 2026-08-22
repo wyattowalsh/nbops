@@ -173,8 +173,13 @@ four cells (markdown, code, code, markdown), stats 4/2/4, kernel display name
 `NB007` and `extract_imports` SHALL parse Python notebook code through
 IPython-aware magics stripping, skip non-Python cell magics, and skip Python
 AST checks when the notebook declares a non-Python language. Missing language
-metadata SHALL keep the historical Python behavior. Top-level `await` is valid
-on the supported Python 3.12+ parsers.
+metadata SHALL keep the historical Python behavior, except that kernelspec names
+`python*`, `ir`, `julia*`, and `rust` SHALL be inferred when language fields are
+omitted. Top-level `await` is valid on the supported Python 3.12+ parsers.
+`to_script` / `convert --to script` SHALL strip those magics on Python notebooks
+and omit non-Python cell magics so the emitted file is parseable Python.
+Percent-format conversion SHALL keep magics in cell source. Markdown conversion
+SHALL fence code cells with the declared or inferred language id.
 
 #### Scenario: IPython magics are not syntax errors
 
@@ -184,3 +189,16 @@ on the supported Python 3.12+ parsers.
 - **THEN** lint does not report `NB007` and that cell contributes no imports
 - **WHEN** a notebook declares kernelspec/language `r`
 - **THEN** lint does not report `NB007` for R source and `extract_imports` returns no records
+- **WHEN** a notebook has kernelspec name `ir` and omits language fields
+- **THEN** lint does not report `NB007` for R source
+
+#### Scenario: Script conversion strips IPython magics
+
+- **WHEN** a Python notebook code cell starts with `%matplotlib inline` then `import os`
+- **THEN** `to_script` / `convert --to script` emits parseable Python without the magic
+- **WHEN** a code cell is a non-Python cell magic such as `%%bash`
+- **THEN** that cell is omitted from the script
+- **WHEN** the same notebook is converted to percent Python
+- **THEN** the magics remain in the percent source
+- **WHEN** a notebook has kernelspec name `ir`
+- **THEN** Markdown code fences use `r` and script conversion leaves R source unchanged

@@ -7,7 +7,15 @@ import json
 import re
 from typing import TYPE_CHECKING, Any
 
-from nbops.cells import as_mapping, cell_source, cell_tags, cells_of
+from nbops.cells import (
+    as_mapping,
+    cell_source,
+    cell_tags,
+    cells_of,
+    is_python_notebook,
+    notebook_code_language,
+    strip_ipython_magics,
+)
 from nbops.io import new_notebook
 from nbops.models import ConvertResult
 from nbops.transform import set_kernelspec
@@ -40,19 +48,32 @@ def to_percent_python(notebook: Mapping[str, Any]) -> str:
 
 
 def to_script(notebook: Mapping[str, Any]) -> str:
-    """Render only code cells as a plain Python script."""
+    """Render code cells as a plain Python script.
+
+    IPython line magics, shell bangs, and help suffixes are stripped so the
+    result is parseable Python. Non-Python cell magics such as ``%%bash`` are
+    omitted. Non-Python notebooks are emitted unchanged.
+    """
+    python = is_python_notebook(notebook)
     chunks: list[str] = []
     for cell in cells_of(notebook):
         if not isinstance(cell, dict) or cell.get("cell_type") != "code":
             continue
-        source = cell_source(cell).rstrip()
+        source = cell_source(cell)
+        if python:
+            cleaned = strip_ipython_magics(source)
+            if cleaned is None:
+                continue
+            source = cleaned
+        source = source.rstrip()
         if source:
             chunks.append(source)
     return ("\n\n".join(chunks).rstrip() + "\n") if chunks else ""
 
 
 def to_markdown(notebook: Mapping[str, Any]) -> str:
-    """Render a notebook as Markdown with fenced Python code cells."""
+    """Render a notebook as Markdown with fenced code cells."""
+    language = notebook_code_language(notebook)
     chunks: list[str] = []
     for cell in cells_of(notebook):
         if not isinstance(cell, dict):
@@ -63,7 +84,7 @@ def to_markdown(notebook: Mapping[str, Any]) -> str:
             if source:
                 chunks.append(source)
         else:
-            chunks.append(f"```python\n{source}\n```" if source else "```python\n```")
+            chunks.append(f"```{language}\n{source}\n```" if source else f"```{language}\n```")
     return ("\n\n".join(chunks).rstrip() + "\n") if chunks else ""
 
 

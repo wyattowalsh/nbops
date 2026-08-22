@@ -37,3 +37,5 @@
 - [x] 1.35 Percent convert emits Jupytext kernelspec YAML so convert→from-py preserves kernel name/display/language
 - [x] 1.36 IPython-aware `NB007` / `extract_imports` (magics, await, skip non-Python cell magics and non-Python kernels)
 - [x] 1.37 Promote implemented notebook-operations requirements into baseline `openspec/specs/` (change stays open until the original kickoff dump is applied)
+- [x] 1.38 `to_script` / `convert --to script` strips IPython magics and omits non-Python cell magics
+- [x] 1.39 Infer `ir` / `julia*` / `rust` from kernelspec name when language is omitted; Markdown fences use that language

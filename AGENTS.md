@@ -64,7 +64,10 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   front matter, and does not fill omitted ids on `from-py`.
 - `NB007` and `extract_imports` parse Python cells through IPython-aware magics/await
   handling and skip non-Python cell magics plus notebooks whose declared language is
-  not Python. Do not add IPython as a dependency.
+  not Python. Kernelspec names `python*`, `ir`, `julia*`, and `rust` are inferred when
+  language fields are omitted. Do not add IPython as a dependency. `convert --to script`
+  / `to_script` uses the same stripper so the emitted file is parseable Python.
+  Percent format keeps magics. Markdown code fences use the declared/inferred language.
 - `nbops serve` and `nbops version` are system commands, not catalog operations.
 - OpenSpec baseline requirements live in `openspec/specs/`; the
   `generalize-notebook-operations` change stays open until the original kickoff

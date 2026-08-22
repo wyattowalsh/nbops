@@ -27,6 +27,11 @@ _NON_PYTHON_CELL_MAGICS = frozenset(
     }
 )
 _PYTHON_LANGUAGES = frozenset({"python", "ipython"})
+_KERNEL_NAME_LANGUAGES = {
+    "ir": "r",
+    "rust": "rust",
+    "octave": "octave",
+}
 _CELL_MAGIC = re.compile(r"^[ \t]*%%([A-Za-z_][A-Za-z0-9_]*)")
 _LINE_ESCAPE = re.compile(r"^[ \t]*(?:%{1,3}[A-Za-z_][A-Za-z0-9_]*|!|\?)")
 _TRAILING_HELP = re.compile(r"^[ \t]*\S+\?\s*$")
@@ -102,6 +107,36 @@ def preview(text: str, limit: int = 80) -> str:
     return collapsed[: limit - 1] + "…"
 
 
+def _language_from_kernelspec_name(name: Any) -> str | None:
+    """Infer a language id from a kernelspec name when language fields are omitted."""
+    if not isinstance(name, str) or not name.strip():
+        return None
+    lowered = name.strip().lower()
+    if lowered in _PYTHON_LANGUAGES or lowered.startswith(("python", "ipython", "pypy")):
+        return "python"
+    if lowered.startswith("julia"):
+        return "julia"
+    return _KERNEL_NAME_LANGUAGES.get(lowered)
+
+
+def declared_code_language(notebook: Mapping[str, Any]) -> str | None:
+    """Return a normalized code language, or ``None`` when unspecified.
+
+    ``language_info.name`` and ``kernelspec.language`` win. When those are
+    omitted, well-known kernelspec names such as ``python3``, ``ir``, and
+    ``julia-1.10`` are inferred. Unknown or missing names stay unspecified so
+    the original stats scaffold still counts as Python.
+    """
+    metadata = as_mapping(notebook.get("metadata"))
+    language_info = nested_mapping(metadata, "language_info")
+    kernelspec = nested_mapping(metadata, "kernelspec")
+    declared = language_info.get("name") or kernelspec.get("language")
+    if isinstance(declared, str) and declared.strip():
+        name = declared.strip().lower()
+        return "python" if name in _PYTHON_LANGUAGES else name
+    return _language_from_kernelspec_name(kernelspec.get("name"))
+
+
 def is_python_notebook(notebook: Mapping[str, Any]) -> bool:
     """Return whether the notebook declares a Python (or IPython) language.
 
@@ -109,13 +144,13 @@ def is_python_notebook(notebook: Mapping[str, Any]) -> bool:
     scaffold and incomplete kernelspecs keep the historical lint/import
     behavior. Declared non-Python languages such as ``r`` skip Python AST.
     """
-    metadata = as_mapping(notebook.get("metadata"))
-    language_info = nested_mapping(metadata, "language_info")
-    kernelspec = nested_mapping(metadata, "kernelspec")
-    declared = language_info.get("name") or kernelspec.get("language")
-    if not isinstance(declared, str) or not declared.strip():
-        return True
-    return declared.strip().lower() in _PYTHON_LANGUAGES
+    language = declared_code_language(notebook)
+    return language is None or language == "python"
+
+
+def notebook_code_language(notebook: Mapping[str, Any]) -> str:
+    """Return a Markdown fence language id for the notebook."""
+    return declared_code_language(notebook) or "python"
 
 
 def strip_ipython_magics(source: str) -> str | None:

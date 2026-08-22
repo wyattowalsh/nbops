@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 from typing import Any
 
 import pytest
@@ -316,6 +317,60 @@ def test_from_percent_python_whitespace_only_header_meta() -> None:
 
 def test_to_script_skips_empty_code_cells() -> None:
     assert to_script({"cells": [{"cell_type": "code", "source": "  \n"}]}) == ""
+
+
+def test_to_script_strips_ipython_magics_and_skips_cell_magics() -> None:
+    notebook = {
+        "metadata": {"language_info": {"name": "python"}},
+        "cells": [
+            {"cell_type": "code", "source": "%matplotlib inline\nimport os\n"},
+            {"cell_type": "code", "source": "%%bash\necho hi\n"},
+            {"cell_type": "code", "source": "%pwd\n"},
+            {"cell_type": "code", "source": "x = %time 1 + 1\n"},
+        ],
+    }
+    script = to_script(notebook)
+    assert script == "import os\n\nx = 1 + 1\n"
+    assert "%matplotlib" not in script
+    assert "echo hi" not in script
+    ast.parse(script)
+
+
+def test_percent_convert_keeps_ipython_magics() -> None:
+    notebook = {
+        "metadata": {"language_info": {"name": "python"}},
+        "cells": [{"cell_type": "code", "source": "%matplotlib inline\nimport os\n"}],
+    }
+    percent = to_percent_python(notebook)
+    assert "%matplotlib inline" in percent
+    assert "import os" in percent
+
+
+def test_to_script_leaves_non_python_notebooks_unchanged() -> None:
+    notebook = {
+        "metadata": {"kernelspec": {"name": "ir", "language": "r"}},
+        "cells": [{"cell_type": "code", "source": "library(ggplot2)\n"}],
+    }
+    assert to_script(notebook) == "library(ggplot2)\n"
+
+
+def test_to_script_infers_r_from_kernelspec_name() -> None:
+    notebook = {
+        "metadata": {"kernelspec": {"name": "ir"}},
+        "cells": [{"cell_type": "code", "source": "library(ggplot2)\n"}],
+    }
+    assert to_script(notebook) == "library(ggplot2)\n"
+
+
+def test_to_markdown_uses_declared_code_language() -> None:
+    notebook = {
+        "metadata": {"kernelspec": {"name": "ir"}},
+        "cells": [{"cell_type": "code", "source": "library(ggplot2)\n"}],
+    }
+    markdown = to_markdown(notebook)
+    assert "```r\n" in markdown
+    assert "library(ggplot2)" in markdown
+    assert "```python" not in markdown
 
 
 def test_from_percent_python_treats_md_as_markdown() -> None:

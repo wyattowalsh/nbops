@@ -114,6 +114,11 @@ def test_clean_convert_concat_diff_new(tmp_path: Path, sample_notebook_file: Pat
     assert converted.exit_code == 0
     assert "# Title" in converted.stdout
 
+    scripted = runner.invoke(app, ["convert", str(sample_notebook_file), "--to", "script"])
+    assert scripted.exit_code == 0
+    assert "import os" in scripted.stdout
+    assert "# Title" not in scripted.stdout
+
     out_py = tmp_path / "demo.py"
     to_py = runner.invoke(
         app, ["convert", str(sample_notebook_file), "--to", "py", "-o", str(out_py)]

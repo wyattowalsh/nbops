@@ -162,6 +162,14 @@ def test_inspect_lint_clean_convert(sample_notebook: dict[str, Any]) -> None:
     assert converted.status_code == 200
     assert "# Title" in converted.json()["text"]
 
+    scripted = client.post(
+        "/notebooks/convert", json={"notebook": sample_notebook, "format": "script"}
+    )
+    assert scripted.status_code == 200
+    assert scripted.json()["format"] == "script"
+    assert "import os" in scripted.json()["text"]
+    assert "# Title" not in scripted.json()["text"]
+
 
 def test_operations_split_filter_tag_ids_new(sample_notebook: dict[str, Any]) -> None:
     catalog = client.get("/operations")
