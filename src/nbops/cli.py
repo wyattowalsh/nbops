@@ -134,6 +134,9 @@ def stats(
     typer.echo(f"  Error outputs : {result.error_outputs}")
     typer.echo(f"  Kernel        : {result.kernel or '-'}")
     typer.echo(f"  Language      : {result.language or '-'}")
+    typer.echo(f"  Widgets       : {'yes' if result.has_widgets else 'no'}")
+    typer.echo(f"  Attachment cells: {result.attachment_cells}")
+    typer.echo(f"  Attachment files: {result.attachment_files}")
 
 
 @app.command("inspect")

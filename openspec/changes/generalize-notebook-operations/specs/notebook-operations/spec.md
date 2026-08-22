@@ -110,6 +110,13 @@ empty source when attachments are present.
 - **THEN** `diff_notebooks` reports a changed cell
 - **WHEN** that empty-source attachment cell is linted
 - **THEN** lint still reports ``NB003``
+- **WHEN** `compute_stats` runs on a notebook with cell attachments, including
+  ``metadata.attachments`` fallback
+- **THEN** `attachment_cells` and `attachment_files` count those files and
+  `empty_cells` still excludes attachment-only cells
+- **WHEN** `nbops stats` prints a table
+- **THEN** the original seven rows remain and extra rows report widgets plus
+  attachment cell and file counts
 
 ### Requirement: Percent-format tags and widget residue
 

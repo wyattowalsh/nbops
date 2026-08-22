@@ -23,7 +23,7 @@ class NotebookStats(BaseModel):
     raw_cells: int = Field(..., ge=0, description="Number of raw cells.")
     code_lines: int = Field(..., ge=0, description="Total non-empty lines of code.")
     markdown_lines: int = Field(0, ge=0, description="Total non-empty markdown lines.")
-    empty_cells: int = Field(0, ge=0, description="Cells whose source is empty or whitespace.")
+    empty_cells: int = Field(0, ge=0, description="Cells with no source and no attachments.")
     executed_code_cells: int = Field(
         0, ge=0, description="Code cells with a non-null execution count."
     )
@@ -37,6 +37,8 @@ class NotebookStats(BaseModel):
     nbformat_minor: int | None = Field(None, description="nbformat minor version.")
     has_widgets: bool = Field(False, description="Whether widget metadata is present.")
     tags: list[str] = Field(default_factory=list, description="Sorted unique cell tags.")
+    attachment_cells: int = Field(0, ge=0, description="Cells that have one or more attachments.")
+    attachment_files: int = Field(0, ge=0, description="Total attached files across all cells.")
 
 
 class Heading(BaseModel):

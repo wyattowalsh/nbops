@@ -19,7 +19,7 @@ class Operation(BaseModel):
 OPERATIONS: tuple[Operation, ...] = (
     Operation(
         name="stats",
-        summary="Cell, line, output, and kernel statistics.",
+        summary="Cell, line, output, kernel, and attachment statistics.",
         library="nbops.inspect.compute_stats",
         cli="nbops stats",
         api="POST /notebooks/stats",

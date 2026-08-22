@@ -18,7 +18,7 @@
 | -- | ---- | ------ | -------- |
 | TASK-001 | Domain-general `src/nbops` package | done | `src/nbops/` |
 | TASK-002 | I/O via nbformat (load/save/validate/new); v4 omitted cell ids preserved | done | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
-| TASK-003 | Inspect (stats, outline, imports, outputs) | done | `src/nbops/inspect.py`; `nbops outputs`; `extract_imports` skips IPython magics / non-Python kernels / `%%writefile`; heading outline is ATX+setext and skips fences |
+| TASK-003 | Inspect (stats, outline, imports, outputs) | done | `src/nbops/inspect.py`; `nbops outputs`; `extract_imports` skips IPython magics / non-Python kernels / `%%writefile`; heading outline is ATX+setext and skips fences; `compute_stats` reports `attachment_cells` / `attachment_files`; CLI extras print widgets and attachment counts |
 | TASK-004 | Clean outputs/counts/ids/empty cells | done | `src/nbops/clean.py`; widgets and output-linked cell keys stripped with outputs; attachments kept; attachment-only cells are not dropped as empty |
 | TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py`; `add_tags` / `remove_tags` |
 | TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py`; `NB007` is IPython-aware and skipped for non-Python kernels and file-body magics; `NB002` uses the shared heading extractor |

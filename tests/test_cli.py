@@ -57,6 +57,9 @@ def test_stats_command_table(sample_notebook_file: Path) -> None:
     assert result.exit_code == 0
     assert "Total cells   : 4" in result.stdout
     assert "Code lines    : 4" in result.stdout
+    assert "Widgets       : no" in result.stdout
+    assert "Attachment cells: 0" in result.stdout
+    assert "Attachment files: 0" in result.stdout
 
 
 def test_stats_command_json(sample_notebook_file: Path) -> None:
@@ -65,6 +68,9 @@ def test_stats_command_json(sample_notebook_file: Path) -> None:
     payload = json.loads(result.stdout)
     assert payload["total_cells"] == 4
     assert payload["language"] == "python"
+    assert payload["attachment_cells"] == 0
+    assert payload["attachment_files"] == 0
+    assert payload["has_widgets"] is False
 
 
 def test_stats_command_missing_file() -> None:
@@ -72,11 +78,59 @@ def test_stats_command_missing_file() -> None:
     assert result.exit_code != 0
 
 
+def test_stats_table_reports_widgets_and_attachments(tmp_path: Path) -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "# Title\n",
+                "attachments": {
+                    "a.png": {"image/png": "aaa"},
+                    "b.png": {"image/png": "bbb"},
+                },
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "x = 1\n",
+                "outputs": [],
+            },
+        ],
+        "metadata": {
+            "kernelspec": {
+                "display_name": "Python 3",
+                "language": "python",
+                "name": "python3",
+            },
+            "widgets": {"state": {"x": {}}},
+        },
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    path = tmp_path / "attached.ipynb"
+    path.write_text(json.dumps(notebook), encoding="utf-8")
+    result = runner.invoke(app, ["stats", str(path)])
+    assert result.exit_code == 0
+    assert f"Notebook: {path}" in result.stdout
+    assert "Total cells   : 2" in result.stdout
+    assert "Code cells    : 1" in result.stdout
+    assert "Markdown cells: 1" in result.stdout
+    assert "Raw cells     : 0" in result.stdout
+    assert "Code lines    : 1" in result.stdout
+    assert "Kernel        : Python 3" in result.stdout
+    assert "Language      : python" in result.stdout
+    assert "Widgets       : yes" in result.stdout
+    assert "Attachment cells: 1" in result.stdout
+    assert "Attachment files: 2" in result.stdout
+
+
 def test_inspect_headings_imports_lint(sample_notebook_file: Path) -> None:
     inspect_result = runner.invoke(app, ["inspect", str(sample_notebook_file)])
     assert inspect_result.exit_code == 0
     payload = json.loads(inspect_result.stdout)
     assert payload["stats"]["total_cells"] == 4
+    assert payload["stats"]["attachment_cells"] == 0
     assert payload["outline"][0]["title"] == "Title"
     assert payload["outputs"][0]["output_type"] == "stream"
 

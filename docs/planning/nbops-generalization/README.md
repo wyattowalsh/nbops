@@ -22,7 +22,7 @@ the exhaustive program derived from:
 | -- | ----------- | -------- |
 | G1 | Domain-general notebook ops library (not NBA-specific, not stats-only) | `src/nbops/` package |
 | G2 | Load/save/validate/new via nbformat | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
-| G3 | Inspect: stats, outline, imports, outputs | `src/nbops/inspect.py`; CLI/API headings+imports+outputs; IPython-aware import extraction; heading outline skips fenced hashes and reads setext |
+| G3 | Inspect: stats, outline, imports, outputs | `src/nbops/inspect.py`; CLI/API headings+imports+outputs; IPython-aware import extraction; heading outline skips fenced hashes and reads setext; stats inventory includes `attachment_cells` / `attachment_files` |
 | G4 | Clean outputs, counts, ids, empty cells | `src/nbops/clean.py` (widgets and output-linked cell keys stripped with outputs; attachments kept; attachment-only cells are not empty) |
 | G5 | Transform: filter, concat, split, kernel, tags, cell ids | `src/nbops/transform.py`; concat uniquifies duplicate present ids only |
 | G6 | Structural lint catalog NB000–NB011 | `src/nbops/lint.py` `ISSUE_CATALOG`; `NB007` IPython-aware, skipped for non-Python kernels and file-body magics; `NB002` uses the shared heading extractor |

@@ -48,7 +48,9 @@ CLI, and HTTP surfaces.
 - Settings load from `NBOPS_*` environment variables via pydantic-settings
 - Cell attachments are content: they keep a cell from being dropped as empty,
   survive output cleaning, and participate in cell-level diffs. `NB003` still
-  flags empty source.
+  flags empty source. `compute_stats` reports `attachment_cells` and
+  `attachment_files` additively; `nbops stats` prints those counts plus widgets
+  without removing the original seven table rows.
 
 ## Risks / Trade-offs
 

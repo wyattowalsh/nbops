@@ -73,6 +73,9 @@ def test_notebook_stats_endpoint(sample_notebook: dict[str, Any]) -> None:
     assert body["total_cells"] == 4
     assert body["code_cells"] == 2
     assert body["code_lines"] == 4
+    assert body["attachment_cells"] == 0
+    assert body["attachment_files"] == 0
+    assert body["has_widgets"] is False
 
 
 def test_notebook_stats_rejects_invalid() -> None:
@@ -101,6 +104,7 @@ def test_inspect_headings_imports_from_py(sample_notebook: dict[str, Any]) -> No
     assert inspect.status_code == 200
     assert inspect.json()["outline"][0]["title"] == "Title"
     assert inspect.json()["outputs"][0]["output_type"] == "stream"
+    assert inspect.json()["stats"]["attachment_cells"] == 0
 
     headings = client.post("/notebooks/headings", json={"notebook": sample_notebook})
     assert headings.status_code == 200

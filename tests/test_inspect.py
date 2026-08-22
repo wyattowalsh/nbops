@@ -62,6 +62,41 @@ def test_compute_stats_does_not_count_attachment_only_cells_as_empty() -> None:
     )
     assert result.empty_cells == 0
     assert result.markdown_cells == 1
+    assert result.attachment_cells == 1
+    assert result.attachment_files == 1
+
+
+def test_compute_stats_counts_attachments_across_cells_and_metadata() -> None:
+    result = compute_stats(
+        {
+            "cells": [
+                {
+                    "cell_type": "markdown",
+                    "metadata": {},
+                    "source": "![a](attachment:a.png)\n",
+                    "attachments": {
+                        "a.png": {"image/png": "aaa"},
+                        "b.png": {"image/png": "bbb"},
+                    },
+                },
+                {
+                    "cell_type": "raw",
+                    "metadata": {"attachments": {"note.txt": {"text/plain": "hi"}}},
+                    "source": "note\n",
+                },
+                {
+                    "cell_type": "code",
+                    "metadata": {},
+                    "source": "x = 1\n",
+                    "attachments": {},
+                },
+                "skip-me",
+            ]
+        }
+    )
+    assert result.attachment_cells == 2
+    assert result.attachment_files == 3
+    assert result.empty_cells == 0
 
 
 def test_compute_stats_empty_notebook() -> None:
@@ -70,6 +105,9 @@ def test_compute_stats_empty_notebook() -> None:
     assert result.code_lines == 0
     assert result.kernel is None
     assert result.language is None
+    assert result.attachment_cells == 0
+    assert result.attachment_files == 0
+    assert result.has_widgets is False
 
 
 def test_compute_stats_infers_language_from_kernelspec_name() -> None:

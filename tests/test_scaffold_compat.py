@@ -85,6 +85,9 @@ def test_original_scaffold_cli_table_prints_seven_rows(
     assert "Code lines    : 4" in result.stdout
     assert "Kernel        : Python 3" in result.stdout
     assert "Language      : python" in result.stdout
+    assert "Widgets       : no" in result.stdout
+    assert "Attachment cells: 0" in result.stdout
+    assert "Attachment files: 0" in result.stdout
 
 
 def test_original_scaffold_cli_invalid_json_fails_cleanly(tmp_path: Path) -> None:

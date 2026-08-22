@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 from nbops.cells import (
     as_mapping,
+    cell_attachments,
     cell_source,
     cell_tags,
     cells_of,
@@ -41,6 +42,7 @@ def compute_stats(notebook: Mapping[str, Any] | Any) -> NotebookStats:
     code_cells = markdown_cells = raw_cells = 0
     code_lines = markdown_lines = empty_cells = 0
     executed_code_cells = error_outputs = stream_outputs = display_outputs = 0
+    attachment_cells = attachment_files = 0
     tags: set[str] = set()
 
     for cell in cells:
@@ -48,6 +50,10 @@ def compute_stats(notebook: Mapping[str, Any] | Any) -> NotebookStats:
             continue
         if is_empty_cell(cell):
             empty_cells += 1
+        attachments = cell_attachments(cell)
+        if attachments:
+            attachment_cells += 1
+            attachment_files += len(attachments)
         tags.update(cell_tags(cell))
         cell_type = cell.get("cell_type")
         if cell_type == "code":
@@ -98,6 +104,8 @@ def compute_stats(notebook: Mapping[str, Any] | Any) -> NotebookStats:
         nbformat_minor=minor if isinstance(minor, int) else None,
         has_widgets=has_widgets,
         tags=sorted(tags),
+        attachment_cells=attachment_cells,
+        attachment_files=attachment_files,
     )
 
 

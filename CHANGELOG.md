@@ -92,3 +92,6 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   attachment payloads; lint `NB003` still reports empty source
 - CI compatibility smoke matches `just smoke` convert coverage (`--to py`,
   `--to script`, `--to md`)
+- `compute_stats` / `nbops stats` / `POST /notebooks/stats` inventory cell
+  attachments (`attachment_cells`, `attachment_files`) and print widgets plus
+  those counts as extra CLI rows; the original seven-row table remains

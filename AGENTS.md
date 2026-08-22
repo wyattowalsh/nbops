@@ -57,7 +57,9 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
 - Cell-level diff (`nbops diff`) compares cell type, source, and attachments.
 - Empty-cell stats and `clean` with `empty_cells` ignore cells that still have
   attachments; cleaning outputs does not strip attachments. Lint `NB003` still
-  reports empty source.
+  reports empty source. `compute_stats` reports `attachment_cells` and
+  `attachment_files`; `nbops stats` prints widgets and those counts as extra
+  rows without removing the original seven-row table.
 - Validate notebooks against the nbformat schema (`nbops validate` /
   `POST /notebooks/validate`).
 - Directory batch operations: `nbops batch {stats,lint,clean,validate}`.
