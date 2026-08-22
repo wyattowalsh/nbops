@@ -113,12 +113,15 @@ The library SHALL add and remove cell tags on a chosen cell index.
 ### Requirement: Jupytext percent kernelspec
 
 `from_percent_python` SHALL apply `kernelspec` name, display name, and language from a
-leading Jupytext `# ---` YAML header when `name` is present.
+leading Jupytext `# ---` YAML header when `name` is present. `to_percent_python`
+SHALL emit that header when the notebook has a kernelspec name.
 
 #### Scenario: Percent script kernelspec
 
 - **WHEN** a percent script includes a Jupytext header with `kernelspec.name`
 - **THEN** the restored notebook metadata uses that kernelspec
+- **WHEN** a notebook with a named kernelspec is converted to percent Python and back
+- **THEN** kernel name, display name, and language are restored
 
 ### Requirement: New notebook display name
 

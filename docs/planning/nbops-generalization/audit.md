@@ -24,7 +24,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G4 / TASK-004 | Clean outputs/counts/ids/empty | `src/nbops/clean.py`; widgets and output-linked cell keys stripped with outputs; `tests/test_clean.py` | verified (recovered) |
 | G5 / TASK-005 | Transform filter/concat/split/kernel/tags/ids | concat uniquifies duplicate present ids and leaves omitted ids omitted; `add_tags` / `remove_tags`; `tests/test_transform.py` | verified (recovered) |
 | G6 / TASK-006 | Lint NB000–NB011 | `ISSUE_CATALOG` length 12; tests cover NB000–NB011 | verified (recovered) |
-| G7 / TASK-007 | Convert py/script/md + percent roundtrip | `to_percent_python` / `from_percent_python`; tags, cell ids, optional Jupytext titles, and generic `key=value`/JSON cell metadata round-trip; `[md]` alias; bracket-safe lists; YAML kernelspec; omitted ids stay omitted | verified (recovered) |
+| G7 / TASK-007 | Convert py/script/md + percent roundtrip | `to_percent_python` / `from_percent_python`; tags, cell ids, optional Jupytext titles, generic `key=value`/JSON cell metadata, and kernelspec YAML round-trip; `[md]` alias; bracket-safe lists; omitted ids stay omitted | verified (recovered) |
 | G8 / TASK-008 | Cell-level diff | `src/nbops/diff.py`; `tests/test_diff.py` | verified (recovered) |
 | G9 / TASK-009 | Batch directory + tqdm | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}`; stats/clean fail-closed | verified (recovered) |
 | G10 / TASK-010 | Optional execute extra | `pyproject.toml` `[execute]`; extra mocked in default tests; omitted v4 cell ids restored after execute | verified (recovered) |

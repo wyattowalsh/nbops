@@ -7,7 +7,7 @@ import json
 import re
 from typing import TYPE_CHECKING, Any
 
-from nbops.cells import cell_source, cell_tags, cells_of
+from nbops.cells import as_mapping, cell_source, cell_tags, cells_of
 from nbops.io import new_notebook
 from nbops.models import ConvertResult
 from nbops.transform import set_kernelspec
@@ -30,8 +30,13 @@ def to_percent_python(notebook: Mapping[str, Any]) -> str:
             chunks.append(f"{header}\n{quoted}")
         else:
             chunks.append(f"{header}\n{source}")
-    text = "\n\n".join(chunks).rstrip() + "\n"
-    return text if chunks else ""
+    body = ("\n\n".join(chunks).rstrip() + "\n") if chunks else ""
+    front_matter = _jupytext_kernelspec_front_matter(notebook)
+    if not front_matter:
+        return body
+    if not body:
+        return front_matter
+    return f"{front_matter}{body}"
 
 
 def to_script(notebook: Mapping[str, Any]) -> str:
@@ -523,6 +528,30 @@ def _yaml_scalar(value: str) -> str:
     if len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in {'"', "'"}:
         return stripped[1:-1]
     return stripped
+
+
+_YAML_BARE_SCALAR = re.compile(r"^[A-Za-z_][A-Za-z0-9_.-]*$")
+
+
+def _yaml_emit_scalar(value: str) -> str:
+    if _YAML_BARE_SCALAR.match(value):
+        return value
+    return json.dumps(value)
+
+
+def _jupytext_kernelspec_front_matter(notebook: Mapping[str, Any]) -> str:
+    """Emit a Jupytext ``# ---`` header for a kernelspec that has a name."""
+    kernelspec = as_mapping(as_mapping(notebook.get("metadata")).get("kernelspec"))
+    name = kernelspec.get("name")
+    if not isinstance(name, str) or not name:
+        return ""
+    lines = ["# ---", "# kernelspec:"]
+    for key in ("name", "display_name", "language"):
+        value = kernelspec.get(key)
+        if isinstance(value, str) and value:
+            lines.append(f"#   {key}: {_yaml_emit_scalar(value)}")
+    lines.append("# ---")
+    return "\n".join(lines) + "\n"
 
 
 def _kernelspec_from_jupytext_front_matter(text: str) -> dict[str, str] | None:

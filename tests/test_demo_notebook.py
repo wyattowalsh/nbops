@@ -68,3 +68,7 @@ def test_demo_notebook_stats_lint_and_percent_roundtrip() -> None:
     ]
     assert [cell["id"] for cell in restored["cells"]] == ["title", "area", "print-area", "done"]
     assert restored["cells"][1]["metadata"]["tags"] == ["demo"]
+    kernelspec = restored["metadata"]["kernelspec"]
+    assert kernelspec["name"] == "python3"
+    assert kernelspec["display_name"] == "Python 3"
+    assert kernelspec["language"] == "python"

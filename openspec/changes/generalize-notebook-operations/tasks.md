@@ -34,3 +34,4 @@
 - [x] 1.32 Percent convert round-trips present cell ids and leaves omitted ids omitted on `from-py`
 - [x] 1.33 Percent convert parses Jupytext optional cell titles so `[markdown]`/`[raw]` after a title keep the right cell type
 - [x] 1.34 Percent convert emits/parses generic Jupytext cell metadata (`key=value` and JSON objects) without filling omitted ids
+- [x] 1.35 Percent convert emits Jupytext kernelspec YAML so convert→from-py preserves kernel name/display/language

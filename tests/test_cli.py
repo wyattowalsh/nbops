@@ -120,7 +120,9 @@ def test_clean_convert_concat_diff_new(tmp_path: Path, sample_notebook_file: Pat
     )
     assert to_py.exit_code == 0
     percent = out_py.read_text(encoding="utf-8")
-    assert percent.startswith("# %%")
+    assert percent.startswith("# ---")
+    assert "# kernelspec:" in percent
+    assert "# %%" in percent
     assert 'tags=["setup"]' in percent
 
     restored = tmp_path / "from-py.ipynb"

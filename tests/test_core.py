@@ -40,7 +40,10 @@ def test_public_outputs_validate_and_convert_exports() -> None:
     notebook = new_notebook()
     validate_notebook(notebook)
     assert list_outputs(notebook) == []
-    assert to_percent_python(notebook) == ""
+    percent = to_percent_python(notebook)
+    assert percent.startswith("# ---")
+    assert "#   name: python3" in percent
+    assert "# %%" not in percent
 
 
 def test_load_notebook_default_is_lenient_like_original_scaffold(tmp_path: Path) -> None:

@@ -22,7 +22,7 @@
 | TASK-004 | Clean outputs/counts/ids/empty cells | done | `src/nbops/clean.py`; widgets and output-linked cell keys stripped with outputs |
 | TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py`; `add_tags` / `remove_tags` |
 | TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py` |
-| TASK-007 | Convert to percent py / script / md, plus percent roundtrip | done | `src/nbops/convert.py`; tags, ids, optional Jupytext titles, and generic `key=value`/JSON cell metadata round-trip; `[md]` alias; YAML kernelspec; omitted ids stay omitted |
+| TASK-007 | Convert to percent py / script / md, plus percent roundtrip | done | `src/nbops/convert.py`; tags, ids, optional Jupytext titles, generic `key=value`/JSON cell metadata, and kernelspec YAML round-trip; `[md]` alias; omitted ids stay omitted |
 | TASK-008 | Cell-level diff | done | `src/nbops/diff.py` |
 | TASK-009 | Directory batch + tqdm | done | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}` |
 | TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py`; omitted cell ids restored after execute |

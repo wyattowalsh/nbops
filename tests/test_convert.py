@@ -29,6 +29,8 @@ from nbops.lint import lint_notebook
 
 def test_percent_and_script_and_markdown(sample_notebook: dict[str, Any]) -> None:
     percent = to_percent_python(sample_notebook)
+    assert percent.startswith("# ---")
+    assert '#   display_name: "Python 3"' in percent
     assert "# %% [markdown]" in percent
     assert "# %%" in percent
     assert "import os" in percent
@@ -57,6 +59,10 @@ def test_percent_roundtrip_preserves_cell_types_and_source(sample_notebook: dict
         assert cell_source(left).rstrip() == cell_source(right).rstrip()
         assert right.get("id") == left.get("id")
         assert right.get("metadata", {}).get("tags", []) == left.get("metadata", {}).get("tags", [])
+    kernelspec = restored["metadata"]["kernelspec"]
+    assert kernelspec["name"] == "python3"
+    assert kernelspec["display_name"] == "Python 3"
+    assert kernelspec["language"] == "python"
 
 
 def test_from_percent_python_empty_and_preamble() -> None:
@@ -343,6 +349,56 @@ def test_empty_notebook_conversions() -> None:
     assert to_percent_python(empty) == ""
     assert to_script(empty) == ""
     assert to_markdown(empty) == ""
+
+
+def test_percent_roundtrip_preserves_non_python_kernelspec() -> None:
+    notebook = {
+        "metadata": {
+            "kernelspec": {
+                "name": "ir",
+                "display_name": "R",
+                "language": "r",
+            }
+        },
+        "cells": [{"cell_type": "code", "metadata": {}, "source": "x <- 1\n"}],
+    }
+    text = to_percent_python(notebook)
+    assert text.startswith("# ---")
+    assert "# kernelspec:" in text
+    assert "#   name: ir" in text
+    assert '#   display_name: "R"' in text or "#   display_name: R" in text
+    assert "#   language: r" in text
+    restored = from_percent_python(text)
+    kernelspec = restored["metadata"]["kernelspec"]
+    assert kernelspec["name"] == "ir"
+    assert kernelspec["display_name"] == "R"
+    assert kernelspec["language"] == "r"
+    assert cell_source(restored["cells"][0]).rstrip() == "x <- 1"
+
+
+def test_percent_omits_kernelspec_yaml_without_name() -> None:
+    text = to_percent_python(
+        {
+            "metadata": {"kernelspec": {"display_name": "Python 3"}},
+            "cells": [{"cell_type": "code", "metadata": {}, "source": "x = 1\n"}],
+        }
+    )
+    assert "kernelspec:" not in text
+    assert text.startswith("# %%")
+
+
+def test_percent_kernelspec_yaml_skips_blank_and_non_string_fields() -> None:
+    text = to_percent_python(
+        {
+            "metadata": {
+                "kernelspec": {"name": "python3", "display_name": "", "language": 3},
+            },
+            "cells": [{"cell_type": "code", "metadata": {}, "source": "x = 1\n"}],
+        }
+    )
+    assert "#   name: python3" in text
+    assert "display_name:" not in text
+    assert "language:" not in text
 
 
 def test_empty_markdown_raw_and_code_cells_roundtrip() -> None:

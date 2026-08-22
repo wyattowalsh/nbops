@@ -57,3 +57,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Percent convert parses Jupytext optional cell titles (`# %% Title [markdown]`) and round-trips `metadata.title`
 - Percent convert emits/parses Jupytext cell metadata beyond `id`/`tags`/`title`
   (`key=value` pairs and JSON objects, including dotted keys and `collapsed`/`slideshow`)
+- Percent convert emits Jupytext `kernelspec` YAML so convert→from-py keeps kernel
+  name, display name, and language
