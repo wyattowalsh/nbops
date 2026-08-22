@@ -17,6 +17,7 @@ uv run nbops outputs examples/demo.ipynb --json
 uv run nbops batch validate examples
 uv run nbops --version
 uv run python -m nbops version
+uv run nbops serve --help
 ```
 
 Compatibility invariants:

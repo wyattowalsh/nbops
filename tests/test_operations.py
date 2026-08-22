@@ -109,3 +109,12 @@ def test_catalog_parsers_reject_malformed_entries() -> None:
         catalog_http_route(Operation(name="x", summary="x", library="x", api="not-a-route"))
     assert catalog_cli_argv(Operation(name="x", summary="x", library="x")) is None
     assert catalog_http_route(Operation(name="x", summary="x", library="x")) is None
+
+
+def test_system_commands_are_not_catalog_operations() -> None:
+    names = set(operation_names())
+    assert "serve" not in names
+    assert "version" not in names
+    click_group = get_command(cli_app)
+    assert "serve" in click_group.commands
+    assert "version" in click_group.commands

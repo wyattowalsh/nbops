@@ -17,4 +17,4 @@ cli:
     uv run nbops --help
 
 api:
-    uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
+    uv run nbops serve --host 0.0.0.0 --port 8000

@@ -26,7 +26,7 @@
 | TASK-008 | Cell-level diff | done | `src/nbops/diff.py` |
 | TASK-009 | Directory batch + tqdm | done | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}` |
 | TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py` |
-| TASK-011 | Typer CLI for every catalog operation | done | `src/nbops/cli.py` |
+| TASK-011 | Typer CLI for every catalog operation | done | `src/nbops/cli.py`; system commands `version`/`serve` are not catalog ops |
 | TASK-012 | FastAPI surface + `GET /operations` | done | `src/nbops/api.py` |
 | TASK-013 | Preserve stats scaffold contract | done | `core.py`, `stats`, `/notebooks/stats` |
 | TASK-014 | Tests mirroring src, coverage ≥90% | done | `tests/`, `--cov-fail-under=90` |
@@ -51,6 +51,7 @@ uv run pytest
 uv run nbops stats examples/demo.ipynb --json
 uv run nbops --version
 uv run python -m nbops version
+uv run nbops serve --help
 ```
 
 Compatibility invariant: `compute_stats`, `nbops stats`, `POST /notebooks/stats`.

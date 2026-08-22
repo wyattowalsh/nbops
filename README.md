@@ -68,6 +68,7 @@ uv run nbops split examples/demo.ipynb -o /tmp/parts
 uv run nbops diff a.ipynb b.ipynb
 uv run nbops new /tmp/empty.ipynb
 uv run nbops kernel examples/demo.ipynb --name python3 --language python -o /tmp/k.ipynb
+uv run nbops exec examples/demo.ipynb -o /tmp/executed.ipynb
 uv run nbops filter examples/demo.ipynb --type code -o /tmp/code.ipynb
 uv run nbops tag examples/demo.ipynb --cell 0 --add intro -o /tmp/tagged.ipynb
 uv run nbops ids examples/demo.ipynb -o /tmp/ids.ipynb
@@ -81,7 +82,7 @@ uv run nbops batch validate examples
 ## HTTP API
 
 ```bash
-uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
+uv run nbops serve --host 0.0.0.0 --port 8000
 ```
 
 | Method | Path | Purpose |

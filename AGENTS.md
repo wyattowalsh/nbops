@@ -24,7 +24,7 @@ uv run pytest
 uv run nbops --help
 uv run nbops --version
 uv run python -m nbops version
-uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
+uv run nbops serve --host 0.0.0.0 --port 8000
 ```
 
 Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`.
@@ -47,6 +47,9 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   `POST /notebooks/validate`).
 - Directory batch operations: `nbops batch {stats,lint,clean,validate}`.
 - The operations catalog (`nbops ops` / `GET /operations`) is the shared CLI/API inventory.
+- Mutating CLI commands (`clean`, `filter`, `tag`, `ids`, `kernel`, `exec`)
+  require `--output` or `--in-place` and do not overwrite the input by default.
+- `nbops serve` and `nbops version` are system commands, not catalog operations.
 
 ## Out of scope unless explicitly requested
 

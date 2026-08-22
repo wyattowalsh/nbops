@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from nbops.settings import configure_logging, get_settings
@@ -37,3 +39,15 @@ def test_settings_from_env(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_configure_logging_does_not_raise() -> None:
     configure_logging("WARNING")
+
+
+def test_settings_env_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    env_file = tmp_path / ".env"
+    env_file.write_text("NBOPS_LOG_LEVEL=ERROR\nNBOPS_PROGRESS=false\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("NBOPS_LOG_LEVEL", raising=False)
+    monkeypatch.delenv("NBOPS_PROGRESS", raising=False)
+    get_settings.cache_clear()
+    settings = get_settings()
+    assert settings.log_level == "ERROR"
+    assert settings.progress is False

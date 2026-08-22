@@ -14,3 +14,5 @@ uv run pytest
 4. Do not commit secrets, notebooks with huge outputs, or hand-edited lockfiles.
 5. Prefer absolute `nbops.*` imports.
 6. Follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
+7. CI runs `pytest` on Python 3.12 and 3.13. Keep `.python-version` at 3.12 so local
+   `uv` matches the default interpreter; do not drop the 3.13 matrix job.

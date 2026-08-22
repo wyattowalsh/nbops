@@ -94,6 +94,18 @@ def version() -> None:
 
 
 @app.command()
+def serve(
+    host: Annotated[str, typer.Option("--host", help="Bind address.")] = "127.0.0.1",
+    port: Annotated[int, typer.Option("--port", min=1, max=65535)] = 8000,
+    reload: Annotated[bool, typer.Option("--reload")] = False,
+) -> None:
+    """Run the FastAPI HTTP surface."""
+    import uvicorn
+
+    uvicorn.run("nbops.api:app", host=host, port=port, reload=reload)
+
+
+@app.command()
 def stats(
     notebook: Annotated[
         Path,
@@ -367,19 +379,20 @@ def kernel(
     name: Annotated[str, typer.Option("--name")],
     display_name: Annotated[str | None, typer.Option("--display-name")] = None,
     language: Annotated[str | None, typer.Option("--language")] = None,
-    in_place: Annotated[bool, typer.Option("--in-place")] = True,
+    in_place: Annotated[bool, typer.Option("--in-place")] = False,
     output: Annotated[Path | None, typer.Option("--output", "-o")] = None,
 ) -> None:
     """Set the notebook kernelspec."""
+    if output is None and not in_place:
+        _fail("Specify --output PATH or --in-place.")
     updated = set_kernelspec(
         _load(notebook, validate=False),
         name=name,
         display_name=display_name,
         language=language,
     )
-    dest = output or notebook
-    if output is None and not in_place:
-        _fail("Specify --output PATH or --in-place.")
+    dest = notebook if in_place else output
+    assert dest is not None
     save_notebook(updated, dest, validate=False)
     typer.echo(str(dest))
 
@@ -388,6 +401,7 @@ def kernel(
 def exec_cmd(
     notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
     output: Annotated[Path | None, typer.Option("--output", "-o")] = None,
+    in_place: Annotated[bool, typer.Option("--in-place")] = False,
     timeout: Annotated[int | None, typer.Option("--timeout", min=1)] = None,
     kernel_name: Annotated[str | None, typer.Option("--kernel")] = None,
     allow_errors: Annotated[bool, typer.Option("--allow-errors")] = False,
@@ -395,7 +409,10 @@ def exec_cmd(
     """Execute a notebook (requires the optional extra nbops[execute])."""
     from nbops.execute import execute_notebook
 
-    dest = output or notebook
+    if output is None and not in_place:
+        _fail("Specify --output PATH or --in-place.")
+    dest = notebook if in_place else output
+    assert dest is not None
     try:
         executed = execute_notebook(
             _load(notebook, validate=False),

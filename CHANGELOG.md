@@ -19,3 +19,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - `NBOPS_` environment settings (optional working-directory `.env`; see `.env.example`)
 - CLI `--version` and `python -m nbops`
 - CLI `--strip-metadata` for extra cell metadata keys (`CleanOptions.metadata_keys`)
+- System command `nbops serve` (`--host`, `--port`, `--reload`); `just api` uses it
+- `nbops kernel` and `nbops exec` require `--output` or `--in-place` (no implicit overwrite)

@@ -209,3 +209,21 @@ def test_tag_and_execute_error_paths(
     monkeypatch.setattr(execute_mod, "_notebook_client_class", lambda: Boom)
     response = client.post("/notebooks/execute", json={"notebook": sample_notebook})
     assert response.status_code == 422
+
+
+def test_execute_endpoint_success(
+    monkeypatch: pytest.MonkeyPatch, sample_notebook: dict[str, Any]
+) -> None:
+    def fake_execute(notebook: dict[str, Any], **kwargs: Any) -> dict[str, Any]:
+        assert kwargs["kernel_name"] == "python3"
+        updated = dict(notebook)
+        updated["metadata"] = {**dict(notebook.get("metadata") or {}), "executed": True}
+        return updated
+
+    monkeypatch.setattr("nbops.execute.execute_notebook", fake_execute)
+    response = client.post(
+        "/notebooks/execute",
+        json={"notebook": sample_notebook, "kernel_name": "python3", "timeout": 5},
+    )
+    assert response.status_code == 200
+    assert response.json()["notebook"]["metadata"]["executed"] is True

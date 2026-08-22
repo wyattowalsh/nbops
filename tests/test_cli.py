@@ -161,7 +161,16 @@ def test_split_kernel_and_batch(tmp_path: Path, sample_notebook_file: Path) -> N
     assert any(split_dir.glob("*.ipynb"))
 
     kernel = runner.invoke(
-        app, ["kernel", str(sample_notebook_file), "--name", "python3", "--language", "python"]
+        app,
+        [
+            "kernel",
+            str(sample_notebook_file),
+            "--name",
+            "python3",
+            "--language",
+            "python",
+            "--in-place",
+        ],
     )
     assert kernel.exit_code == 0
 
@@ -226,7 +235,7 @@ def test_exec_missing_extra(monkeypatch: pytest.MonkeyPatch, sample_notebook_fil
         "_notebook_client_class",
         lambda: (_ for _ in ()).throw(MissingExtraError("need extra")),
     )
-    result = runner.invoke(app, ["exec", str(sample_notebook_file)])
+    result = runner.invoke(app, ["exec", str(sample_notebook_file), "--in-place"])
     assert result.exit_code != 0
     assert "need extra" in result.output
 
@@ -448,6 +457,9 @@ def test_cli_error_paths(tmp_path: Path, sample_notebook_file: Path) -> None:
         app, ["kernel", str(sample_notebook_file), "--name", "python3", "--no-in-place"]
     )
     assert kernel.exit_code != 0
+    kernel_omitted = runner.invoke(app, ["kernel", str(sample_notebook_file), "--name", "python3"])
+    assert kernel_omitted.exit_code != 0
+    assert "Specify --output" in kernel_omitted.output
 
     tag_bad = runner.invoke(
         app, ["tag", str(sample_notebook_file), "--cell", "99", "--add", "x", "--in-place"]
@@ -473,3 +485,118 @@ def test_cli_error_paths(tmp_path: Path, sample_notebook_file: Path) -> None:
     assert batch_clean_json.exit_code != 0
     batch_validate_json = runner.invoke(app, ["batch", "validate", str(batch_dir), "--json"])
     assert batch_validate_json.exit_code != 0
+
+
+def test_serve_invokes_uvicorn(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_run(*args: object, **kwargs: object) -> None:
+        captured["args"] = args
+        captured["kwargs"] = kwargs
+
+    monkeypatch.setattr("uvicorn.run", fake_run)
+    result = runner.invoke(app, ["serve", "--host", "0.0.0.0", "--port", "9000"])
+    assert result.exit_code == 0
+    assert captured["args"] == ("nbops.api:app",)
+    assert captured["kwargs"] == {"host": "0.0.0.0", "port": 9000, "reload": False}
+
+
+def test_serve_reload_flag(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: dict[str, object] = {}
+
+    def fake_run(*args: object, **kwargs: object) -> None:
+        captured["kwargs"] = kwargs
+
+    monkeypatch.setattr("uvicorn.run", fake_run)
+    result = runner.invoke(app, ["serve", "--reload"])
+    assert result.exit_code == 0
+    assert captured["kwargs"]["host"] == "127.0.0.1"
+    assert captured["kwargs"]["port"] == 8000
+    assert captured["kwargs"]["reload"] is True
+
+
+def test_exec_requires_output_or_in_place(sample_notebook_file: Path) -> None:
+    result = runner.invoke(app, ["exec", str(sample_notebook_file)])
+    assert result.exit_code != 0
+    assert "Specify --output" in result.output
+
+
+def test_cli_exec_writes_output_when_execute_succeeds(
+    monkeypatch: pytest.MonkeyPatch, sample_notebook_file: Path, tmp_path: Path
+) -> None:
+    executed = json.loads(sample_notebook_file.read_text(encoding="utf-8"))
+    executed.setdefault("metadata", {})["executed"] = True
+
+    def fake_execute(notebook: object, **kwargs: object) -> dict[str, object]:
+        assert kwargs["timeout"] == 30
+        assert kwargs["kernel_name"] == "python3"
+        assert kwargs["allow_errors"] is True
+        return executed
+
+    monkeypatch.setattr("nbops.execute.execute_notebook", fake_execute)
+    output = tmp_path / "executed.ipynb"
+    result = runner.invoke(
+        app,
+        [
+            "exec",
+            str(sample_notebook_file),
+            "--output",
+            str(output),
+            "--timeout",
+            "30",
+            "--kernel",
+            "python3",
+            "--allow-errors",
+        ],
+    )
+    assert result.exit_code == 0
+    assert str(output) in result.stdout
+    written = json.loads(output.read_text(encoding="utf-8"))
+    assert written["metadata"]["executed"] is True
+
+
+def test_verbose_flag_still_runs_stats(sample_notebook_file: Path) -> None:
+    result = runner.invoke(app, ["--verbose", "stats", str(sample_notebook_file), "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["total_cells"] == 4
+
+
+def test_batch_lint_strict_fails_on_warnings(tmp_path: Path) -> None:
+    warn_dir = tmp_path / "warn-batch"
+    warn_dir.mkdir()
+    (warn_dir / "warn.ipynb").write_text(
+        json.dumps(
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "id": "c1",
+                        "metadata": {},
+                        "source": "x = 1\n",
+                        "outputs": [],
+                        "execution_count": 1,
+                    }
+                ],
+                "metadata": {},
+                "nbformat": 4,
+                "nbformat_minor": 5,
+            }
+        ),
+        encoding="utf-8",
+    )
+    table = runner.invoke(app, ["batch", "lint", str(warn_dir), "--strict"])
+    assert table.exit_code != 0
+    listed = runner.invoke(app, ["batch", "lint", str(warn_dir), "--strict", "--json"])
+    assert listed.exit_code != 0
+    payload = json.loads(listed.stdout)
+    assert payload[0]["ok"] is True
+
+
+def test_mutating_in_place_writes(sample_notebook_file: Path) -> None:
+    result = runner.invoke(
+        app, ["clean", str(sample_notebook_file), "--in-place", "--keep-outputs"]
+    )
+    assert result.exit_code == 0
+    ids = runner.invoke(app, ["ids", str(sample_notebook_file), "--in-place"])
+    assert ids.exit_code == 0
