@@ -1,18 +1,27 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e`. Local follow-up adds lint
-output-size edges and HTTP demo stats. Last GitHub-verified HEAD `09a0069`
-(run [32591070323](https://github.com/wyattowalsh/nbops/actions/runs/32591070323)):
-**155 passed**, coverage **99.24%** on CPython 3.12.14 and 3.13.15.
+Recorded on branch `cursor/nbops-generalization-673e`.
+
+Last GitHub-verified HEAD `b871503` (run
+[32591170814](https://github.com/wyattowalsh/nbops/actions/runs/32591170814)):
+**157 passed**, coverage **99.55%** on CPython 3.12.14 and 3.13.15.
+
+This working tree adds remaining defensive-branch tests (API lifespan / split
+`ValueError`, successful `nbclient` import, nbformat schema
+`NotebookValidationError`, inspect unknown cell/output types, diff insert/unknown
+opcodes). Local `uv run pytest` on that follow-up: **164 passed**, coverage
+**100.00%**.
 
 ## Tooling
 
 | Gate | Result |
 | ---- | ------ |
 | `uv sync --locked --group dev` | lockfile resolved; editable `nbops==0.2.0` |
-| `uv run ruff check src tests` | All checks passed on `09a0069` |
-| `uv run ty check` | All checks passed on `09a0069` |
-| `uv run pytest` | GitHub: **155 passed**, **99.24%**; local follow-up pending on this revision |
+| `uv run ruff check src tests` | All checks passed |
+| `uv run ruff format --check src tests` | passed |
+| `uv run ty check` | All checks passed |
+| `uv run pytest` | Local: **164 passed**, **100.00%**. GitHub last verified: **157 passed**, **99.55%** on `b871503` |
+| `uvx --from rust-just just quality-gates` | passed (`just check` + `just smoke`; host `just` is not installed in this cloud image) |
 
 ## Runtime smoke
 
@@ -26,7 +35,6 @@ TASK-001–023 are **not** a substitute.
 
 ## GitHub Actions
 
-Run [32591070323](https://github.com/wyattowalsh/nbops/actions/runs/32591070323)
-on `09a0069` concluded **success** (all 5 jobs): **155 passed**, **99.24%** on
-3.12.14 and 3.13.15. Product commit [32591008820](https://github.com/wyattowalsh/nbops/actions/runs/32591008820)
-on `d417178` matched those counts.
+Run [32591170814](https://github.com/wyattowalsh/nbops/actions/runs/32591170814)
+on `b871503` concluded **success** (all 5 jobs): **157 passed**, **99.55%** on
+3.12.14 and 3.13.15.

@@ -128,6 +128,34 @@ def test_list_outputs_stream_and_error(
     assert compute_stats(display_notebook).display_outputs == 1
 
 
+def test_compute_stats_unknown_cell_and_output_types() -> None:
+    notebook = {
+        "cells": [
+            {"cell_type": "markdown", "metadata": {}, "source": "# T\n"},
+            {"cell_type": "raw", "metadata": {}, "source": "raw\n"},
+            {"cell_type": "unknown", "metadata": {}, "source": "skip\n"},
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "x\n",
+                "outputs": [
+                    {"output_type": "error", "ename": "E", "evalue": "x"},
+                    {"output_type": "stream", "name": "stdout", "text": "hi"},
+                    {"output_type": "display_data", "data": {"text/plain": "1"}},
+                    {"output_type": "update_display_data", "data": {"text/plain": "2"}},
+                ],
+            },
+        ]
+    }
+    stats = compute_stats(notebook)
+    assert stats.markdown_cells == 1
+    assert stats.raw_cells == 1
+    assert stats.code_cells == 1
+    assert stats.error_outputs == 1
+    assert stats.stream_outputs == 1
+    assert stats.display_outputs == 1
+
+
 def test_list_outputs_fallbacks_and_non_list() -> None:
     notebook = {
         "cells": [

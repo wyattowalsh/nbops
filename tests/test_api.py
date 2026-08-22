@@ -242,6 +242,25 @@ def test_tag_and_execute_error_paths(
     assert response.status_code == 422
 
 
+def test_lifespan_enters_and_health_still_works() -> None:
+    with TestClient(app) as lifespan_client:
+        response = lifespan_client.get("/health")
+        assert response.status_code == 200
+        assert response.json()["status"] == "ok"
+
+
+def test_split_maps_library_valueerror(
+    monkeypatch: pytest.MonkeyPatch, sample_notebook: dict[str, Any]
+) -> None:
+    def _raise_level(*_args: Any, **_kwargs: Any) -> Any:
+        raise ValueError("Heading level must be between 1 and 6.")
+
+    monkeypatch.setattr("nbops.api.split_by_headings", _raise_level)
+    response = client.post("/notebooks/split", json={"notebook": sample_notebook, "level": 1})
+    assert response.status_code == 422
+    assert "Heading level" in response.json()["detail"]
+
+
 def test_execute_endpoint_success(
     monkeypatch: pytest.MonkeyPatch, sample_notebook: dict[str, Any]
 ) -> None:

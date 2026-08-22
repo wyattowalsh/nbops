@@ -37,6 +37,22 @@ def test_execute_success_with_fake_client(
     assert len(executed["cells"]) == 4
 
 
+def test_notebook_client_class_returns_imported_type(monkeypatch: pytest.MonkeyPatch) -> None:
+    import sys
+    import types
+
+    module = types.ModuleType("nbclient")
+
+    class NotebookClient:
+        pass
+
+    module.NotebookClient = NotebookClient
+    monkeypatch.setitem(sys.modules, "nbclient", module)
+    from nbops.execute import _notebook_client_class
+
+    assert _notebook_client_class() is NotebookClient
+
+
 def test_execute_wraps_client_errors(
     monkeypatch: pytest.MonkeyPatch, sample_notebook: dict[str, Any]
 ) -> None:

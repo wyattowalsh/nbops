@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from nbops.diff import diff_notebooks
 
 
@@ -38,6 +40,36 @@ def test_changed_added_removed(sample_notebook: dict[str, Any]) -> None:
     assert report.identical is False
     assert report.changed + report.added + report.removed > 0
     assert report.right_cells == 3
+
+
+def test_diff_skips_unknown_opcode(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeMatcher:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            pass
+
+        def get_opcodes(self) -> list[tuple[str, int, int, int, int]]:
+            return [("equal", 0, 0, 0, 0), ("noop", 0, 0, 0, 0)]
+
+    monkeypatch.setattr("nbops.diff.SequenceMatcher", FakeMatcher)
+    report = diff_notebooks({"cells": []}, {"cells": []})
+    assert report.cells == []
+    assert report.identical is True
+
+
+def test_diff_insert_then_equal_continues_opcode_loop() -> None:
+    left = {"cells": [{"cell_type": "markdown", "metadata": {}, "source": "# End\n"}]}
+    right = {
+        "cells": [
+            {"cell_type": "code", "metadata": {}, "source": "x = 1\n"},
+            {"cell_type": "markdown", "metadata": {}, "source": "# End\n"},
+        ]
+    }
+    inserted = diff_notebooks(left, right)
+    assert inserted.added == 1
+    assert inserted.equal == 1
+    deleted = diff_notebooks(right, left)
+    assert deleted.removed == 1
+    assert deleted.equal == 1
 
 
 def test_diff_replace_with_unequal_span() -> None:

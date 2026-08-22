@@ -63,6 +63,11 @@ def test_validate_rejects_wrong_shape() -> None:
         parse_notebook({"cells": "nope", "nbformat": 4, "nbformat_minor": 5}, validate=True)
 
 
+def test_validate_rejects_schema_error() -> None:
+    with pytest.raises(InvalidNotebookError, match="schema validation"):
+        validate_notebook({"nbformat": 4, "nbformat_minor": 5, "cells": [], "metadata": "bad"})
+
+
 def test_load_notebook_validates_new_notebook(tmp_path: Path) -> None:
     path = tmp_path / "fresh.ipynb"
     save_notebook(new_notebook(), path, validate=True)
