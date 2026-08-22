@@ -4,9 +4,9 @@ Recorded on branch `cursor/nbops-generalization-673e` after Jupytext kernelspec,
 `nbops new` display-name, and output-linked clean-key completeness. Local gates:
 **151 passed**, coverage **99.19%**.
 
-Last GitHub-verified SHA before this completeness revision: `46cbd35` (run
-[32590114562](https://github.com/wyattowalsh/nbops/actions/runs/32590114562),
-**144 passed** on CPython 3.12.14 and 3.13.15).
+GitHub-verified HEAD: `29abc7d` (run
+[32590811203](https://github.com/wyattowalsh/nbops/actions/runs/32590811203),
+**151 passed**, coverage **99.19%** on CPython 3.12.14 and 3.13.15).
 
 ## Tooling
 
@@ -49,8 +49,15 @@ and are **not** a substitute for the original dump.
 
 ## GitHub Actions
 
-Run [32590114562](https://github.com/wyattowalsh/nbops/actions/runs/32590114562)
-on `46cbd35` concluded **success** (all 5 jobs). Prior verified run
-[32589716713](https://github.com/wyattowalsh/nbops/actions/runs/32589716713) on
-`a9672fe` reported **144 passed** on CPython **3.12.14** and **3.13.15**.
-CI for this HEAD is pending.
+Run [32590811203](https://github.com/wyattowalsh/nbops/actions/runs/32590811203)
+on `29abc7d` concluded **success** (all 5 jobs):
+
+| Job | Result | Interpreter / notes |
+| --- | ------ | ------------------- |
+| `workflow-lint` | success | actionlint |
+| `lint` | success | ruff check + format |
+| `typecheck` | success | ty |
+| `test (3.12)` | success | CPython **3.12.14**, **151 passed**, coverage **99.19%**; Compatibility smoke includes `python -m nbops version`, `nbops --version`, `nbops validate`, `nbops outputs`, `nbops batch validate examples`, `nbops serve --help` |
+| `test (3.13)` | success | CPython **3.13.15**, **151 passed**, coverage **99.19%**; same Compatibility smoke |
+
+Prior verified runs: [32590702886](https://github.com/wyattowalsh/nbops/actions/runs/32590702886) (`77e94a3`), [32590114562](https://github.com/wyattowalsh/nbops/actions/runs/32590114562) (`46cbd35`, 144 tests).

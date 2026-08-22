@@ -32,7 +32,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test | verified (recovered) |
 | G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI | verified (recovered) |
 | G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules including `test_models.py` and `test_exceptions.py`; **151 passed**, **99.19%** | verified (recovered) |
-| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32589716713](https://github.com/wyattowalsh/nbops/actions/runs/32589716713) on `a9672fe`: **144 passed** on CPython **3.12.14** and **3.13.15**, including `nbops serve --help` | verified (recovered) |
+| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32590811203](https://github.com/wyattowalsh/nbops/actions/runs/32590811203) on `29abc7d`: **151 passed**, **99.19%** on CPython **3.12.14** and **3.13.15**, including `nbops serve --help` | verified (recovered) |
 | G16 / TASK-016 | AGENTS, CONTRIBUTING, README, CHANGELOG | plus `CODE_OF_CONDUCT.md`, `CLAUDE.md` → AGENTS.md, issue/PR templates, CODEOWNERS, FUNDING.yml, `.editorconfig`, `openspec/config.yaml` | verified (recovered) |
 | G17 / TASK-017 | uv lockfile + justfile | `uv.lock`, `justfile` | verified (recovered) |
 | G18 / TASK-018 | Shared operations catalog | `src/nbops/operations.py`; **20** ops | verified (recovered) |
@@ -50,7 +50,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | `uv run ruff check src tests` | passed | passed (`lint` job) |
 | `uv run ruff format --check src tests` | passed | passed (`lint` job) |
 | `uv run ty check` | passed | passed (`typecheck` job) |
-| `uv run pytest` | 151 passed, 99.19% locally after Jupytext/`new` completeness | pending on this HEAD; last GitHub success `46cbd35` ([32590114562](https://github.com/wyattowalsh/nbops/actions/runs/32590114562), 144 tests) |
+| `uv run pytest` | 151 passed, 99.19% | 151 passed on 3.12.14 **and** 3.13.15 at `29abc7d` ([32590811203](https://github.com/wyattowalsh/nbops/actions/runs/32590811203)) |
 | `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke on both interpreters |
 | `uv run nbops validate examples/demo.ipynb` | `ok` | CI Compatibility smoke on 3.12.14 and 3.13.15 |
 | `uv run nbops --version` / `python -m nbops version` | `0.2.0` | Compatibility smoke |
