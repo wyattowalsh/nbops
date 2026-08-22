@@ -43,6 +43,18 @@ gists (API 403), or this run's transcript (filename only). Recovered
 TASK-001–023 live in `codex-kickoff-recovered.md` and are **not** a substitute
 for the original dump.
 
-GitHub Actions is defined in `.github/workflows/ci.yml` (actionlint + ruff + ty +
-pytest 3.12/3.13). Workflows run on `main`, `cursor/**` pushes, and pull requests
-into `main`.
+## GitHub Actions
+
+Run [32585325015](https://github.com/wyattowalsh/nbops/actions/runs/32585325015)
+on `b3606f2` concluded **success** for:
+
+| Job | Result | Note |
+| --- | ------ | ---- |
+| `workflow-lint` | success | actionlint |
+| `lint` | success | ruff check + format |
+| `typecheck` | success | ty |
+| `test (3.12)` | success | 102 passed, 95.58% coverage, Python 3.12.14 |
+| `test (3.13)` | success | **not a 3.13 interpreter** — `uv` honored `.python-version` (3.12.3) |
+
+The matrix is being fixed so `UV_PYTHON` / `--python` override `.python-version`
+and the 3.13 job actually runs 3.13.
