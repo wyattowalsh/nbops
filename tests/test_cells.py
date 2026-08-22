@@ -25,6 +25,16 @@ def test_source_helpers() -> None:
     assert source_lines(cell)[0] == "import os"
     assert non_empty_line_count(cell) == 2
     assert is_empty_cell({"source": "  \n"}) is True
+    assert is_empty_cell({"source": "", "attachments": {"a.png": {"image/png": "aaa"}}}) is False
+    assert (
+        is_empty_cell({"source": "", "metadata": {"attachments": {"a.png": {"image/png": "aaa"}}}})
+        is False
+    )
+    assert is_empty_cell({"source": "", "attachments": {}}) is True
+    from nbops.cells import cell_attachments
+
+    assert cell_attachments({"attachments": "nope"}) == {}
+    assert cell_attachments({"attachments": {}}) == {}
     assert preview("one   two   three", limit=7) == preview("one two three", limit=7)
     assert len(preview("abcdefghij", limit=7)) == 7
 

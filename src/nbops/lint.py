@@ -9,7 +9,6 @@ from nbops.cells import (
     as_mapping,
     cell_source,
     cells_of,
-    is_empty_cell,
     is_python_notebook,
     markdown_headings,
     nested_mapping,
@@ -100,7 +99,7 @@ def lint_notebook(
             )
         else:
             seen_ids[cell_id] = index
-        if is_empty_cell(cell):
+        if not cell_source(cell).strip():
             issues.append(
                 LintIssue(
                     code="NB003",

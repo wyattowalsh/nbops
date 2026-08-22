@@ -103,6 +103,26 @@ that extractor as a notebook title.
 - **WHEN** `split_by_headings` runs at level 1
 - **THEN** setext H1 cells start sections and fenced ``#`` cells do not
 
+### Requirement: Attachments are cell content
+
+Cell ``attachments`` (falling back to ``metadata.attachments``) SHALL keep a
+cell from being treated as empty for stats and ``clean`` with ``empty_cells``.
+Cleaning outputs SHALL not strip attachments. Cell-level diff SHALL include
+attachment payloads in the cell signature. Lint ``NB003`` SHALL still report
+empty source when attachments are present.
+
+#### Scenario: Attachment-only cells survive clean and appear in diffs
+
+- **WHEN** a markdown cell has empty source and an image attachment
+- **THEN** `compute_stats.empty_cells` does not count it and `clean` with
+  `empty_cells` keeps the cell and its attachments
+- **WHEN** `clean` strips code-cell outputs
+- **THEN** that cell's `attachments` remain
+- **WHEN** two notebooks differ only in a cell attachment payload
+- **THEN** `diff_notebooks` reports a changed cell
+- **WHEN** that empty-source attachment cell is linted
+- **THEN** lint still reports ``NB003``
+
 ### Requirement: Percent-format tags and widget residue
 
 Percent-format conversion SHALL round-trip cell tags, optional titles, present

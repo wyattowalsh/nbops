@@ -79,8 +79,21 @@ def non_empty_line_count(cell: Mapping[str, Any]) -> int:
 
 
 def is_empty_cell(cell: Mapping[str, Any]) -> bool:
-    """Return True when a cell has no meaningful source."""
-    return not cell_source(cell).strip()
+    """Return True when a cell has no source and no attachments."""
+    return not cell_source(cell).strip() and not cell_attachments(cell)
+
+
+def cell_attachments(cell: Mapping[str, Any]) -> dict[str, Any]:
+    """Return nbformat cell attachments, falling back to ``metadata.attachments``."""
+    attachments = cell.get("attachments")
+    if isinstance(attachments, dict) and attachments:
+        return attachments
+    metadata = cell.get("metadata")
+    if isinstance(metadata, dict):
+        nested = metadata.get("attachments")
+        if isinstance(nested, dict) and nested:
+            return nested
+    return {}
 
 
 def as_mapping(value: Any) -> dict[str, Any]:

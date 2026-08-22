@@ -10,6 +10,7 @@ from urllib.parse import quote, unquote
 
 from nbops.cells import (
     as_mapping,
+    cell_attachments,
     cell_source,
     cell_tags,
     cells_of,
@@ -94,7 +95,7 @@ def to_markdown(notebook: Mapping[str, Any]) -> str:
         cell_type = cell.get("cell_type")
         source = cell_source(cell).rstrip()
         if cell_type == "markdown" or cell_type == "raw":
-            attachments = _cell_attachments(cell)
+            attachments = cell_attachments(cell)
             rewritten = _inline_attachment_references(source, attachments)
             referenced = _referenced_attachment_keys(source, attachments)
             if rewritten:
@@ -709,18 +710,6 @@ _REF_ATTACHMENT_RE = re.compile(
     r"(?P<name>[^\s]+)",
     re.IGNORECASE,
 )
-
-
-def _cell_attachments(cell: Mapping[str, Any]) -> Any:
-    attachments = cell.get("attachments")
-    if isinstance(attachments, dict) and attachments:
-        return attachments
-    metadata = cell.get("metadata")
-    if isinstance(metadata, dict):
-        nested = metadata.get("attachments")
-        if isinstance(nested, dict) and nested:
-            return nested
-    return attachments
 
 
 def _attachment_lookup_keys(filename: str) -> list[str]:

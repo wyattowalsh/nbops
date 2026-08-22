@@ -123,6 +123,26 @@ def test_lint_skips_writefile_cell_magic() -> None:
     assert "NB007" not in {issue.code for issue in lint_notebook(notebook).issues}
 
 
+def test_lint_reports_empty_source_even_with_attachments() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "id": "image",
+                "metadata": {},
+                "source": "",
+                "attachments": {"plot.png": {"image/png": "aaa"}},
+            }
+        ],
+        "metadata": {"kernelspec": {"name": "python3"}},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    codes = {issue.code for issue in lint_notebook(notebook).issues}
+    assert "NB003" in codes
+    assert "NB002" in codes
+
+
 def test_lint_output_size_and_non_mapping_outputs() -> None:
     notebook = {
         "cells": [

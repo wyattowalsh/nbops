@@ -51,6 +51,10 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
 - Inspect: stats, outline, imports, and output inventory (`nbops outputs` /
   `POST /notebooks/outputs`). Heading outline (and `split_by_headings` / `NB002`)
   uses ATX plus setext headings and ignores fenced or 4-space example hashes.
+- Cell-level diff (`nbops diff`) compares cell type, source, and attachments.
+- Empty-cell stats and `clean` with `empty_cells` ignore cells that still have
+  attachments; cleaning outputs does not strip attachments. Lint `NB003` still
+  reports empty source.
 - Validate notebooks against the nbformat schema (`nbops validate` /
   `POST /notebooks/validate`).
 - Directory batch operations: `nbops batch {stats,lint,clean,validate}`.

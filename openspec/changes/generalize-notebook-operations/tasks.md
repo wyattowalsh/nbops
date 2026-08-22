@@ -48,3 +48,4 @@
 - [x] 1.46 Shared markdown heading extractor (ATX + setext, skip fences) for outline, split, and NB002
 - [x] 1.47 Markdown convert appends unreferenced `image/*` cell attachments
 - [x] 1.48 Skip `%%writefile` / `%%file` / `%%cython` / `%%R` and other file-body or non-Python cell magics
+- [x] 1.49 Attachments count as cell content for empty-cell stats/clean, survive output cleaning, and participate in cell diffs

@@ -87,3 +87,6 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   ATX plus setext headings, skipping fenced code and 4-space indented hashes
 - `%%writefile` / `%%file` / `%%cython` / `%%R` (and similar file-body or
   non-Python cell magics) are skipped by `NB007`, import extraction, and `to_script`
+- Cell `attachments` keep a cell from being treated as empty (stats / `clean`
+  `empty_cells`); output cleaning does not strip them; cell diffs include
+  attachment payloads; lint `NB003` still reports empty source

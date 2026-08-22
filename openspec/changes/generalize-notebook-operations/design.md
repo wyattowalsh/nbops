@@ -46,6 +46,9 @@ CLI, and HTTP surfaces.
 - Optional execution is an extra so the default install stays kernel-free
 - Batch walks skip `.ipynb_checkpoints`
 - Settings load from `NBOPS_*` environment variables via pydantic-settings
+- Cell attachments are content: they keep a cell from being dropped as empty,
+  survive output cleaning, and participate in cell-level diffs. `NB003` still
+  flags empty source.
 
 ## Risks / Trade-offs
 

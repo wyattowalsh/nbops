@@ -86,3 +86,66 @@ def test_diff_replace_with_unequal_span() -> None:
     assert report.right_cells == 2
     assert report.changed + report.added >= 1
     assert any(cell.change in {"changed", "added"} for cell in report.cells)
+
+
+def test_diff_detects_attachment_only_changes() -> None:
+    left = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "See plot\n",
+                "attachments": {"plot.png": {"image/png": "aaa"}},
+            }
+        ]
+    }
+    same = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "See plot\n",
+                "attachments": {"plot.png": {"image/png": "aaa"}},
+            }
+        ]
+    }
+    nested = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {"attachments": {"plot.png": {"image/png": "aaa"}}},
+                "source": "See plot\n",
+            }
+        ]
+    }
+    right = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "See plot\n",
+                "attachments": {"plot.png": {"image/png": "bbb"}},
+            }
+        ]
+    }
+    empty = {"cells": [{"cell_type": "markdown", "metadata": {}, "source": "See plot\n"}]}
+    assert diff_notebooks(left, same).identical is True
+    assert diff_notebooks(left, nested).identical is True
+    changed = diff_notebooks(left, right)
+    assert changed.identical is False
+    assert changed.changed == 1
+    assert diff_notebooks(left, empty).changed == 1
+
+    cycle: dict[str, Any] = {}
+    cycle["self"] = cycle
+    cycled = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "See plot\n",
+                "attachments": cycle,
+            }
+        ]
+    }
+    assert diff_notebooks(cycled, empty).identical is False

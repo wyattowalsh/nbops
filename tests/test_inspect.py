@@ -47,6 +47,23 @@ def test_compute_stats_empty_cells_and_widgets(sample_notebook: dict[str, Any]) 
     assert result.has_widgets is True
 
 
+def test_compute_stats_does_not_count_attachment_only_cells_as_empty() -> None:
+    result = compute_stats(
+        {
+            "cells": [
+                {
+                    "cell_type": "markdown",
+                    "metadata": {},
+                    "source": "",
+                    "attachments": {"plot.png": {"image/png": "aaa"}},
+                }
+            ]
+        }
+    )
+    assert result.empty_cells == 0
+    assert result.markdown_cells == 1
+
+
 def test_compute_stats_empty_notebook() -> None:
     result = compute_stats({"cells": []})
     assert result.total_cells == 0

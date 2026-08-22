@@ -82,3 +82,28 @@ def test_clean_skips_non_mapping_cell_metadata() -> None:
     assert cleaned["cells"][0]["outputs"] == []
     assert "id" not in cleaned["cells"][0]
     assert cleaned["cells"][0]["metadata"] is None
+
+
+def test_clean_preserves_attachments_and_keeps_attachment_only_cells() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "",
+                "attachments": {"plot.png": {"image/png": "aaa"}},
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "plot()\n",
+                "outputs": [{"output_type": "display_data", "data": {"image/png": "bbb"}}],
+                "attachments": {"note.png": {"image/png": "ccc"}},
+            },
+        ]
+    }
+    cleaned = clean_notebook(notebook, CleanOptions(empty_cells=True, outputs=True))
+    assert len(cleaned["cells"]) == 2
+    assert cleaned["cells"][0]["attachments"] == {"plot.png": {"image/png": "aaa"}}
+    assert cleaned["cells"][1]["outputs"] == []
+    assert cleaned["cells"][1]["attachments"] == {"note.png": {"image/png": "ccc"}}
