@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
 from fastapi.testclient import TestClient
 
 from nbops.api import app
@@ -51,6 +52,56 @@ def test_inspect_lint_clean_convert(sample_notebook: dict[str, Any]) -> None:
     )
     assert converted.status_code == 200
     assert "# Title" in converted.json()["text"]
+
+
+def test_operations_split_filter_tag_ids_new(sample_notebook: dict[str, Any]) -> None:
+    catalog = client.get("/operations")
+    assert catalog.status_code == 200
+    names = {item["name"] for item in catalog.json()}
+    assert "stats" in names
+    assert "exec" in names
+    assert "ops" in names
+
+    split = client.post("/notebooks/split", json={"notebook": sample_notebook, "level": 1})
+    assert split.status_code == 200
+    assert split.json()["sections"]
+
+    filtered = client.post(
+        "/notebooks/filter",
+        json={"notebook": sample_notebook, "cell_types": ["code"]},
+    )
+    assert filtered.status_code == 200
+    assert len(filtered.json()["notebook"]["cells"]) == 2
+
+    tagged = client.post(
+        "/notebooks/tag",
+        json={"notebook": sample_notebook, "cell_index": 0, "tags": ["intro"]},
+    )
+    assert tagged.status_code == 200
+    assert "intro" in tagged.json()["notebook"]["cells"][0]["metadata"]["tags"]
+
+    ids = client.post("/notebooks/ids", json={"notebook": sample_notebook})
+    assert ids.status_code == 200
+    assert ids.json()["notebook"]["cells"][0]["id"]
+
+    created = client.post("/notebooks/new")
+    assert created.status_code == 200
+    assert created.json()["notebook"]["cells"] == []
+
+
+def test_execute_endpoint_reports_missing_extra(
+    monkeypatch: pytest.MonkeyPatch, sample_notebook: dict[str, Any]
+) -> None:
+    from nbops import execute as execute_mod
+    from nbops.exceptions import MissingExtraError
+
+    monkeypatch.setattr(
+        execute_mod,
+        "_notebook_client_class",
+        lambda: (_ for _ in ()).throw(MissingExtraError("need extra")),
+    )
+    response = client.post("/notebooks/execute", json={"notebook": sample_notebook})
+    assert response.status_code == 503
 
 
 def test_concat_kernel_diff(sample_notebook: dict[str, Any]) -> None:

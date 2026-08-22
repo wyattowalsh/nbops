@@ -9,6 +9,7 @@ import pytest
 from nbops.transform import (
     add_tags,
     concat_notebooks,
+    ensure_cell_ids,
     filter_cells,
     set_kernelspec,
     split_by_headings,
@@ -63,3 +64,20 @@ def test_set_kernelspec_and_tags(sample_notebook: dict[str, Any]) -> None:
     assert "intro" in tagged["cells"][0]["metadata"]["tags"]
     with pytest.raises(IndexError):
         add_tags(sample_notebook, 99, ["x"])
+
+
+def test_ensure_cell_ids_fills_missing_and_duplicates() -> None:
+    notebook = {
+        "cells": [
+            {"cell_type": "markdown", "metadata": {}, "source": "# A\n"},
+            {"cell_type": "code", "id": "dup", "metadata": {}, "source": "x = 1\n", "outputs": []},
+            {"cell_type": "code", "id": "dup", "metadata": {}, "source": "y = 2\n", "outputs": []},
+        ],
+        "metadata": {},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    updated = ensure_cell_ids(notebook)
+    ids = [cell["id"] for cell in updated["cells"]]
+    assert all(isinstance(cell_id, str) and cell_id for cell_id in ids)
+    assert len(set(ids)) == 3

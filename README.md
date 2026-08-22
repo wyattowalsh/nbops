@@ -59,7 +59,13 @@ uv run nbops concat a.ipynb b.ipynb -o merged.ipynb
 uv run nbops split examples/demo.ipynb -o /tmp/parts
 uv run nbops diff a.ipynb b.ipynb
 uv run nbops new /tmp/empty.ipynb
+uv run nbops filter examples/demo.ipynb --type code -o /tmp/code.ipynb
+uv run nbops tag examples/demo.ipynb --cell 0 --add intro -o /tmp/tagged.ipynb
+uv run nbops ids examples/demo.ipynb -o /tmp/ids.ipynb
+uv run nbops ops
 uv run nbops batch stats examples --json
+uv run nbops batch lint examples
+uv run nbops batch clean examples
 ```
 
 ## HTTP API
@@ -71,14 +77,21 @@ uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
 | Method | Path | Purpose |
 | ------ | ---- | ------- |
 | `GET` | `/health` | Liveness |
+| `GET` | `/operations` | Operations catalog |
 | `POST` | `/notebooks/stats` | Cell/code statistics |
 | `POST` | `/notebooks/inspect` | Stats + outline + imports |
 | `POST` | `/notebooks/lint` | Structural quality report |
 | `POST` | `/notebooks/clean` | Strip outputs and residue |
 | `POST` | `/notebooks/convert` | `py` / `script` / `md` |
 | `POST` | `/notebooks/concat` | Concatenate notebooks |
+| `POST` | `/notebooks/split` | Split on markdown headings |
+| `POST` | `/notebooks/filter` | Keep cells by type/tag |
+| `POST` | `/notebooks/tag` | Add cell tags |
+| `POST` | `/notebooks/ids` | Assign unique cell ids |
 | `POST` | `/notebooks/kernel` | Set kernelspec |
 | `POST` | `/notebooks/diff` | Cell-level diff |
+| `POST` | `/notebooks/execute` | Execute (`nbops[execute]`) |
+| `POST` | `/notebooks/new` | Empty nbformat v4 notebook |
 
 Interactive docs: `http://127.0.0.1:8000/docs`.
 

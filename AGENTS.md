@@ -36,6 +36,9 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
 - Keep `compute_stats`, `nbops stats`, and `POST /notebooks/stats` as a
   compatibility surface for the original scaffold.
 - Coverage gate is `--cov-fail-under=85`.
+- Runtime settings use the `NBOPS_` prefix (`NBOPS_LOG_LEVEL`, `NBOPS_EXECUTE_TIMEOUT`).
+- Lint codes `NB000`–`NB011` are defined in `nbops.lint.ISSUE_CATALOG`.
+- The operations catalog (`nbops ops` / `GET /operations`) is the shared CLI/API inventory.
 
 ## Out of scope unless explicitly requested
 

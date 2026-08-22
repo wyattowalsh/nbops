@@ -11,6 +11,21 @@ from nbops.models import LintIssue, LintReport
 
 DEFAULT_MAX_OUTPUT_CHARS = 100_000
 
+ISSUE_CATALOG: dict[str, tuple[str, str]] = {
+    "NB000": ("error", "Document is not a notebook mapping with a cells list."),
+    "NB001": ("error", "Notebook has no cells."),
+    "NB002": ("warning", "Notebook has no top-level markdown title."),
+    "NB003": ("info", "Cell source is empty."),
+    "NB004": ("error", "Code cell has an error output."),
+    "NB005": ("info", "Code cell has not been executed."),
+    "NB006": ("warning", "Code cell outputs exceed the size budget."),
+    "NB007": ("error", "Code cell has invalid Python syntax."),
+    "NB008": ("warning", "Notebook is missing a kernelspec name."),
+    "NB009": ("warning", "Cell is missing an id (nbformat 4.5)."),
+    "NB010": ("error", "Duplicate cell id."),
+    "NB011": ("error", "Cell is not a mapping."),
+}
+
 
 def lint_notebook(
     notebook: Mapping[str, Any],
@@ -56,20 +71,26 @@ def lint_notebook(
             )
             continue
         cell_id = cell.get("id")
-        if isinstance(cell_id, str) and cell_id:
-            if cell_id in seen_ids:
-                issues.append(
-                    LintIssue(
-                        code="NB010",
-                        severity="error",
-                        message=(
-                            f"Duplicate cell id {cell_id!r} (first seen at {seen_ids[cell_id]})."
-                        ),
-                        cell_index=index,
-                    )
+        if not isinstance(cell_id, str) or not cell_id:
+            issues.append(
+                LintIssue(
+                    code="NB009",
+                    severity="warning",
+                    message="Cell is missing an id (nbformat 4.5).",
+                    cell_index=index,
                 )
-            else:
-                seen_ids[cell_id] = index
+            )
+        elif cell_id in seen_ids:
+            issues.append(
+                LintIssue(
+                    code="NB010",
+                    severity="error",
+                    message=(f"Duplicate cell id {cell_id!r} (first seen at {seen_ids[cell_id]})."),
+                    cell_index=index,
+                )
+            )
+        else:
+            seen_ids[cell_id] = index
         if is_empty_cell(cell):
             issues.append(
                 LintIssue(

@@ -1,8 +1,9 @@
-"""Transform notebooks: filter, concat, split, kernel, tags."""
+"""Transform notebooks: filter, concat, split, kernel, tags, cell ids."""
 
 from __future__ import annotations
 
 import re
+import uuid
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import Any
 
@@ -121,6 +122,23 @@ def set_kernelspec(
         metadata["language_info"] = language_info
     metadata["kernelspec"] = kernelspec
     updated["metadata"] = metadata
+    return updated
+
+
+def ensure_cell_ids(notebook: Mapping[str, Any]) -> dict[str, Any]:
+    """Return a copy with unique cell ids assigned where missing or duplicated."""
+    updated = as_notebook_dict(notebook)
+    seen: set[str] = set()
+    for cell in cells_of(updated):
+        if not isinstance(cell, dict):
+            continue
+        cell_id = cell.get("id")
+        if not isinstance(cell_id, str) or not cell_id or cell_id in seen:
+            cell_id = uuid.uuid4().hex[:12]
+            while cell_id in seen:
+                cell_id = uuid.uuid4().hex[:12]
+            cell["id"] = cell_id
+        seen.add(cell_id)
     return updated
 
 

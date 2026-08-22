@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Annotated, Any
 
@@ -19,7 +20,16 @@ from nbops.inspect import compute_stats, extract_imports, outline, stats_for_fil
 from nbops.io import load_notebook, new_notebook, save_notebook
 from nbops.lint import lint_notebook
 from nbops.models import CleanOptions
-from nbops.transform import concat_notebooks, set_kernelspec, split_by_headings
+from nbops.operations import OPERATIONS
+from nbops.settings import configure_logging, get_settings
+from nbops.transform import (
+    add_tags,
+    concat_notebooks,
+    ensure_cell_ids,
+    filter_cells,
+    set_kernelspec,
+    split_by_headings,
+)
 
 app = typer.Typer(
     name="nbops",
@@ -35,6 +45,17 @@ app.add_typer(batch_app, name="batch")
 def _fail(message: str, code: int = 1) -> None:
     typer.secho(message, err=True, fg=typer.colors.RED)
     raise typer.Exit(code)
+
+
+def _want_progress() -> bool:
+    return bool(get_settings().progress and sys.stderr.isatty())
+
+
+@app.callback()
+def _root(
+    verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Enable debug logging.")] = False,
+) -> None:
+    configure_logging("DEBUG" if verbose else None)
 
 
 def _emit_json(payload: Any) -> None:
@@ -140,7 +161,10 @@ def lint(
     ] = False,
 ) -> None:
     """Lint a notebook for structural quality issues."""
-    report = lint_notebook(_load(notebook, validate=False))
+    report = lint_notebook(
+        _load(notebook, validate=False),
+        max_output_chars=get_settings().max_output_chars,
+    )
     if as_json:
         _emit_json(report)
     else:
@@ -302,7 +326,7 @@ def kernel(
 def exec_cmd(
     notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
     output: Annotated[Path | None, typer.Option("--output", "-o")] = None,
-    timeout: Annotated[int, typer.Option("--timeout", min=1)] = 120,
+    timeout: Annotated[int | None, typer.Option("--timeout", min=1)] = None,
     kernel_name: Annotated[str | None, typer.Option("--kernel")] = None,
     allow_errors: Annotated[bool, typer.Option("--allow-errors")] = False,
 ) -> None:
@@ -313,7 +337,7 @@ def exec_cmd(
     try:
         executed = execute_notebook(
             _load(notebook, validate=False),
-            timeout=timeout,
+            timeout=timeout or get_settings().execute_timeout,
             kernel_name=kernel_name,
             cwd=notebook.parent,
             allow_errors=allow_errors,
@@ -325,13 +349,95 @@ def exec_cmd(
     typer.echo(str(dest))
 
 
+@app.command("ops")
+def ops_cmd(
+    as_json: Annotated[bool, typer.Option("--json")] = False,
+) -> None:
+    """List the notebook operations catalog."""
+    rows = [item.model_dump() for item in OPERATIONS]
+    if as_json:
+        _emit_json(rows)
+        return
+    for item in OPERATIONS:
+        typer.echo(f"{item.name:10} {item.cli or '-':22} {item.api or '-'}")
+
+
+@app.command("filter")
+def filter_cmd(
+    notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
+    output: Annotated[
+        Path | None, typer.Option("--output", "-o", help="Write the filtered notebook here.")
+    ] = None,
+    in_place: Annotated[bool, typer.Option("--in-place")] = False,
+    cell_types: Annotated[list[str] | None, typer.Option("--type")] = None,
+    tags: Annotated[list[str] | None, typer.Option("--tag")] = None,
+) -> None:
+    """Keep cells matching the given types and/or tags."""
+    if output is None and not in_place:
+        _fail("Specify --output PATH or --in-place.")
+    filtered = filter_cells(
+        _load(notebook, validate=False),
+        cell_types=cell_types or None,
+        tags=tags or None,
+    )
+    dest = notebook if in_place else output
+    assert dest is not None
+    save_notebook(filtered, dest, validate=False)
+    typer.echo(str(dest))
+
+
+@app.command("tag")
+def tag_cmd(
+    notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
+    cell: Annotated[int, typer.Option("--cell", min=0)],
+    add: Annotated[list[str] | None, typer.Option("--add")] = None,
+    output: Annotated[Path | None, typer.Option("--output", "-o")] = None,
+    in_place: Annotated[bool, typer.Option("--in-place")] = False,
+) -> None:
+    """Add tags to a cell by index."""
+    tags = list(add or [])
+    if not tags:
+        _fail("Specify at least one --add TAG.")
+    if output is None and not in_place:
+        _fail("Specify --output PATH or --in-place.")
+    try:
+        updated = add_tags(_load(notebook, validate=False), cell, tags)
+    except (IndexError, TypeError) as exc:
+        _fail(str(exc))
+        return
+    dest = notebook if in_place else output
+    assert dest is not None
+    save_notebook(updated, dest, validate=False)
+    typer.echo(str(dest))
+
+
+@app.command("ids")
+def ids_cmd(
+    notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
+    output: Annotated[Path | None, typer.Option("--output", "-o")] = None,
+    in_place: Annotated[bool, typer.Option("--in-place")] = False,
+) -> None:
+    """Assign unique cell ids where they are missing or duplicated."""
+    if output is None and not in_place:
+        _fail("Specify --output PATH or --in-place.")
+    updated = ensure_cell_ids(_load(notebook, validate=False))
+    dest = notebook if in_place else output
+    assert dest is not None
+    save_notebook(updated, dest, validate=False)
+    typer.echo(str(dest))
+
+
 @batch_app.command("stats")
 def batch_stats(
     root: Annotated[Path, typer.Argument(exists=True, readable=True)],
     as_json: Annotated[bool, typer.Option("--json")] = False,
 ) -> None:
     """Compute stats for every notebook under a directory."""
-    items = map_notebooks(root, lambda path: stats_for_file(path, validate=False).model_dump())
+    items = map_notebooks(
+        root,
+        lambda path: stats_for_file(path, validate=False).model_dump(),
+        progress=_want_progress(),
+    )
     if as_json:
         _emit_json([item.model_dump() for item in items])
         return
@@ -350,7 +456,9 @@ def batch_lint(
 ) -> None:
     """Lint every notebook under a directory."""
     items = map_notebooks(
-        root, lambda path: lint_notebook(load_notebook(path, validate=False)).model_dump()
+        root,
+        lambda path: lint_notebook(load_notebook(path, validate=False)).model_dump(),
+        progress=_want_progress(),
     )
     failed = False
     if as_json:
@@ -367,6 +475,33 @@ def batch_lint(
             failed = True
         if not as_json:
             typer.echo(f"{item.path}: {item.result['issue_count']} issue(s)")
+    if failed:
+        raise typer.Exit(1)
+
+
+@batch_app.command("clean")
+def batch_clean(
+    root: Annotated[Path, typer.Argument(exists=True, readable=True)],
+    as_json: Annotated[bool, typer.Option("--json")] = False,
+) -> None:
+    """Strip outputs and execution counts for every notebook under a directory."""
+
+    def _clean(path: Path) -> str:
+        cleaned = clean_notebook(load_notebook(path, validate=False))
+        save_notebook(cleaned, path, validate=False)
+        return str(path)
+
+    items = map_notebooks(root, _clean, progress=_want_progress())
+    if as_json:
+        _emit_json([item.model_dump() for item in items])
+        return
+    failed = False
+    for item in items:
+        if item.ok:
+            typer.echo(item.path)
+        else:
+            failed = True
+            typer.echo(f"{item.path}: ERROR {item.error}")
     if failed:
         raise typer.Exit(1)
 

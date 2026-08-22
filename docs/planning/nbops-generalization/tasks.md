@@ -2,16 +2,18 @@
 - [x] G2 I/O: load, save, validate, new notebook
 - [x] G3 Inspect: stats, outline, imports, output inventory
 - [x] G4 Clean outputs / execution counts / ids / empty cells
-- [x] G5 Transform: filter, concat, split, kernelspec, tags
-- [x] G6 Lint issue catalog (NB000–NB011)
+- [x] G5 Transform: filter, concat, split, kernelspec, tags, cell ids
+- [x] G6 Lint issue catalog (NB000–NB011, including NB009 missing ids)
 - [x] G7 Convert to percent Python, script, Markdown
 - [x] G8 Cell-level notebook diff
-- [x] G9 Batch directory operations
+- [x] G9 Batch directory operations (`stats`, `lint`, `clean`)
 - [x] G10 Optional nbclient execute extra
-- [x] G11 Typer CLI for every operation
-- [x] G12 FastAPI endpoints for inspect/lint/clean/convert/concat/kernel/diff
+- [x] G11 Typer CLI for every catalog operation
+- [x] G12 FastAPI endpoints covering the catalog (plus `GET /operations`)
 - [x] G13 Preserve stats CLI/API compatibility
 - [x] G14 Unit tests mirroring package modules
 - [x] G15 GitHub Actions CI (lint, ty, pytest 3.12/3.13)
 - [x] G16 README, AGENTS.md, CONTRIBUTING.md
 - [x] G17 uv project + justfile
+- [x] G18 Shared operations catalog (`nbops ops`)
+- [x] G19 `NBOPS_` pydantic-settings + loguru configuration

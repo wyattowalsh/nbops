@@ -179,3 +179,75 @@ def test_cli_json_and_batch_and_concat_guard(tmp_path: Path, sample_notebook_fil
     )
     assert diff_json.exit_code == 0
     assert json.loads(diff_json.stdout)["identical"] is True
+
+
+def test_ops_filter_tag_ids_and_batch_clean(tmp_path: Path, sample_notebook_file: Path) -> None:
+    ops = runner.invoke(app, ["ops", "--json"])
+    assert ops.exit_code == 0
+    names = {item["name"] for item in json.loads(ops.stdout)}
+    assert "stats" in names
+    assert "filter" in names
+
+    filtered = tmp_path / "code-only.ipynb"
+    filt = runner.invoke(
+        app,
+        ["filter", str(sample_notebook_file), "--type", "code", "-o", str(filtered)],
+    )
+    assert filt.exit_code == 0
+    assert json.loads(filtered.read_text(encoding="utf-8"))["cells"]
+
+    tagged = tmp_path / "tagged.ipynb"
+    tag = runner.invoke(
+        app,
+        [
+            "tag",
+            str(sample_notebook_file),
+            "--cell",
+            "0",
+            "--add",
+            "intro",
+            "-o",
+            str(tagged),
+        ],
+    )
+    assert tag.exit_code == 0
+
+    missing_ids = tmp_path / "noid.ipynb"
+    missing_ids.write_text(
+        json.dumps(
+            {
+                "cells": [
+                    {"cell_type": "markdown", "metadata": {}, "source": "# T\n"},
+                ],
+                "metadata": {"kernelspec": {"name": "python3"}},
+                "nbformat": 4,
+                "nbformat_minor": 5,
+            }
+        ),
+        encoding="utf-8",
+    )
+    with_ids = tmp_path / "with-ids.ipynb"
+    ids = runner.invoke(app, ["ids", str(missing_ids), "-o", str(with_ids)])
+    assert ids.exit_code == 0
+    assert json.loads(with_ids.read_text(encoding="utf-8"))["cells"][0]["id"]
+
+    batch_dir = tmp_path / "batch"
+    batch_dir.mkdir()
+    target = batch_dir / "demo.ipynb"
+    target.write_text(sample_notebook_file.read_text(encoding="utf-8"), encoding="utf-8")
+    cleaned = runner.invoke(app, ["batch", "clean", str(batch_dir), "--json"])
+    assert cleaned.exit_code == 0
+    payload = json.loads(target.read_text(encoding="utf-8"))
+    assert payload["cells"][1]["outputs"] == []
+
+
+def test_filter_and_tag_require_output(sample_notebook_file: Path) -> None:
+    filt = runner.invoke(app, ["filter", str(sample_notebook_file), "--type", "code"])
+    assert filt.exit_code != 0
+    tag = runner.invoke(app, ["tag", str(sample_notebook_file), "--cell", "0"])
+    assert tag.exit_code != 0
+    ids = runner.invoke(app, ["ids", str(sample_notebook_file)])
+    assert ids.exit_code != 0
+    ops = runner.invoke(app, ["ops"])
+    assert ops.exit_code == 0
+    assert "stats" in ops.stdout

@@ -22,7 +22,7 @@ def test_iter_and_map(tmp_path: Path, sample_notebook_file: Path) -> None:
     assert other in paths
     assert checkpoint not in paths
 
-    items = map_notebooks(tmp_path, lambda path: stats_for_file(path).total_cells)
+    items = map_notebooks(tmp_path, lambda path: stats_for_file(path).total_cells, progress=True)
     oks = [item for item in items if item.ok]
     assert len(oks) == 2
     assert all(item.result == 4 for item in oks)

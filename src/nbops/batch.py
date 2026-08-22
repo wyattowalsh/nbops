@@ -5,6 +5,8 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
+from tqdm import tqdm
+
 from nbops.models import BatchItem
 
 
@@ -29,10 +31,13 @@ def map_notebooks[T](
     fn: Callable[[Path], T],
     *,
     recursive: bool = True,
+    progress: bool = False,
 ) -> list[BatchItem[T]]:
     """Apply ``fn`` to every notebook under ``root`` and capture per-file errors."""
     items: list[BatchItem[T]] = []
-    for path in iter_notebooks(root, recursive=recursive):
+    paths = iter_notebooks(root, recursive=recursive)
+    iterator = tqdm(paths, desc="nbops", unit="nb", disable=not progress)
+    for path in iterator:
         try:
             items.append(BatchItem(path=str(path), ok=True, result=fn(path)))
         except Exception as exc:
