@@ -156,6 +156,39 @@ def test_lint_strict_errors(tmp_path: Path, error_notebook: dict) -> None:
     assert result.exit_code != 0
 
 
+def test_lint_ok_when_no_issues(tmp_path: Path) -> None:
+    path = tmp_path / "ok.ipynb"
+    path.write_text(
+        json.dumps(
+            {
+                "cells": [
+                    {
+                        "cell_type": "markdown",
+                        "id": "title",
+                        "metadata": {},
+                        "source": "# Title\n",
+                    },
+                    {
+                        "cell_type": "code",
+                        "id": "code",
+                        "execution_count": 1,
+                        "metadata": {},
+                        "outputs": [{"output_type": "stream", "name": "stdout", "text": "1\n"}],
+                        "source": "print(1)\n",
+                    },
+                ],
+                "metadata": {"kernelspec": {"name": "python3"}},
+                "nbformat": 4,
+                "nbformat_minor": 5,
+            }
+        ),
+        encoding="utf-8",
+    )
+    result = runner.invoke(app, ["lint", str(path)])
+    assert result.exit_code == 0
+    assert "ok" in result.stdout
+
+
 def test_exec_missing_extra(monkeypatch: pytest.MonkeyPatch, sample_notebook_file: Path) -> None:
     from nbops import execute as execute_mod
     from nbops.exceptions import MissingExtraError

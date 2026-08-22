@@ -1,7 +1,8 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e` after the validate and
-output-inventory catalog pass.
+Recorded on branch `cursor/nbops-generalization-673e` after the models/exceptions
+mirror tests. GitHub run [32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790)
+verified `e257f87` (107 tests) on CPython 3.12.14 and 3.13.15.
 
 ## Tooling
 
@@ -9,9 +10,9 @@ output-inventory catalog pass.
 | ---- | ------ |
 | `uv sync --locked --group dev` | lockfile resolved; editable `nbops==0.2.0` |
 | `uv run ruff check src tests` | All checks passed |
-| `uv run ruff format --check src tests` | 36 files already formatted |
+| `uv run ruff format --check src tests` | files already formatted |
 | `uv run ty check` | All checks passed |
-| `uv run pytest` | **107 passed**, coverage **96.38%** (fail-under 90) |
+| `uv run pytest` | **112 passed**, coverage **96.50%** (fail-under 90) |
 | `uvx pre-commit run --all-files` | Passed (whitespace/EOF hygiene + ruff) |
 
 ## Runtime smoke
@@ -37,10 +38,15 @@ transcript (filename only). Recovered TASK-001–023 live in
 
 ## GitHub Actions
 
-Prior verified runs on this branch:
+Run [32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790)
+on `e257f87` concluded **success** (all 5 jobs):
 
-- [32585631217](https://github.com/wyattowalsh/nbops/actions/runs/32585631217) on `f4ded51`: success (actionlint, ruff, ty, pytest 3.12.14 and 3.13.15)
-- [32585580529](https://github.com/wyattowalsh/nbops/actions/runs/32585580529): Compatibility smoke including demo stats 4 / 2 / 4 on both interpreters
+| Job | Result | Interpreter / notes |
+| --- | ------ | ------------------- |
+| `workflow-lint` | success | actionlint |
+| `lint` | success | ruff check + format |
+| `typecheck` | success | ty |
+| `test (3.12)` | success | CPython **3.12.14**, 107 passed; Compatibility smoke includes `nbops validate` (`ok`) and `nbops outputs`; demo stats 4 / 2 / 4 |
+| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed), 107 passed; same Compatibility smoke |
 
-A later push after this report should re-run CI with `nbops validate` and
-`nbops outputs` in the Compatibility smoke step.
+Earlier run [32585631217](https://github.com/wyattowalsh/nbops/actions/runs/32585631217) on `f4ded51` was also success (102 tests).

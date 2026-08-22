@@ -31,8 +31,8 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G11 / TASK-011 | Typer CLI for every catalog op | `test_catalog_cli_and_api_surfaces_exist` (20 ops) | verified (recovered) |
 | G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test | verified (recovered) |
 | G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI | verified (recovered) |
-| G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules; 107 passed, 96.38% | verified (recovered) |
-| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Prior run [32585631217](https://github.com/wyattowalsh/nbops/actions/runs/32585631217) success on **3.12.14** and **3.13.15** | verified (recovered; re-run pending this push) |
+| G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules including `test_models.py` and `test_exceptions.py`; 112 passed, 96.50% | verified (recovered) |
+| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790) on `e257f87`: actionlint, ruff, ty, pytest **3.12.14** and **3.13.15**, 107 passed | verified (recovered) |
 | G16 / TASK-016 | AGENTS, CONTRIBUTING, README, CHANGELOG | plus `CODE_OF_CONDUCT.md`, issue/PR templates, CODEOWNERS | verified (recovered) |
 | G17 / TASK-017 | uv lockfile + justfile | `uv.lock`, `justfile` | verified (recovered) |
 | G18 / TASK-018 | Shared operations catalog | `src/nbops/operations.py`; **20** ops | verified (recovered) |
@@ -50,9 +50,9 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | `uv run ruff check src tests` | passed | passed (`lint` job) |
 | `uv run ruff format --check src tests` | passed | passed (`lint` job) |
 | `uv run ty check` | passed | passed (`typecheck` job) |
-| `uv run pytest` | 107 passed, 96.38% | 102 passed on 3.12.14 **and** 3.13.15 at `f4ded51`; this revision not yet pushed |
-| `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke at `f4ded51` |
-| `uv run nbops validate examples/demo.ipynb` | `ok` | added to Compatibility smoke on this revision |
+| `uv run pytest` | 112 passed, 96.50% | 107 passed on 3.12.14 **and** 3.13.15 at `e257f87` ([32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790)); this revision adds model/exception mirror tests |
+| `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke on both interpreters |
+| `uv run nbops validate examples/demo.ipynb` | `ok` | CI Compatibility smoke on 3.12.14 and 3.13.15 |
 
 ## External
 
