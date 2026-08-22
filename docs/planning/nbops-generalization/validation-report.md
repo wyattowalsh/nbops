@@ -1,8 +1,6 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e` after adding `nbops batch validate`.
-GitHub run [32587098439](https://github.com/wyattowalsh/nbops/actions/runs/32587098439)
-verified `b22df3c` (**112 tests**) on CPython 3.12.14 and 3.13.15.
+Recorded on branch `cursor/nbops-generalization-673e` at `b3045f3`.
 
 ## Tooling
 
@@ -12,7 +10,7 @@ verified `b22df3c` (**112 tests**) on CPython 3.12.14 and 3.13.15.
 | `uv run ruff check src tests` | All checks passed |
 | `uv run ruff format --check src tests` | files already formatted |
 | `uv run ty check` | All checks passed |
-| `uv run pytest` | **112 passed**, coverage **96.50%** (fail-under 90) |
+| `uv run pytest` | **113 passed**, coverage **96.45%** (fail-under 90) |
 | `uvx pre-commit run --all-files` | Passed (whitespace/EOF hygiene + ruff) |
 
 ## Runtime smoke
@@ -25,6 +23,7 @@ verified `b22df3c` (**112 tests**) on CPython 3.12.14 and 3.13.15.
 | `uv run nbops lint examples/demo.ipynb` | 2 info `NB005` findings, 0 errors |
 | `uv run nbops validate examples/demo.ipynb` | `ok` |
 | `uv run nbops outputs examples/demo.ipynb --json` | `[]` (demo code cells have no outputs) |
+| `uv run nbops batch validate examples` | succeeds in CI Compatibility smoke |
 
 Compatibility invariants (`compute_stats`, `nbops stats`, `POST /notebooks/stats`) hold.
 
@@ -38,15 +37,15 @@ transcript (filename only). Recovered TASK-001–023 live in
 
 ## GitHub Actions
 
-Run [32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790)
-on `e257f87` concluded **success** (all 5 jobs):
+Run [32587289076](https://github.com/wyattowalsh/nbops/actions/runs/32587289076)
+on `b3045f3` concluded **success** (all 5 jobs):
 
 | Job | Result | Interpreter / notes |
 | --- | ------ | ------------------- |
 | `workflow-lint` | success | actionlint |
 | `lint` | success | ruff check + format |
 | `typecheck` | success | ty |
-| `test (3.12)` | success | CPython **3.12.14**, 107 passed; Compatibility smoke includes `nbops validate` (`ok`) and `nbops outputs`; demo stats 4 / 2 / 4 |
-| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed), 107 passed; same Compatibility smoke |
+| `test (3.12)` | success | CPython **3.12.14**, **113 passed**; Compatibility smoke includes `nbops validate`, `nbops outputs`, `nbops batch validate examples`; demo stats 4 / 2 / 4 |
+| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed), **113 passed**; same Compatibility smoke |
 
-Earlier run [32585631217](https://github.com/wyattowalsh/nbops/actions/runs/32585631217) on `f4ded51` was also success (102 tests).
+Prior verified runs on this branch: [32587098439](https://github.com/wyattowalsh/nbops/actions/runs/32587098439) (`b22df3c`, 112 tests) and [32586919790](https://github.com/wyattowalsh/nbops/actions/runs/32586919790) (`e257f87`, 107 tests).
