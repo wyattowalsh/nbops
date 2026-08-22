@@ -17,8 +17,8 @@
 | ID | Task | Status | Evidence |
 | -- | ---- | ------ | -------- |
 | TASK-001 | Domain-general `src/nbops` package | done | `src/nbops/` |
-| TASK-002 | I/O via nbformat (load/save/validate/new) | done | `src/nbops/io.py` |
-| TASK-003 | Inspect (stats, outline, imports, outputs) | done | `src/nbops/inspect.py` |
+| TASK-002 | I/O via nbformat (load/save/validate/new) | done | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
+| TASK-003 | Inspect (stats, outline, imports, outputs) | done | `src/nbops/inspect.py`; `nbops outputs` |
 | TASK-004 | Clean outputs/counts/ids/empty cells | done | `src/nbops/clean.py` |
 | TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py` |
 | TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py` |
@@ -31,7 +31,7 @@
 | TASK-013 | Preserve stats scaffold contract | done | `core.py`, `stats`, `/notebooks/stats` |
 | TASK-014 | Tests mirroring src, coverage ≥90% | done | `tests/`, `--cov-fail-under=90` |
 | TASK-015 | CI: actionlint + ruff + ty + pytest 3.12/3.13 | done | `.github/workflows/ci.yml` |
-| TASK-016 | AGENTS.md, CONTRIBUTING.md, README, CHANGELOG | done | repo root |
+| TASK-016 | AGENTS.md, CONTRIBUTING.md, README, CHANGELOG | done | repo root + `CODE_OF_CONDUCT.md` |
 | TASK-017 | uv lockfile + justfile | done | `uv.lock`, `justfile` |
 | TASK-018 | Shared operations catalog | done | `src/nbops/operations.py` |
 | TASK-019 | `NBOPS_` pydantic-settings | done | `src/nbops/settings.py` |

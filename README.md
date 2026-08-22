@@ -53,7 +53,9 @@ uv run nbops stats examples/demo.ipynb --json
 uv run nbops inspect examples/demo.ipynb
 uv run nbops headings examples/demo.ipynb
 uv run nbops imports examples/demo.ipynb
+uv run nbops outputs examples/demo.ipynb
 uv run nbops lint examples/demo.ipynb
+uv run nbops validate examples/demo.ipynb
 uv run nbops clean examples/demo.ipynb -o /tmp/clean.ipynb
 uv run nbops convert examples/demo.ipynb --to md
 uv run nbops convert examples/demo.ipynb --to py -o /tmp/demo.py
@@ -86,6 +88,7 @@ uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
 | `POST` | `/notebooks/inspect` | Stats + outline + imports |
 | `POST` | `/notebooks/headings` | Markdown heading outline |
 | `POST` | `/notebooks/imports` | Top-level imports |
+| `POST` | `/notebooks/outputs` | Code-cell output inventory |
 | `POST` | `/notebooks/lint` | Structural quality report |
 | `POST` | `/notebooks/clean` | Strip outputs and residue |
 | `POST` | `/notebooks/convert` | `py` / `script` / `md` |
@@ -99,6 +102,7 @@ uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
 | `POST` | `/notebooks/diff` | Cell-level diff |
 | `POST` | `/notebooks/execute` | Execute (`nbops[execute]`) |
 | `POST` | `/notebooks/new` | Empty nbformat v4 notebook |
+| `POST` | `/notebooks/validate` | nbformat schema validation |
 
 Interactive docs: `http://127.0.0.1:8000/docs`.
 
@@ -119,7 +123,7 @@ Or `just check`.
 ```text
 src/nbops/
   io.py         load, save, validate, new
-  inspect.py    stats, outline, imports
+  inspect.py    stats, outline, imports, outputs
   clean.py      strip outputs / counts / ids
   transform.py  filter, concat, split, kernel, tags
   lint.py       structural quality
@@ -137,4 +141,5 @@ examples/       demo notebook
 
 MIT. See [LICENSE](./LICENSE).
 
-See also [SECURITY.md](./SECURITY.md) and [CHANGELOG.md](./CHANGELOG.md).
+See also [SECURITY.md](./SECURITY.md), [CHANGELOG.md](./CHANGELOG.md), and
+[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).

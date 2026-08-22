@@ -21,8 +21,8 @@ the exhaustive program derived from:
 | ID | Requirement | Evidence |
 | -- | ----------- | -------- |
 | G1 | Domain-general notebook ops library (not NBA-specific, not stats-only) | `src/nbops/` package |
-| G2 | Load/save/validate/new via nbformat | `src/nbops/io.py` |
-| G3 | Inspect: stats, outline, imports, outputs | `src/nbops/inspect.py` |
+| G2 | Load/save/validate/new via nbformat | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
+| G3 | Inspect: stats, outline, imports, outputs | `src/nbops/inspect.py`; CLI/API headings+imports+outputs |
 | G4 | Clean outputs, counts, ids, empty cells | `src/nbops/clean.py` |
 | G5 | Transform: filter, concat, split, kernel, tags, cell ids | `src/nbops/transform.py` |
 | G6 | Structural lint catalog NB000–NB011 | `src/nbops/lint.py` `ISSUE_CATALOG` |
@@ -35,7 +35,7 @@ the exhaustive program derived from:
 | G13 | Compatibility with the stats scaffold | `src/nbops/core.py`, `stats`, `/notebooks/stats` |
 | G14 | Tests mirroring src, coverage gate | `tests/`, `--cov-fail-under=90` |
 | G15 | Ruff + ty + pytest CI on 3.12/3.13 | `.github/workflows/ci.yml` |
-| G16 | Agent/contributor docs | `AGENTS.md`, `CONTRIBUTING.md`, `README.md` |
+| G16 | Agent/contributor docs | `AGENTS.md`, `CONTRIBUTING.md`, `README.md`, `CODE_OF_CONDUCT.md` |
 | G17 | uv lockfile and justfile | `uv.lock`, `justfile` |
 | G18 | Shared operations catalog | `src/nbops/operations.py` |
 | G19 | Environment-backed settings (`NBOPS_`) | `src/nbops/settings.py` |

@@ -8,7 +8,14 @@ from typing import Any
 import pytest
 
 from nbops.exceptions import InvalidNotebookError, NotebookNotFoundError
-from nbops.io import dumps_notebook, load_notebook, new_notebook, parse_notebook, save_notebook
+from nbops.io import (
+    dumps_notebook,
+    load_notebook,
+    new_notebook,
+    parse_notebook,
+    save_notebook,
+    validate_notebook,
+)
 
 
 def test_new_notebook_has_kernelspec() -> None:
@@ -54,3 +61,7 @@ def test_parse_invalid_document() -> None:
 def test_validate_rejects_wrong_shape() -> None:
     with pytest.raises(InvalidNotebookError):
         parse_notebook({"cells": "nope", "nbformat": 4, "nbformat_minor": 5}, validate=True)
+
+
+def test_validate_notebook_accepts_new_notebook() -> None:
+    validate_notebook(new_notebook())

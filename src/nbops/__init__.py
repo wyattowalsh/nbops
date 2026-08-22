@@ -8,13 +8,27 @@ except PackageNotFoundError:  # pragma: no cover - only during local, uninstalle
     __version__ = "0.0.0.dev0"
 
 from nbops.clean import clean_notebook
-from nbops.convert import convert_notebook, from_percent_python
+from nbops.convert import convert_notebook, from_percent_python, to_percent_python
 from nbops.diff import diff_notebooks
-from nbops.inspect import NotebookStats, compute_stats, extract_imports, outline, stats_for_file
-from nbops.io import load_notebook, new_notebook, save_notebook
+from nbops.inspect import (
+    NotebookStats,
+    compute_stats,
+    extract_imports,
+    list_outputs,
+    outline,
+    stats_for_file,
+)
+from nbops.io import load_notebook, new_notebook, save_notebook, validate_notebook
 from nbops.lint import ISSUE_CATALOG, lint_notebook
 from nbops.operations import OPERATIONS
-from nbops.transform import add_tags, concat_notebooks, ensure_cell_ids, filter_cells
+from nbops.transform import (
+    add_tags,
+    concat_notebooks,
+    ensure_cell_ids,
+    filter_cells,
+    set_kernelspec,
+    split_by_headings,
+)
 
 __all__ = [
     "ISSUE_CATALOG",
@@ -32,9 +46,14 @@ __all__ = [
     "filter_cells",
     "from_percent_python",
     "lint_notebook",
+    "list_outputs",
     "load_notebook",
     "new_notebook",
     "outline",
     "save_notebook",
+    "set_kernelspec",
+    "split_by_headings",
     "stats_for_file",
+    "to_percent_python",
+    "validate_notebook",
 ]

@@ -1,0 +1,66 @@
+name: Bug Report
+description: Report a bug in nbops
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Search existing issues first, and keep secrets out of this form.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Library
+        - CLI
+        - HTTP API
+        - Lint catalog
+        - Convert / percent roundtrip
+        - Optional execute extra
+        - CI
+        - Docs
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Run `uv run nbops ...`
+        2. Observe that ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      placeholder: Include error messages or tracebacks.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: nbops version
+      placeholder: "`uv run nbops version`"
+    validations:
+      required: true

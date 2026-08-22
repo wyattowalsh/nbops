@@ -38,6 +38,10 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
 - Coverage gate is `--cov-fail-under=90`.
 - Runtime settings use the `NBOPS_` prefix (`NBOPS_LOG_LEVEL`, `NBOPS_EXECUTE_TIMEOUT`).
 - Lint codes `NB000`–`NB011` are defined in `nbops.lint.ISSUE_CATALOG`.
+- Inspect: stats, outline, imports, and output inventory (`nbops outputs` /
+  `POST /notebooks/outputs`).
+- Validate notebooks against the nbformat schema (`nbops validate` /
+  `POST /notebooks/validate`).
 - The operations catalog (`nbops ops` / `GET /operations`) is the shared CLI/API inventory.
 
 ## Out of scope unless explicitly requested

@@ -46,6 +46,8 @@ def test_operation_catalog_names_are_unique() -> None:
     assert "stats" in names
     assert "ops" in names
     assert "from-py" in names
+    assert "outputs" in names
+    assert "validate" in names
     assert all(item.library for item in OPERATIONS)
 
 

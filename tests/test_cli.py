@@ -58,6 +58,7 @@ def test_inspect_headings_imports_lint(sample_notebook_file: Path) -> None:
     payload = json.loads(inspect_result.stdout)
     assert payload["stats"]["total_cells"] == 4
     assert payload["outline"][0]["title"] == "Title"
+    assert payload["outputs"][0]["output_type"] == "stream"
 
     headings = runner.invoke(app, ["headings", str(sample_notebook_file)])
     assert headings.exit_code == 0
@@ -69,6 +70,18 @@ def test_inspect_headings_imports_lint(sample_notebook_file: Path) -> None:
 
     lint = runner.invoke(app, ["lint", str(sample_notebook_file)])
     assert lint.exit_code == 0
+
+    listed = runner.invoke(app, ["outputs", str(sample_notebook_file)])
+    assert listed.exit_code == 0
+    assert "stdout" in listed.stdout
+
+    listed_json = runner.invoke(app, ["outputs", str(sample_notebook_file), "--json"])
+    assert listed_json.exit_code == 0
+    assert json.loads(listed_json.stdout)[0]["output_type"] == "stream"
+
+    valid = runner.invoke(app, ["validate", str(sample_notebook_file)])
+    assert valid.exit_code == 0
+    assert "ok" in valid.stdout
 
 
 def test_clean_convert_concat_diff_new(tmp_path: Path, sample_notebook_file: Path) -> None:
@@ -106,6 +119,9 @@ def test_clean_convert_concat_diff_new(tmp_path: Path, sample_notebook_file: Pat
     new = runner.invoke(app, ["new", str(created)])
     assert new.exit_code == 0
     assert created.is_file()
+    empty_outputs = runner.invoke(app, ["outputs", str(created)])
+    assert empty_outputs.exit_code == 0
+    assert "no outputs" in empty_outputs.stdout
     again = runner.invoke(app, ["new", str(created)])
     assert again.exit_code != 0
 
@@ -268,6 +284,8 @@ def test_filter_and_tag_require_output(sample_notebook_file: Path) -> None:
     ops = runner.invoke(app, ["ops"])
     assert ops.exit_code == 0
     assert "stats" in ops.stdout
+    assert "validate" in ops.stdout
+    assert "outputs" in ops.stdout
 
 
 def test_cli_error_paths(tmp_path: Path, sample_notebook_file: Path) -> None:
@@ -278,6 +296,8 @@ def test_cli_error_paths(tmp_path: Path, sample_notebook_file: Path) -> None:
     bad.write_text("{not json", encoding="utf-8")
     headings = runner.invoke(app, ["headings", str(bad)])
     assert headings.exit_code != 0
+    valid_bad = runner.invoke(app, ["validate", str(bad)])
+    assert valid_bad.exit_code != 0
 
     warn_only = tmp_path / "warn.ipynb"
     warn_only.write_text(

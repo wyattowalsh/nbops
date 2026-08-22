@@ -32,3 +32,20 @@ the Typer app, and every catalog `api` value SHALL exist on the FastAPI app.
 - **WHEN** a caller requests the catalog
 - **THEN** every implemented operation includes its library path and CLI/API names
   and those names resolve on the live CLI and HTTP surfaces
+
+### Requirement: Inspect outputs and schema validate
+
+The library SHALL inventory code-cell outputs and validate notebooks against the
+nbformat schema. Concatenation SHALL assign unique cell ids when source notebooks
+share ids.
+
+#### Scenario: Output inventory
+
+- **WHEN** a caller invokes `list_outputs`, `nbops outputs`, or `POST /notebooks/outputs`
+- **THEN** each code-cell output is returned with cell index, type, and size
+
+#### Scenario: Schema validation
+
+- **WHEN** a caller invokes `validate_notebook`, `nbops validate`, or
+  `POST /notebooks/validate`
+- **THEN** valid notebooks report success and invalid documents report an error

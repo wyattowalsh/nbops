@@ -1,5 +1,5 @@
 - [x] G1 Domain-general notebook operations package
-- [x] G2 I/O: load, save, validate, new notebook
+- [x] G2 I/O: load, save, validate, new notebook (`nbops validate`)
 - [x] G3 Inspect: stats, outline, imports, output inventory
 - [x] G4 Clean outputs / execution counts / ids / empty cells
 - [x] G5 Transform: filter, concat, split, kernelspec, tags, cell ids
@@ -13,7 +13,7 @@
 - [x] G13 Preserve stats CLI/API compatibility
 - [x] G14 Unit tests mirroring package modules
 - [x] G15 GitHub Actions CI (lint, ty, pytest 3.12/3.13)
-- [x] G16 README, AGENTS.md, CONTRIBUTING.md
+- [x] G16 README, AGENTS.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md
 - [x] G17 uv project + justfile
 - [x] G18 Shared operations catalog (`nbops ops`)
 - [x] G19 `NBOPS_` pydantic-settings + loguru configuration

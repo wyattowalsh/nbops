@@ -16,8 +16,8 @@ from nbops.clean import clean_notebook
 from nbops.convert import convert_notebook, from_percent_python
 from nbops.diff import diff_notebooks
 from nbops.exceptions import ExecuteError, InvalidNotebookError, MissingExtraError, NbopsError
-from nbops.inspect import compute_stats, extract_imports, outline, stats_for_file
-from nbops.io import load_notebook, new_notebook, save_notebook
+from nbops.inspect import compute_stats, extract_imports, list_outputs, outline, stats_for_file
+from nbops.io import load_notebook, new_notebook, save_notebook, validate_notebook
 from nbops.lint import lint_notebook
 from nbops.models import CleanOptions
 from nbops.operations import OPERATIONS
@@ -119,6 +119,7 @@ def inspect_cmd(
         "stats": compute_stats(document).model_dump(),
         "outline": [item.model_dump() for item in outline(document)],
         "imports": [item.model_dump() for item in extract_imports(document)],
+        "outputs": [item.model_dump() for item in list_outputs(document)],
     }
     _emit_json(payload)
 
@@ -150,6 +151,24 @@ def imports_cmd(
     for item in items:
         names = ", ".join(item.names)
         typer.echo(f"{item.module} ({names})  cell {item.cell_index}")
+
+
+@app.command()
+def outputs(
+    notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
+    as_json: Annotated[bool, typer.Option("--json")] = False,
+) -> None:
+    """List code-cell outputs in document order."""
+    items = list_outputs(_load(notebook, validate=False))
+    if as_json:
+        _emit_json([item.model_dump() for item in items])
+        return
+    if not items:
+        typer.echo("(no outputs)")
+        return
+    for item in items:
+        label = item.name or item.output_type
+        typer.echo(f"cell {item.cell_index}.{item.output_index} {label} ({item.size} chars)")
 
 
 @app.command()
@@ -311,6 +330,20 @@ def new_cmd(
 
 
 @app.command()
+def validate(
+    notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
+) -> None:
+    """Validate a notebook against the nbformat schema."""
+    try:
+        document = load_notebook(notebook, validate=False)
+        validate_notebook(document)
+    except (OSError, NbopsError, ValueError) as exc:
+        _fail(str(exc))
+        return
+    typer.echo("ok")
+
+
+@app.command()
 def kernel(
     notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
     name: Annotated[str, typer.Option("--name")],
@@ -370,7 +403,7 @@ def ops_cmd(
         _emit_json(rows)
         return
     for item in OPERATIONS:
-        typer.echo(f"{item.name:10} {item.cli or '-':22} {item.api or '-'}")
+        typer.echo(f"{item.name:12} {item.cli or '-':22} {item.api or '-'}")
 
 
 @app.command("filter")

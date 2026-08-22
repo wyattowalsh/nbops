@@ -37,6 +37,13 @@ def test_concat_notebooks(sample_notebook: dict[str, Any]) -> None:
     assert empty["cells"] == []
 
 
+def test_concat_assigns_unique_cell_ids(sample_notebook: dict[str, Any]) -> None:
+    merged = concat_notebooks([sample_notebook, sample_notebook])
+    ids = [cell["id"] for cell in merged["cells"]]
+    assert len(ids) == 8
+    assert len(set(ids)) == 8
+
+
 def test_split_by_headings() -> None:
     notebook = {
         "cells": [

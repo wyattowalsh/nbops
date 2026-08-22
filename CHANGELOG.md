@@ -7,7 +7,10 @@ All notable changes to this project are documented in this file.
 General notebook operations toolkit (library, Typer CLI, FastAPI).
 
 - Inspect, lint (`NB000`–`NB011`), clean, transform, convert, diff, batch
+- Output inventory (`nbops outputs` / `POST /notebooks/outputs`)
+- nbformat schema validation (`nbops validate` / `POST /notebooks/validate`)
 - Percent-format roundtrip (`nbops convert --to py` / `nbops from-py`)
+- Concatenation assigns unique cell ids
 - Optional `nbops[execute]` extra (nbclient)
 - Compatibility with the stats-only scaffold: `compute_stats`, `nbops stats`,
   `POST /notebooks/stats`

@@ -13,3 +13,4 @@ uv run pytest
 
 4. Do not commit secrets, notebooks with huge outputs, or hand-edited lockfiles.
 5. Prefer absolute `nbops.*` imports.
+6. Follow the [Code of Conduct](./CODE_OF_CONDUCT.md).

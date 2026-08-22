@@ -15,9 +15,10 @@ from nbops.cells import (
     is_empty_cell,
     nested_mapping,
     non_empty_line_count,
+    preview,
 )
 from nbops.io import load_notebook
-from nbops.models import Heading, ImportRecord, NotebookStats
+from nbops.models import Heading, ImportRecord, NotebookStats, OutputRecord
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -151,6 +152,71 @@ def extract_imports(notebook: Mapping[str, Any]) -> list[ImportRecord]:
     return records
 
 
+def list_outputs(notebook: Mapping[str, Any]) -> list[OutputRecord]:
+    """Inventory code-cell outputs in document order."""
+    records: list[OutputRecord] = []
+    for cell_index, cell in enumerate(cells_of(notebook)):
+        if not isinstance(cell, dict) or cell.get("cell_type") != "code":
+            continue
+        outputs = cell.get("outputs")
+        if not isinstance(outputs, list):
+            continue
+        for output_index, output in enumerate(outputs):
+            if not isinstance(output, dict):
+                continue
+            output_type = str(output.get("output_type") or "unknown")
+            name = _output_name(output, output_type)
+            text = _output_text(output, output_type)
+            records.append(
+                OutputRecord(
+                    cell_index=cell_index,
+                    output_index=output_index,
+                    output_type=output_type,
+                    name=name,
+                    preview=preview(text) if text else None,
+                    size=len(text),
+                )
+            )
+    return records
+
+
 def stats_for_file(path: str | Path, *, validate: bool = False) -> NotebookStats:
     """Load a notebook file and compute its stats."""
     return compute_stats(load_notebook(path, validate=validate))
+
+
+def _output_name(output: Mapping[str, Any], output_type: str) -> str | None:
+    if output_type == "stream":
+        name = output.get("name")
+        return str(name) if name else "stdout"
+    if output_type == "error":
+        ename = output.get("ename")
+        return str(ename) if ename else "error"
+    return None
+
+
+def _output_text(output: Mapping[str, Any], output_type: str) -> str:
+    if output_type == "error":
+        evalue = output.get("evalue")
+        traceback = output.get("traceback")
+        parts: list[str] = []
+        if evalue:
+            parts.append(str(evalue))
+        if isinstance(traceback, list):
+            parts.extend(str(line) for line in traceback)
+        return "\n".join(parts)
+    text = output.get("text")
+    if isinstance(text, list):
+        return "".join(str(part) for part in text)
+    if isinstance(text, str):
+        return text
+    data = output.get("data")
+    if isinstance(data, dict):
+        for key in ("text/plain", "text/html"):
+            value = data.get(key)
+            if isinstance(value, list):
+                return "".join(str(part) for part in value)
+            if isinstance(value, str):
+                return value
+        return " ".join(str(value) for value in data.values())
+    return ""

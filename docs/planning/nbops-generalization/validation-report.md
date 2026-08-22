@@ -1,7 +1,7 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e` after the percent-format
-roundtrip and catalog CLI/API parity pass.
+Recorded on branch `cursor/nbops-generalization-673e` after the validate and
+output-inventory catalog pass.
 
 ## Tooling
 
@@ -11,7 +11,7 @@ roundtrip and catalog CLI/API parity pass.
 | `uv run ruff check src tests` | All checks passed |
 | `uv run ruff format --check src tests` | 36 files already formatted |
 | `uv run ty check` | All checks passed |
-| `uv run pytest` | **102 passed**, coverage **95.58%** (fail-under 90) |
+| `uv run pytest` | **107 passed**, coverage **96.38%** (fail-under 90) |
 | `uvx pre-commit run --all-files` | Passed (whitespace/EOF hygiene + ruff) |
 
 ## Runtime smoke
@@ -19,19 +19,11 @@ roundtrip and catalog CLI/API parity pass.
 | Command | Result |
 | ------- | ------ |
 | `uv run nbops version` | `0.2.0` |
-| `uv run nbops ops` | **18** operations listed (including `from-py`) |
+| `uv run nbops ops` | **20** operations listed (including `outputs` and `validate`) |
 | `uv run nbops stats examples/demo.ipynb --json` | `total_cells` 4, `code_cells` 2, `code_lines` 4, `kernel` Python 3, `language` python |
 | `uv run nbops lint examples/demo.ipynb` | 2 info `NB005` findings, 0 errors |
-
-## Live HTTP (uvicorn `127.0.0.1:8000`)
-
-| Request | Result |
-| ------- | ------ |
-| `GET /health` | `{"status":"ok","version":"0.2.0"}` |
-| `GET /operations` | 18 catalog entries |
-| `POST /notebooks/stats` (demo notebook) | 4 / 2 / 4 |
-| `POST /notebooks/headings` (demo notebook) | `nbops demo notebook` |
-| `POST /notebooks/from-py` | markdown + code cells |
+| `uv run nbops validate examples/demo.ipynb` | `ok` |
+| `uv run nbops outputs examples/demo.ipynb --json` | `[]` (demo code cells have no outputs) |
 
 Compatibility invariants (`compute_stats`, `nbops stats`, `POST /notebooks/stats`) hold.
 
@@ -39,23 +31,16 @@ Compatibility invariants (`compute_stats`, `nbops stats`, `POST /notebooks/stats
 
 `nbops-generalization-codex-kickoff-context-20260822` was not found in this
 repository, sibling Wyatt clones under `/tmp/research`, public GitHub search,
-gists (API 403), or this run's transcript (filename only). Recovered
-TASK-001–023 live in `codex-kickoff-recovered.md` and are **not** a substitute
-for the original dump.
+gists (API 403), Drive/Gmail/Linear (MCP unauthenticated), or this run's
+transcript (filename only). Recovered TASK-001–023 live in
+`codex-kickoff-recovered.md` and are **not** a substitute for the original dump.
 
 ## GitHub Actions
 
-Run [32585486835](https://github.com/wyattowalsh/nbops/actions/runs/32585486835)
-on `3e42ab2` concluded **success**. The Python matrix now honors `UV_PYTHON`:
+Prior verified runs on this branch:
 
-| Job | Result | Interpreter |
-| --- | ------ | ----------- |
-| `workflow-lint` | success | actionlint |
-| `lint` | success | ruff check + format |
-| `typecheck` | success | ty |
-| `test (3.12)` | success | CPython **3.12.14**, 102 passed, 95.58% coverage |
-| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed in the job), 102 passed, 95.58% coverage |
+- [32585631217](https://github.com/wyattowalsh/nbops/actions/runs/32585631217) on `f4ded51`: success (actionlint, ruff, ty, pytest 3.12.14 and 3.13.15)
+- [32585580529](https://github.com/wyattowalsh/nbops/actions/runs/32585580529): Compatibility smoke including demo stats 4 / 2 / 4 on both interpreters
 
-Earlier run [32585325015](https://github.com/wyattowalsh/nbops/actions/runs/32585325015) on `b3606f2` had a false 3.13 job (uv used `.python-version` 3.12.3). That is fixed.
-
-Run [32585580529](https://github.com/wyattowalsh/nbops/actions/runs/32585580529) on `aaccdbf` also **success**, including Compatibility smoke (`nbops version` / `ops` / `stats` / `lint`) on both 3.12.14 and 3.13.15. Demo stats in CI: 4 cells / 2 code / 4 code lines.
+A later push after this report should re-run CI with `nbops validate` and
+`nbops outputs` in the Compatibility smoke step.

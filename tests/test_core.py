@@ -28,3 +28,13 @@ def test_demo_notebook_library_stats_contract() -> None:
 def test_public_from_percent_python_export() -> None:
     notebook = from_percent_python("# %%\nvalue = 1\n")
     assert notebook["cells"][0]["cell_type"] == "code"
+
+
+def test_public_outputs_validate_and_convert_exports() -> None:
+    from nbops import list_outputs, to_percent_python, validate_notebook
+    from nbops.io import new_notebook
+
+    notebook = new_notebook()
+    validate_notebook(notebook)
+    assert list_outputs(notebook) == []
+    assert to_percent_python(notebook) == ""

@@ -55,7 +55,7 @@ def concat_notebooks(notebooks: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
     for extra in items[1:]:
         cells.extend(cells_of(extra))
     merged["cells"] = cells
-    return merged
+    return ensure_cell_ids(merged)
 
 
 def split_by_headings(

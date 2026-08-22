@@ -1,0 +1,38 @@
+name: Feature Request
+description: Propose a notebook operation or quality-bar improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the operation or workflow. Full nbconvert HTML/PDF, JupyterHub/Binder,
+        and Kaggle publishing are out of scope unless the maintainers explicitly expand them.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What notebook workflow is hard or missing today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: The library, CLI, and/or HTTP surface you want.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - Library only
+        - CLI
+        - HTTP API
+        - Library + CLI + API
+        - Docs / quality bar
+    validations:
+      required: true

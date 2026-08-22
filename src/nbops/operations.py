@@ -47,6 +47,13 @@ OPERATIONS: tuple[Operation, ...] = (
         api="POST /notebooks/imports",
     ),
     Operation(
+        name="outputs",
+        summary="Inventory of code-cell outputs.",
+        library="nbops.inspect.list_outputs",
+        cli="nbops outputs",
+        api="POST /notebooks/outputs",
+    ),
+    Operation(
         name="lint",
         summary="Structural quality report (NB000–NB011).",
         library="nbops.lint.lint_notebook",
@@ -96,6 +103,13 @@ OPERATIONS: tuple[Operation, ...] = (
         library="nbops.io.new_notebook",
         cli="nbops new",
         api="POST /notebooks/new",
+    ),
+    Operation(
+        name="validate",
+        summary="Validate a notebook against the nbformat schema.",
+        library="nbops.io.validate_notebook",
+        cli="nbops validate",
+        api="POST /notebooks/validate",
     ),
     Operation(
         name="kernel",

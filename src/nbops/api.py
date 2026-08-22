@@ -12,9 +12,9 @@ from nbops import __version__
 from nbops.clean import clean_notebook
 from nbops.convert import convert_notebook, from_percent_python
 from nbops.diff import diff_notebooks
-from nbops.exceptions import ExecuteError, MissingExtraError
-from nbops.inspect import compute_stats, extract_imports, outline
-from nbops.io import new_notebook
+from nbops.exceptions import ExecuteError, InvalidNotebookError, MissingExtraError
+from nbops.inspect import compute_stats, extract_imports, list_outputs, outline
+from nbops.io import new_notebook, validate_notebook
 from nbops.lint import lint_notebook
 from nbops.models import (
     CleanOptions,
@@ -26,6 +26,8 @@ from nbops.models import (
     NotebookDiff,
     NotebookPayload,
     NotebookStats,
+    OutputRecord,
+    ValidateResponse,
 )
 from nbops.operations import OPERATIONS, Operation
 from nbops.settings import configure_logging, get_settings
@@ -58,8 +60,9 @@ app = FastAPI(
 
 class InspectResponse(BaseModel):
     stats: NotebookStats
-    outline: list[dict[str, Any]]
-    imports: list[dict[str, Any]]
+    outline: list[Heading]
+    imports: list[ImportRecord]
+    outputs: list[OutputRecord]
 
 
 class ConvertRequest(NotebookPayload):
@@ -71,7 +74,7 @@ class CleanRequest(NotebookPayload):
 
 
 class ConcatRequest(BaseModel):
-    notebooks: list[dict[str, Any]] = Field(..., min_length=1)
+    notebooks: list[dict[str, Any]] = Field(..., min_length=2)
 
 
 class KernelRequest(NotebookPayload):
@@ -150,8 +153,9 @@ def notebook_inspect(request: NotebookPayload) -> InspectResponse:
         document = request.notebook
         return InspectResponse(
             stats=compute_stats(document),
-            outline=[item.model_dump() for item in outline(document)],
-            imports=[item.model_dump() for item in extract_imports(document)],
+            outline=outline(document),
+            imports=extract_imports(document),
+            outputs=list_outputs(document),
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -167,6 +171,12 @@ def notebook_headings(request: NotebookPayload) -> list[Heading]:
 def notebook_imports(request: NotebookPayload) -> list[ImportRecord]:
     """Return top-level imports for a posted notebook."""
     return extract_imports(request.notebook)
+
+
+@app.post("/notebooks/outputs", response_model=list[OutputRecord], tags=["notebooks"])
+def notebook_outputs(request: NotebookPayload) -> list[OutputRecord]:
+    """Return code-cell outputs for a posted notebook."""
+    return list_outputs(request.notebook)
 
 
 @app.post("/notebooks/lint", response_model=LintReport, tags=["notebooks"])
@@ -282,9 +292,30 @@ def notebook_execute(request: ExecuteRequest) -> NotebookDocument:
 
 
 @app.post("/notebooks/new", response_model=NotebookDocument, tags=["notebooks"])
-def notebook_new() -> NotebookDocument:
+def notebook_new(
+    kernel_name: str = "python3",
+    display_name: str | None = None,
+    language: str = "python",
+) -> NotebookDocument:
     """Return a new empty nbformat v4 notebook."""
-    return NotebookDocument(notebook=new_notebook())
+    resolved_display = display_name or ("Python 3" if kernel_name == "python3" else kernel_name)
+    return NotebookDocument(
+        notebook=new_notebook(
+            kernel_name=kernel_name,
+            display_name=resolved_display,
+            language=language,
+        )
+    )
+
+
+@app.post("/notebooks/validate", response_model=ValidateResponse, tags=["notebooks"])
+def notebook_validate(request: NotebookPayload) -> ValidateResponse:
+    """Validate a posted notebook against the nbformat schema."""
+    try:
+        validate_notebook(request.notebook)
+    except InvalidNotebookError as exc:
+        return ValidateResponse(valid=False, error=str(exc))
+    return ValidateResponse(valid=True)
 
 
 @app.post("/notebooks/from-py", response_model=NotebookDocument, tags=["notebooks"])

@@ -38,6 +38,7 @@ def test_inspect_headings_imports_from_py(sample_notebook: dict[str, Any]) -> No
     inspect = client.post("/notebooks/inspect", json={"notebook": sample_notebook})
     assert inspect.status_code == 200
     assert inspect.json()["outline"][0]["title"] == "Title"
+    assert inspect.json()["outputs"][0]["output_type"] == "stream"
 
     headings = client.post("/notebooks/headings", json={"notebook": sample_notebook})
     assert headings.status_code == 200
@@ -46,6 +47,10 @@ def test_inspect_headings_imports_from_py(sample_notebook: dict[str, Any]) -> No
     imports = client.post("/notebooks/imports", json={"notebook": sample_notebook})
     assert imports.status_code == 200
     assert imports.json()[0]["module"] == "os"
+
+    outputs = client.post("/notebooks/outputs", json={"notebook": sample_notebook})
+    assert outputs.status_code == 200
+    assert outputs.json()[0]["output_type"] == "stream"
 
     from_py = client.post(
         "/notebooks/from-py",
@@ -84,6 +89,8 @@ def test_operations_split_filter_tag_ids_new(sample_notebook: dict[str, Any]) ->
     assert "exec" in names
     assert "ops" in names
     assert "from-py" in names
+    assert "outputs" in names
+    assert "validate" in names
 
     split = client.post("/notebooks/split", json={"notebook": sample_notebook, "level": 1})
     assert split.status_code == 200
@@ -111,6 +118,21 @@ def test_operations_split_filter_tag_ids_new(sample_notebook: dict[str, Any]) ->
     assert created.status_code == 200
     assert created.json()["notebook"]["cells"] == []
 
+    created_kernel = client.post(
+        "/notebooks/new",
+        params={"kernel_name": "ir", "language": "r", "display_name": "R"},
+    )
+    assert created_kernel.status_code == 200
+    assert created_kernel.json()["notebook"]["metadata"]["kernelspec"]["name"] == "ir"
+
+    valid = client.post("/notebooks/validate", json={"notebook": created.json()["notebook"]})
+    assert valid.status_code == 200
+    assert valid.json()["valid"] is True
+
+    invalid = client.post("/notebooks/validate", json={"notebook": {"cells": "nope"}})
+    assert invalid.status_code == 200
+    assert invalid.json()["valid"] is False
+
 
 def test_execute_endpoint_reports_missing_extra(
     monkeypatch: pytest.MonkeyPatch, sample_notebook: dict[str, Any]
@@ -133,6 +155,11 @@ def test_concat_kernel_diff(sample_notebook: dict[str, Any]) -> None:
     )
     assert concat.status_code == 200
     assert len(concat.json()["notebook"]["cells"]) == 8
+    ids = [cell["id"] for cell in concat.json()["notebook"]["cells"]]
+    assert len(set(ids)) == 8
+
+    too_few = client.post("/notebooks/concat", json={"notebooks": [sample_notebook]})
+    assert too_few.status_code == 422
 
     kernel = client.post(
         "/notebooks/kernel",

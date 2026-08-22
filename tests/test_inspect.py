@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 
 from nbops.core import NotebookStats, compute_stats, load_notebook, stats_for_file
-from nbops.inspect import extract_imports, outline
+from nbops.inspect import extract_imports, list_outputs, outline
 
 
 def test_compute_stats_counts_cells(sample_notebook: dict[str, Any]) -> None:
@@ -72,3 +72,73 @@ def test_extract_imports_from_import(sample_notebook: dict[str, Any]) -> None:
     modules = {item.module for item in imports}
     assert "os" in modules
     assert "pathlib" in modules
+
+
+def test_list_outputs_stream_and_error(
+    sample_notebook: dict[str, Any], error_notebook: dict[str, Any]
+) -> None:
+    outputs = list_outputs(sample_notebook)
+    assert len(outputs) == 1
+    assert outputs[0].output_type == "stream"
+    assert outputs[0].name == "stdout"
+    assert outputs[0].cell_index == 1
+    assert outputs[0].size > 0
+
+    errors = list_outputs(error_notebook)
+    assert errors[0].output_type == "error"
+    assert errors[0].name == "ValueError"
+    assert errors[0].preview is not None
+
+    display_notebook = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "x",
+                "outputs": [
+                    {
+                        "output_type": "execute_result",
+                        "data": {"text/plain": "42"},
+                        "metadata": {},
+                    },
+                    "skip-me",
+                ],
+            }
+        ]
+    }
+    display = list_outputs(display_notebook)
+    assert display[0].output_type == "execute_result"
+    assert display[0].preview == "42"
+    stats = compute_stats(error_notebook)
+    assert stats.error_outputs == 1
+    assert compute_stats(display_notebook).display_outputs == 1
+
+
+def test_list_outputs_fallbacks_and_non_list() -> None:
+    notebook = {
+        "cells": [
+            {"cell_type": "markdown", "metadata": {}, "source": "# T\n"},
+            {"cell_type": "code", "metadata": {}, "source": "x\n", "outputs": "nope"},
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "y\n",
+                "outputs": [
+                    {"output_type": "stream", "text": "hi"},
+                    {"output_type": "error"},
+                    {
+                        "output_type": "display_data",
+                        "data": {"text/html": ["<b>x</b>"]},
+                    },
+                    {"output_type": "display_data", "data": {"image/png": "abc"}},
+                    {"text": ["z"]},
+                ],
+            },
+        ]
+    }
+    records = list_outputs(notebook)
+    assert records[0].name == "stdout"
+    assert records[1].name == "error"
+    assert records[2].preview == "<b>x</b>"
+    assert "abc" in (records[3].preview or "")
+    assert records[4].output_type == "unknown"

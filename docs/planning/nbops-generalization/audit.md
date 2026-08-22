@@ -12,30 +12,30 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 
 | Requirement | Evidence inspected | Status |
 | ----------- | ------------------ | ------ |
-| Execute every item in `nbops-generalization-codex-kickoff-context-20260822` | Filename only in the run transcript; absent from `/workspace`, GitHub `wyattowalsh/nbops`, Wyatt public repo search (rate-limited/empty), gists (403), Drive MCP (`needsAuth`), sibling clones under `/tmp/research` | **missing** |
+| Execute every item in `nbops-generalization-codex-kickoff-context-20260822` | Filename only in the run transcript (`/goal … \` nbops-generalization-codex-kickoff-context-20260822 \``); schema is `role`/`text` with no attachment body. Absent from `/workspace`, GitHub `wyattowalsh/nbops` (`main` + feature branches), Wyatt public repo trees (`agents`, `prompts`, `skills`, `nbadb`, `dotfiles`, `cwa`), gists (403), Drive/Gmail/Linear/Tavily MCP (`needsAuth` or error), `/tmp/research/*` clones, and all five nbops cloud-agent transcripts | **missing** |
 
 ## Recovered program (not a substitute)
 
 | ID | Requirement | Evidence | Status |
 | -- | ----------- | -------- | ------ |
 | G1 / TASK-001 | Domain-general `src/nbops` package | `src/nbops/` modules; package name `nbops`; no NBA-specific code | verified (recovered) |
-| G2 / TASK-002 | I/O load/save/validate/new | `src/nbops/io.py`; `tests/test_io.py` | verified (recovered) |
-| G3 / TASK-003 | Inspect stats/outline/imports/outputs | `src/nbops/inspect.py`; CLI/API headings+imports | verified (recovered) |
+| G2 / TASK-002 | I/O load/save/validate/new | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate`; `tests/test_io.py` | verified (recovered) |
+| G3 / TASK-003 | Inspect stats/outline/imports/outputs | `list_outputs`; CLI/API `outputs`; inspect payload includes outputs | verified (recovered) |
 | G4 / TASK-004 | Clean outputs/counts/ids/empty | `src/nbops/clean.py`; `tests/test_clean.py` | verified (recovered) |
-| G5 / TASK-005 | Transform filter/concat/split/kernel/tags/ids | `src/nbops/transform.py`; `tests/test_transform.py` | verified (recovered) |
+| G5 / TASK-005 | Transform filter/concat/split/kernel/tags/ids | concat now uniquifies cell ids; `tests/test_transform.py` | verified (recovered) |
 | G6 / TASK-006 | Lint NB000–NB011 | `ISSUE_CATALOG` length 12; tests cover NB000–NB011 | verified (recovered) |
-| G7 / TASK-007 | Convert py/script/md + percent roundtrip | `to_percent_python` / `from_percent_python`; `tests/test_convert.py` | verified (recovered) |
+| G7 / TASK-007 | Convert py/script/md + percent roundtrip | `to_percent_python` / `from_percent_python`; public export | verified (recovered) |
 | G8 / TASK-008 | Cell-level diff | `src/nbops/diff.py`; `tests/test_diff.py` | verified (recovered) |
 | G9 / TASK-009 | Batch directory + tqdm | `src/nbops/batch.py`; `nbops batch {stats,lint,clean}` | verified (recovered) |
-| G10 / TASK-010 | Optional execute extra | `pyproject.toml` `[execute]`; `src/nbops/execute.py`; extra mocked in default tests | verified (recovered) |
-| G11 / TASK-011 | Typer CLI for every catalog op | `test_catalog_cli_and_api_surfaces_exist` | verified (recovered) |
-| G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test; live uvicorn smoke | verified (recovered) |
+| G10 / TASK-010 | Optional execute extra | `pyproject.toml` `[execute]`; extra mocked in default tests | verified (recovered) |
+| G11 / TASK-011 | Typer CLI for every catalog op | `test_catalog_cli_and_api_surfaces_exist` (20 ops) | verified (recovered) |
+| G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test | verified (recovered) |
 | G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI | verified (recovered) |
-| G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules; 102 passed, 95.58% | verified (recovered) |
-| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32585486835](https://github.com/wyattowalsh/nbops/actions/runs/32585486835): actionlint, ruff, ty, pytest **3.12.14** and **3.13.15** (102 passed, 95.58%) | verified (recovered) |
-| G16 / TASK-016 | AGENTS, CONTRIBUTING, README, CHANGELOG | files at repo root | verified (recovered) |
-| G17 / TASK-017 | uv lockfile + justfile | `uv.lock`, `justfile`; `uv sync --locked` | verified (recovered) |
-| G18 / TASK-018 | Shared operations catalog | `src/nbops/operations.py`; 18 ops | verified (recovered) |
+| G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules; 107 passed, 96.38% | verified (recovered) |
+| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Prior run [32585631217](https://github.com/wyattowalsh/nbops/actions/runs/32585631217) success on **3.12.14** and **3.13.15** | verified (recovered; re-run pending this push) |
+| G16 / TASK-016 | AGENTS, CONTRIBUTING, README, CHANGELOG | plus `CODE_OF_CONDUCT.md`, issue/PR templates, CODEOWNERS | verified (recovered) |
+| G17 / TASK-017 | uv lockfile + justfile | `uv.lock`, `justfile` | verified (recovered) |
+| G18 / TASK-018 | Shared operations catalog | `src/nbops/operations.py`; **20** ops | verified (recovered) |
 | G19 / TASK-019 | `NBOPS_` pydantic-settings | `src/nbops/settings.py`; `tests/test_settings.py` | verified (recovered) |
 | G20 / TASK-020 | SECURITY.md | `SECURITY.md` | verified (recovered) |
 | G21 / TASK-021 | Dependabot pip + github-actions | `.github/dependabot.yml` | verified (recovered) |
@@ -46,12 +46,13 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 
 | Gate | Local | GitHub |
 | ---- | ----- | ------ |
-| `uv sync --locked --group dev` | passed | passed in CI jobs |
+| `uv sync --locked --group dev` | passed | passed in prior CI jobs |
 | `uv run ruff check src tests` | passed | passed (`lint` job) |
 | `uv run ruff format --check src tests` | passed | passed (`lint` job) |
 | `uv run ty check` | passed | passed (`typecheck` job) |
-| `uv run pytest` | 102 passed, 95.58% | 102 passed on 3.12.14 **and** 3.13.15 |
-| `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke on 3.12 and 3.13: `total_cells` 4, `code_cells` 2, `code_lines` 4 ([32585580529](https://github.com/wyattowalsh/nbops/actions/runs/32585580529)) |
+| `uv run pytest` | 107 passed, 96.38% | 102 passed on 3.12.14 **and** 3.13.15 at `f4ded51`; this revision not yet pushed |
+| `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke at `f4ded51` |
+| `uv run nbops validate examples/demo.ipynb` | `ok` | added to Compatibility smoke on this revision |
 
 ## External
 

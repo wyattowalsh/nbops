@@ -99,3 +99,5 @@ jobs:
           uv run nbops ops
           uv run nbops stats examples/demo.ipynb --json
           uv run nbops lint examples/demo.ipynb
+          uv run nbops validate examples/demo.ipynb
+          uv run nbops outputs examples/demo.ipynb --json

@@ -49,6 +49,24 @@ class ImportRecord(BaseModel):
     raw: str
 
 
+class OutputRecord(BaseModel):
+    """One code-cell output from a notebook."""
+
+    cell_index: int = Field(..., ge=0)
+    output_index: int = Field(..., ge=0)
+    output_type: str
+    name: str | None = None
+    preview: str | None = None
+    size: int = Field(0, ge=0)
+
+
+class ValidateResponse(BaseModel):
+    """Result of nbformat schema validation."""
+
+    valid: bool
+    error: str | None = None
+
+
 class LintIssue(BaseModel):
     """A single structural or quality finding."""
 
