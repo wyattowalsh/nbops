@@ -10,6 +10,9 @@ batch, and optional execute.
 
 - **WHEN** a caller invokes `compute_stats`, `nbops stats`, or `POST /notebooks/stats`
 - **THEN** the original stats-only scaffold contract remains available
+- **WHEN** a caller invokes `nbops.core.load_notebook(path)` on a v4 JSON notebook
+  that would fail nbformat schema checks (for example a kernelspec without `name`)
+- **THEN** the document loads and stats can still be computed
 
 ### Requirement: Lint catalog
 

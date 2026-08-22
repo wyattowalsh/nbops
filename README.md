@@ -40,7 +40,7 @@ from nbops import (
     load_notebook,
 )
 
-notebook = load_notebook("examples/demo.ipynb", validate=False)
+notebook = load_notebook("examples/demo.ipynb")
 print(compute_stats(notebook).code_lines)
 print(lint_notebook(notebook).passed)
 print(convert_notebook(notebook, "md").text)

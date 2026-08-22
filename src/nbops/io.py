@@ -66,8 +66,13 @@ def validate_notebook(notebook: dict[str, Any] | Any) -> None:
         raise InvalidNotebookError(f"Notebook failed schema validation: {exc}") from exc
 
 
-def load_notebook(path: str | Path, *, validate: bool = True) -> Notebook:
-    """Read and parse a notebook file from disk."""
+def load_notebook(path: str | Path, *, validate: bool = False) -> Notebook:
+    """Read and parse a notebook file from disk.
+
+    Schema validation is off by default, matching the original stats scaffold
+    (``json.loads`` with no nbformat check). Pass ``validate=True`` or use
+    :func:`validate_notebook` for a schema check.
+    """
     notebook_path = Path(path)
     if not notebook_path.is_file():
         raise NotebookNotFoundError(f"Notebook not found: {notebook_path}")

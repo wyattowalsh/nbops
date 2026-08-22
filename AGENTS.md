@@ -40,6 +40,9 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   in the default suite.
 - Keep `compute_stats`, `nbops stats`, and `POST /notebooks/stats` as a
   compatibility surface for the original scaffold.
+- `load_notebook` is schema-lenient by default (`validate=False`), matching the
+  original scaffold's `json.loads` loader. Use `validate=True` or `nbops validate`
+  for nbformat schema checks.
 - Coverage gate is `--cov-fail-under=90`.
 - Runtime settings use the `NBOPS_` prefix (`NBOPS_LOG_LEVEL`, `NBOPS_EXECUTE_TIMEOUT`,
   `NBOPS_MAX_OUTPUT_CHARS`, `NBOPS_PROGRESS`). See `.env.example`.
