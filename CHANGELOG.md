@@ -28,7 +28,7 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - `nbops new` defaults kernelspec display name to `Python 3` (optional `--display-name`)
 - `from_percent_python` applies Jupytext YAML `kernelspec` when `name` is present
 - Output-linked cell metadata (`collapsed`, `scrolled`, `ExecuteTime`) is stripped only with outputs
-- Load/save preserve omitted v4 cell ids (`NB009` / `clean --strip-ids` survive a roundtrip)
+- Load/save/execute preserve omitted v4 cell ids (`NB009` / `clean --strip-ids` survive a roundtrip)
 - `load_notebook` stays schema-lenient by default, matching the original stats scaffold
 - Demo notebook contract tests (`examples/demo.ipynb`) and `just quality-gates` / `just smoke`
 - Original scaffold API start remains documented: `uvicorn nbops.api:app` plus curl
@@ -48,3 +48,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   live `uvicorn nbops.api:app` is tested for `GET /health` and `POST /notebooks/stats`
 - Frozen original stats-scaffold pytest suite under `tests/original_scaffold/`
 - Dependabot uses the `uv` ecosystem so `uv.lock` is updated with `pyproject.toml`
+- `execute_notebook` restores omitted v4 cell ids after the nbclient roundtrip so
+  lint `NB009` remains observable

@@ -25,7 +25,7 @@
 | TASK-007 | Convert to percent py / script / md, plus percent roundtrip | done | `src/nbops/convert.py`; cell tags round-trip; `[md]` alias; Jupytext YAML kernelspec |
 | TASK-008 | Cell-level diff | done | `src/nbops/diff.py` |
 | TASK-009 | Directory batch + tqdm | done | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}` |
-| TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py` |
+| TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py`; omitted cell ids restored after execute |
 | TASK-011 | Typer CLI for every catalog operation | done | `src/nbops/cli.py`; system commands `version`/`serve` are not catalog ops |
 | TASK-012 | FastAPI surface + `GET /operations` | done | `src/nbops/api.py` |
 | TASK-013 | Preserve stats scaffold contract | done | `core.py`, `stats`, `/notebooks/stats`; original seven-row CLI table; `uvicorn nbops.api:app` and `/docs` in README; `HealthResponse()` defaults; OpenAPI `StatsRequest`; original shipped demo; live uvicorn; frozen original suite in `tests/original_scaffold/` |

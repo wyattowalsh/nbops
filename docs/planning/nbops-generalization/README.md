@@ -29,7 +29,7 @@ the exhaustive program derived from:
 | G7 | Convert to percent py, script, markdown, and percent roundtrip | `src/nbops/convert.py` (cell tags round-trip; `[md]` alias; Jupytext YAML kernelspec) |
 | G8 | Cell-level diff | `src/nbops/diff.py` |
 | G9 | Directory batch operations | `src/nbops/batch.py` + `nbops batch {stats,lint,clean,validate}` |
-| G10 | Optional execute extra | `src/nbops/execute.py` + `[execute]` extra |
+| G10 | Optional execute extra | `src/nbops/execute.py` + `[execute]` extra; omitted cell ids restored after execute |
 | G11 | Typer CLI covering every catalog operation | `src/nbops/cli.py`, `nbops ops` |
 | G12 | FastAPI surface covering the operations | `src/nbops/api.py`, `GET /operations` |
 | G13 | Compatibility with the stats scaffold | `src/nbops/core.py`, `stats`, `/notebooks/stats`; original seven-row CLI table; README `uvicorn nbops.api:app` and `/docs`; `HealthResponse()` defaults; OpenAPI `StatsRequest`; original shipped demo fixture; live uvicorn health/stats; frozen original suite in `tests/original_scaffold/` |

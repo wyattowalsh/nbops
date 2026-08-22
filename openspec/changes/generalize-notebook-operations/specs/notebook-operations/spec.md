@@ -122,9 +122,11 @@ matching `new_notebook` and `POST /notebooks/new`.
 
 ### Requirement: Id-preserving I/O
 
-Load and save SHALL preserve omitted cell ids on nbformat 4 documents so lint
-`NB009` and `clean` with `cell_ids=True` remain observable after a roundtrip.
-Pre-v4 documents MAY be upgraded to v4.
+Load, save, and execute SHALL preserve omitted cell ids on nbformat 4 documents
+so lint `NB009` and `clean` with `cell_ids=True` remain observable after a
+roundtrip. Pre-v4 documents MAY be upgraded to v4. `nbformat` MAY insert ids
+while talking to a kernel; the returned execute document SHALL restore omitted
+ids by cell index.
 
 #### Scenario: Missing ids survive load and save
 
@@ -139,6 +141,8 @@ Pre-v4 documents MAY be upgraded to v4.
 - **THEN** the written cells have no `id`
 - **WHEN** `POST /notebooks/clean` is given `options.cell_ids=true`
 - **THEN** the returned cells have no `id`
+- **WHEN** `execute_notebook` runs on a v4 document whose cells omit `id`
+- **THEN** the returned cells still omit `id` and lint still reports `NB009`
 
 ### Requirement: Demo notebook contract
 

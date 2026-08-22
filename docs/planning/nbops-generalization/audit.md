@@ -27,7 +27,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G7 / TASK-007 | Convert py/script/md + percent roundtrip | `to_percent_python` / `from_percent_python`; tags round-trip including `[md]` and bracket-safe lists; Jupytext YAML kernelspec | verified (recovered) |
 | G8 / TASK-008 | Cell-level diff | `src/nbops/diff.py`; `tests/test_diff.py` | verified (recovered) |
 | G9 / TASK-009 | Batch directory + tqdm | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}`; stats/clean fail-closed | verified (recovered) |
-| G10 / TASK-010 | Optional execute extra | `pyproject.toml` `[execute]`; extra mocked in default tests | verified (recovered) |
+| G10 / TASK-010 | Optional execute extra | `pyproject.toml` `[execute]`; extra mocked in default tests; omitted v4 cell ids restored after execute | verified (recovered) |
 | G11 / TASK-011 | Typer CLI for every catalog op | `test_catalog_cli_and_api_surfaces_exist` (20 ops); `nbops serve`/`version` are system commands | verified (recovered) |
 | G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test | verified (recovered) |
 | G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI; original seven-row CLI table; incomplete kernelspec fixture; original shipped demo (no ids, language_info 3.12); README `uvicorn nbops.api:app` + curl health/stats + `/docs`; live uvicorn process test; `HealthResponse()` defaults; OpenAPI `StatsRequest`; frozen original suite in `tests/original_scaffold/` | verified (recovered) |

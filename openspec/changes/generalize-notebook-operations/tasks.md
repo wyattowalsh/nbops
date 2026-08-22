@@ -29,3 +29,4 @@
 - [x] 1.27 Original `/docs` README sentence, StatsRequest nbformat v4 field description, OpenAPI health defaults
 - [x] 1.28 Original shipped demo fixture (no ids, language_info 3.12) plus live `uvicorn nbops.api:app` health/stats
 - [x] 1.29 Frozen original stats-scaffold pytest suite; Dependabot `uv` ecosystem for `uv.lock`
+- [x] 1.30 Execute restores omitted v4 cell ids so `NB009` survives `nbops exec`
