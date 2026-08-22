@@ -79,6 +79,8 @@ def to_markdown(notebook: Mapping[str, Any]) -> str:
     ``attachment:`` / ``attachment://`` links in markdown and raw cells are
     rewritten to ``data:`` URIs from that cell's nbformat attachments so the
     converted file is self-contained. Unknown names are left unchanged.
+    Image ``display_data`` / ``execute_result`` outputs on code cells are
+    appended as Markdown images.
     """
     language = notebook_code_language(notebook)
     chunks: list[str] = []
@@ -92,6 +94,7 @@ def to_markdown(notebook: Mapping[str, Any]) -> str:
                 chunks.append(_inline_attachment_references(source, _cell_attachments(cell)))
         else:
             chunks.append(f"```{language}\n{source}\n```" if source else f"```{language}\n```")
+            chunks.extend(_code_cell_output_images(cell))
     return ("\n\n".join(chunks).rstrip() + "\n") if chunks else ""
 
 
@@ -781,6 +784,30 @@ def _lookup_attachment_uri(name: str, uris: dict[str, str]) -> str | None:
         if uri is not None:
             return uri
     return None
+
+
+def _code_cell_output_images(cell: Mapping[str, Any]) -> list[str]:
+    """Return Markdown images for image/* display and execute_result outputs."""
+    outputs = cell.get("outputs")
+    if not isinstance(outputs, list):
+        return []
+    images: list[str] = []
+    for output in outputs:
+        if not isinstance(output, dict):
+            continue
+        if output.get("output_type") not in {"display_data", "execute_result"}:
+            continue
+        data = output.get("data")
+        if not isinstance(data, dict):
+            continue
+        image_bundle = {
+            key: value for key, value in data.items() if str(key).lower().startswith("image/")
+        }
+        uri = _mime_bundle_data_uri(image_bundle)
+        if uri is None:
+            continue
+        images.append(f"![output-{len(images)}]({uri})")
+    return images
 
 
 def _inline_attachment_references(source: str, attachments: Any) -> str:

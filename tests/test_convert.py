@@ -11,6 +11,7 @@ from nbops.cells import cell_source, is_python_notebook
 from nbops.convert import (
     _at_percent_metadata,
     _consume_quoted_string,
+    _inline_attachment_references,
     _leading_list_literal,
     _leading_object_literal,
     _leading_scalar_literal,
@@ -434,6 +435,110 @@ def test_percent_keeps_attachment_refs_in_source() -> None:
     assert "data:image/png" not in text
 
 
+def test_to_markdown_attachment_payload_and_lookup_edges() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": "nope",
+                "source": (
+                    "![a](attachment:folder/a.png)\n"
+                    "![b](attachment:b.png)\n"
+                    "![c](attachment:c.png)\n"
+                    "![empty](attachment:empty.png)\n"
+                    "![space](attachment:space.png)\n"
+                    "![skip](attachment:skip.png)\n"
+                    '<img src="attachment:missing.png">\n'
+                    "[fig]: attachment:missing.png\n"
+                ),
+                "attachments": {
+                    "folder/a.png": {"image/png": "aaa"},
+                    "b.png": {"image/png": 123, "text/plain": "bbb"},
+                    "c.png": {"image/png": "data:image/png;base64,ccc"},
+                    "empty.png": {"image/png": ""},
+                    "space.png": {"image/png": " \n "},
+                    "skip.png": {},
+                    "": {"image/png": "nope"},
+                    1: {"image/png": "nope"},
+                    "not-bundle.png": "nope",
+                },
+            }
+        ]
+    }
+    markdown = to_markdown(notebook)
+    assert "data:image/png;base64,aaa" in markdown
+    assert "data:text/plain;base64,bbb" in markdown
+    assert "data:image/png;base64,ccc" in markdown
+    assert "attachment:empty.png" in markdown
+    assert "attachment:space.png" in markdown
+    assert "attachment:skip.png" in markdown
+    assert 'src="attachment:missing.png"' in markdown
+    assert "[fig]: attachment:missing.png" in markdown
+    assert _inline_attachment_references("", {"plot.png": {"image/png": "aaa"}}) == ""
+
+
+def test_to_markdown_inlines_code_cell_output_images() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "plot()\n",
+                "outputs": [
+                    "nope",
+                    {"output_type": "stream", "name": "stdout", "text": "hi\n"},
+                    {
+                        "output_type": "display_data",
+                        "data": {"text/plain": "<Figure>", "image/png": "aaa"},
+                        "metadata": {},
+                    },
+                    {
+                        "output_type": "execute_result",
+                        "data": {"image/svg+xml": "<svg></svg>"},
+                        "metadata": {},
+                        "execution_count": 1,
+                    },
+                    {"output_type": "display_data", "data": {"text/plain": "1"}, "metadata": {}},
+                    {"output_type": "display_data", "data": "nope", "metadata": {}},
+                ],
+            }
+        ]
+    }
+    markdown = to_markdown(notebook)
+    assert "```python\nplot()\n```" in markdown
+    assert "![output-0](data:image/png;base64,aaa)" in markdown
+    assert "![output-1](data:image/svg+xml;charset=utf-8," in markdown
+    assert markdown.count("![output-") == 2
+
+
+def test_to_markdown_skips_code_cell_without_output_list() -> None:
+    notebook = {
+        "cells": [{"cell_type": "code", "metadata": {}, "source": "x = 1\n", "outputs": None}]
+    }
+    markdown = to_markdown(notebook)
+    assert "```python" in markdown
+    assert "![output-" not in markdown
+
+
+def test_to_markdown_ignores_empty_metadata_attachments() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {"attachments": {}},
+                "source": "![p](attachment:plot.png)\n",
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": "nope",
+                "source": "![q](attachment:plot.png)\n",
+            },
+        ]
+    }
+    markdown = to_markdown(notebook)
+    assert markdown.count("attachment:plot.png") == 2
+
+
 def test_percent_roundtrip_preserves_omitted_cell_ids() -> None:
     notebook = {
         "cells": [
@@ -657,6 +762,15 @@ def test_empty_notebook_conversions() -> None:
     assert to_percent_python(empty) == ""
     assert to_script(empty) == ""
     assert to_markdown(empty) == ""
+
+
+def test_percent_front_matter_without_cells() -> None:
+    text = to_percent_python(
+        {"metadata": {"kernelspec": {"name": "python3", "display_name": "Python 3"}}, "cells": []}
+    )
+    assert text.startswith("# ---")
+    assert "# kernelspec:" in text
+    assert "# %%" not in text
 
 
 def test_percent_roundtrip_preserves_non_python_kernelspec() -> None:

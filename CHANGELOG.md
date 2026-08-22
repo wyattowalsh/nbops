@@ -77,3 +77,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   them on the cell, not in `metadata`
 - Markdown conversion (`to_markdown` / `convert --to md`) inlines `attachment:` and
   `attachment://` links as `data:` URIs from cell attachments
+- Markdown conversion also inlines code-cell `image/*` display/execute outputs as
+  `data:` images after the fenced source

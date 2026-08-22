@@ -209,7 +209,9 @@ SHALL fence code cells with the declared or inferred language id and SHALL
 rewrite `attachment:` / `attachment://` references in markdown and raw cells to
 `data:` URIs from that cell's nbformat attachments, preferring `image/*` MIME
 types. Unknown attachment names SHALL be left unchanged. Percent conversion
-SHALL keep `attachment:` references in cell source.
+SHALL keep `attachment:` references in cell source. Code-cell `display_data` and
+`execute_result` outputs with `image/*` data SHALL be appended as Markdown
+`data:` images after the fenced source.
 
 #### Scenario: IPython magics are not syntax errors
 
@@ -243,3 +245,5 @@ SHALL keep `attachment:` references in cell source.
 - **THEN** the `attachment:` reference remains in cell source
 - **WHEN** a markdown cell references `attachment:missing.png`
 - **THEN** the unknown reference is unchanged
+- **WHEN** a code cell has `display_data` / `execute_result` `image/*` output
+- **THEN** `to_markdown` appends a `data:` image after the fenced source
