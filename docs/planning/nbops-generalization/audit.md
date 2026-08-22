@@ -12,7 +12,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 
 | Requirement | Evidence inspected | Status |
 | ----------- | ------------------ | ------ |
-| Execute every item in `nbops-generalization-codex-kickoff-context-20260822` | Filename only in the run transcript (`/goal … \` nbops-generalization-codex-kickoff-context-20260822 \``); schema is `role`/`text` with no attachment body. Absent from `/workspace`, GitHub `wyattowalsh/nbops` (`main` + feature branches), Wyatt public repo trees (`agents`, `prompts`, `skills`, `nbadb`, `dotfiles`, `cwa`), gists (403), Drive/Gmail/Linear/Tavily MCP (`needsAuth` or error), `/tmp/research/*` clones, and all five nbops cloud-agent transcripts | **missing** |
+| Execute every item in `nbops-generalization-codex-kickoff-context-20260822` | Filename only in the run transcript (`/goal … \` nbops-generalization-codex-kickoff-context-20260822 \``); schema is `role`/`text` with no attachment body. Absent from `/workspace`, GitHub `wyattowalsh/nbops` (`main` + feature branches), Wyatt public repo trees (`agents`, `prompts`, `nbadb`, `dotfiles`, `cwa`, `proxywhirl`, `riso`, `template`), gists (404), Drive/Gmail/Linear/Tavily MCP (`needsAuth`), `/tmp/research/*` clones, and all five nbops cloud-agent transcripts | **missing** |
 
 ## Recovered program (not a substitute)
 
@@ -28,11 +28,11 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G8 / TASK-008 | Cell-level diff | `src/nbops/diff.py`; `tests/test_diff.py` | verified (recovered) |
 | G9 / TASK-009 | Batch directory + tqdm | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}`; stats/clean fail-closed | verified (recovered) |
 | G10 / TASK-010 | Optional execute extra | `pyproject.toml` `[execute]`; extra mocked in default tests | verified (recovered) |
-| G11 / TASK-011 | Typer CLI for every catalog op | `test_catalog_cli_and_api_surfaces_exist` (20 ops) | verified (recovered) |
+| G11 / TASK-011 | Typer CLI for every catalog op | `test_catalog_cli_and_api_surfaces_exist` (20 ops); `nbops serve`/`version` are system commands | verified (recovered) |
 | G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test | verified (recovered) |
 | G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI | verified (recovered) |
-| G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules including `test_models.py` and `test_exceptions.py`; 118 passed, 97.83% | verified (recovered) |
-| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32587917364](https://github.com/wyattowalsh/nbops/actions/runs/32587917364) on `afd8400`: **118 passed** on CPython **3.12.14** and **3.13.15**, including `python -m nbops version` and `nbops --version` | verified (recovered) |
+| G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules including `test_models.py` and `test_exceptions.py`; **128 passed**, **98.64%** locally | verified (recovered) |
+| G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32587917364](https://github.com/wyattowalsh/nbops/actions/runs/32587917364) on `afd8400`: **118 passed** on CPython **3.12.14** and **3.13.15**. Later local revision adds `nbops serve --help` to Compatibility smoke | verified (recovered) |
 | G16 / TASK-016 | AGENTS, CONTRIBUTING, README, CHANGELOG | plus `CODE_OF_CONDUCT.md`, issue/PR templates, CODEOWNERS | verified (recovered) |
 | G17 / TASK-017 | uv lockfile + justfile | `uv.lock`, `justfile` | verified (recovered) |
 | G18 / TASK-018 | Shared operations catalog | `src/nbops/operations.py`; **20** ops | verified (recovered) |
@@ -50,10 +50,11 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | `uv run ruff check src tests` | passed | passed (`lint` job) |
 | `uv run ruff format --check src tests` | passed | passed (`lint` job) |
 | `uv run ty check` | passed | passed (`typecheck` job) |
-| `uv run pytest` | 118 passed, 97.83% | 118 passed on 3.12.14 **and** 3.13.15 at `afd8400` ([32587917364](https://github.com/wyattowalsh/nbops/actions/runs/32587917364)) |
+| `uv run pytest` | 128 passed, 98.64% | 118 passed on 3.12.14 **and** 3.13.15 at `afd8400` ([32587917364](https://github.com/wyattowalsh/nbops/actions/runs/32587917364)); later SHA pending |
 | `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke on both interpreters |
 | `uv run nbops validate examples/demo.ipynb` | `ok` | CI Compatibility smoke on 3.12.14 and 3.13.15 |
 | `uv run nbops --version` / `python -m nbops version` | `0.2.0` | added to Compatibility smoke |
+| `uv run nbops serve --help` | passed locally | added to Compatibility smoke on this branch |
 
 ## External
 

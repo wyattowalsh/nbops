@@ -409,6 +409,11 @@ def test_filter_and_tag_require_output(sample_notebook_file: Path) -> None:
     assert filt.exit_code != 0
     tag = runner.invoke(app, ["tag", str(sample_notebook_file), "--cell", "0"])
     assert tag.exit_code != 0
+    tag_add = runner.invoke(
+        app, ["tag", str(sample_notebook_file), "--cell", "0", "--add", "intro"]
+    )
+    assert tag_add.exit_code != 0
+    assert "Specify --output" in tag_add.output
     ids = runner.invoke(app, ["ids", str(sample_notebook_file)])
     assert ids.exit_code != 0
     ops = runner.invoke(app, ["ops"])
@@ -593,10 +598,17 @@ def test_batch_lint_strict_fails_on_warnings(tmp_path: Path) -> None:
     assert payload[0]["ok"] is True
 
 
-def test_mutating_in_place_writes(sample_notebook_file: Path) -> None:
+def test_mutating_in_place_writes(tmp_path: Path, sample_notebook_file: Path) -> None:
     result = runner.invoke(
         app, ["clean", str(sample_notebook_file), "--in-place", "--keep-outputs"]
     )
     assert result.exit_code == 0
     ids = runner.invoke(app, ["ids", str(sample_notebook_file), "--in-place"])
     assert ids.exit_code == 0
+    batch_dir = tmp_path / "clean-table"
+    batch_dir.mkdir()
+    target = batch_dir / "demo.ipynb"
+    target.write_text(sample_notebook_file.read_text(encoding="utf-8"), encoding="utf-8")
+    table = runner.invoke(app, ["batch", "clean", str(batch_dir)])
+    assert table.exit_code == 0
+    assert "demo.ipynb" in table.stdout
