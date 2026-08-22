@@ -19,8 +19,8 @@ from nbops.lint import lint_notebook
 from nbops.models import (
     CleanOptions,
     ConvertResult,
-    HealthResponse,
     Heading,
+    HealthResponse,
     ImportRecord,
     LintReport,
     NotebookDiff,

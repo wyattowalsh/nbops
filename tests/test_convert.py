@@ -58,6 +58,7 @@ def test_from_percent_python_empty_and_preamble() -> None:
 
 def test_from_percent_python_skips_jupytext_front_matter() -> None:
     text = (
+        "\n"
         "# ---\n"
         "# jupyter:\n"
         "#   jupytext:\n"
@@ -65,7 +66,7 @@ def test_from_percent_python_skips_jupytext_front_matter() -> None:
         "#       format_name: percent\n"
         "# ---\n"
         "\n"
-        "# %% [markdown] tags=[\"intro\"]\n"
+        '# %% [markdown] tags=["intro"]\n'
         "# Hello\n"
         "\n"
         "# %%\n"
@@ -77,11 +78,24 @@ def test_from_percent_python_skips_jupytext_front_matter() -> None:
     assert cell_source(notebook["cells"][1]).rstrip() == "x = 1"
 
 
+def test_unquote_keeps_uncommented_markdown_lines() -> None:
+    notebook = from_percent_python("# %% [markdown]\nHello\n#\n# world\n")
+    source = cell_source(notebook["cells"][0])
+    assert "Hello" in source
+    assert "world" in source
+
+
 def test_from_percent_python_keeps_unclosed_front_matter() -> None:
     text = "# ---\njupyter: true\nprint(1)\n"
     notebook = from_percent_python(text)
     assert notebook["cells"][0]["cell_type"] == "code"
     assert "print(1)" in cell_source(notebook["cells"][0])
+
+
+def test_jupytext_front_matter_without_trailing_newline() -> None:
+    text = "# ---\n# jupyter: true\n# ---\n# %%\nx = 1"
+    notebook = from_percent_python(text)
+    assert cell_source(notebook["cells"][0]).rstrip() == "x = 1"
 
 
 def test_empty_notebook_conversions() -> None:
