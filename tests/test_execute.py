@@ -6,8 +6,13 @@ from typing import Any
 
 import pytest
 
+import nbops
 from nbops.exceptions import ExecuteError, MissingExtraError
 from nbops.execute import execute_notebook
+
+
+def test_execute_notebook_is_exported() -> None:
+    assert nbops.execute_notebook is execute_notebook
 
 
 def test_execute_requires_extra(

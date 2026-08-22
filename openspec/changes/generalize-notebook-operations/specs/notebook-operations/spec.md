@@ -97,6 +97,22 @@ matching `new_notebook` and `POST /notebooks/new`.
 - **WHEN** a caller runs `nbops new path.ipynb` with the default kernel
 - **THEN** the written notebook has `metadata.kernelspec.display_name` of `Python 3`
 
+### Requirement: Id-preserving I/O
+
+Load and save SHALL preserve omitted cell ids on nbformat 4 documents so lint
+`NB009` and `clean` with `cell_ids=True` remain observable after a roundtrip.
+Pre-v4 documents MAY be upgraded to v4.
+
+#### Scenario: Missing ids survive load and save
+
+- **WHEN** a v4 notebook cell has no `id` and is loaded or saved with
+  `validate=False`
+- **THEN** the cell still has no `id`
+- **WHEN** `nbops lint` is run on that file
+- **THEN** it reports `NB009`
+- **WHEN** `nbops clean --strip-ids` writes an output file
+- **THEN** the written cells have no `id`
+
 ### Requirement: Demo notebook contract
 
 `examples/demo.ipynb` SHALL remain a valid nbformat v4.5 compatibility fixture:

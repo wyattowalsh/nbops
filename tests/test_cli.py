@@ -208,6 +208,69 @@ def test_lint_strict_errors(tmp_path: Path, error_notebook: dict) -> None:
     assert result.exit_code != 0
 
 
+def test_cli_lint_reports_missing_cell_ids(tmp_path: Path) -> None:
+    path = tmp_path / "noid.ipynb"
+    path.write_text(
+        json.dumps(
+            {
+                "cells": [
+                    {
+                        "cell_type": "markdown",
+                        "metadata": {},
+                        "source": "# Title\n",
+                    }
+                ],
+                "metadata": {
+                    "kernelspec": {
+                        "display_name": "Python 3",
+                        "language": "python",
+                        "name": "python3",
+                    }
+                },
+                "nbformat": 4,
+                "nbformat_minor": 5,
+            }
+        ),
+        encoding="utf-8",
+    )
+    result = runner.invoke(app, ["lint", str(path)])
+    assert result.exit_code == 0
+    assert "NB009" in result.stdout
+
+
+def test_cli_clean_strip_ids_persists(tmp_path: Path) -> None:
+    path = tmp_path / "hasid.ipynb"
+    path.write_text(
+        json.dumps(
+            {
+                "cells": [
+                    {
+                        "cell_type": "markdown",
+                        "id": "keep-me",
+                        "metadata": {},
+                        "source": "# Title\n",
+                    }
+                ],
+                "metadata": {
+                    "kernelspec": {
+                        "display_name": "Python 3",
+                        "language": "python",
+                        "name": "python3",
+                    }
+                },
+                "nbformat": 4,
+                "nbformat_minor": 5,
+            }
+        ),
+        encoding="utf-8",
+    )
+    output = tmp_path / "stripped.ipynb"
+    result = runner.invoke(app, ["clean", str(path), "--strip-ids", "-o", str(output)])
+    assert result.exit_code == 0
+    written = json.loads(output.read_text(encoding="utf-8"))
+    assert "id" not in written["cells"][0]
+
+
 def test_lint_ok_when_no_issues(tmp_path: Path) -> None:
     path = tmp_path / "ok.ipynb"
     path.write_text(

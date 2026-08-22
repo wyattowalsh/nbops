@@ -10,6 +10,7 @@ except PackageNotFoundError:  # pragma: no cover - only during local, uninstalle
 from nbops.clean import clean_notebook
 from nbops.convert import convert_notebook, from_percent_python, to_percent_python
 from nbops.diff import diff_notebooks
+from nbops.execute import execute_notebook
 from nbops.inspect import (
     NotebookStats,
     compute_stats,
@@ -43,6 +44,7 @@ __all__ = [
     "convert_notebook",
     "diff_notebooks",
     "ensure_cell_ids",
+    "execute_notebook",
     "extract_imports",
     "filter_cells",
     "from_percent_python",

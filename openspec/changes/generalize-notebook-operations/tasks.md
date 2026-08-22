@@ -22,3 +22,4 @@
 - [x] 1.20 Demo notebook contract tests; `just quality-gates` / `just smoke`
 - [x] 1.21 HTTP demo stats contract; lint output-size / non-mapping output edges
 - [x] 1.22 Cover remaining API lifespan/split, nbclient import, io validator, inspect/diff branches
+- [x] 1.23 Preserve omitted cell ids through load/save; CLI lint NB009 and clean --strip-ids

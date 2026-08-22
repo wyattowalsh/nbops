@@ -22,6 +22,8 @@ CLI, and HTTP surfaces.
 ## Decisions
 
 - nbformat v4.5 cell ids are linted (`NB009`) and repairable (`ensure_cell_ids`)
+- Load/save of v4 notebooks preserve omitted cell ids; `nbformat` must not
+  silently reinsert them (that would hide `NB009` and undo `clean --strip-ids`)
 - Optional execution is an extra so the default install stays kernel-free
 - Batch walks skip `.ipynb_checkpoints`
 - Settings load from `NBOPS_*` environment variables via pydantic-settings

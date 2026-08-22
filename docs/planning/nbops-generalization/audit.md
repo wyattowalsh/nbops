@@ -19,7 +19,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | ID | Requirement | Evidence | Status |
 | -- | ----------- | -------- | ------ |
 | G1 / TASK-001 | Domain-general `src/nbops` package | `src/nbops/` modules; package name `nbops`; no NBA-specific code | verified (recovered) |
-| G2 / TASK-002 | I/O load/save/validate/new | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate`; `tests/test_io.py` | verified (recovered) |
+| G2 / TASK-002 | I/O load/save/validate/new | `src/nbops/io.py`; v4 omitted cell ids preserved; `nbops validate`; `POST /notebooks/validate`; `tests/test_io.py` | verified (recovered) |
 | G3 / TASK-003 | Inspect stats/outline/imports/outputs | `list_outputs`; CLI/API `outputs`; inspect payload includes outputs | verified (recovered) |
 | G4 / TASK-004 | Clean outputs/counts/ids/empty | `src/nbops/clean.py`; widgets and output-linked cell keys stripped with outputs; `tests/test_clean.py` | verified (recovered) |
 | G5 / TASK-005 | Transform filter/concat/split/kernel/tags/ids | concat uniquifies cell ids; `add_tags` / `remove_tags`; `tests/test_transform.py` | verified (recovered) |

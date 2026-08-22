@@ -34,6 +34,7 @@ from nbops import (
     compute_stats,
     convert_notebook,
     diff_notebooks,
+    execute_notebook,
     from_percent_python,
     lint_notebook,
     load_notebook,
@@ -132,7 +133,7 @@ Runtime settings use the `NBOPS_` prefix and can be placed in a working-director
 
 ```text
 src/nbops/
-  io.py         load, save, validate, new
+  io.py         load, save, validate, new (v4 cell ids preserved as stored)
   inspect.py    stats, outline, imports, outputs
   clean.py      strip outputs / counts / ids
   transform.py  filter, concat, split, kernel, tags

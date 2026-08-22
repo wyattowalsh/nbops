@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import importlib
+
 import pytest
 from fastapi.routing import APIRoute
 from typer.main import get_command
@@ -113,6 +115,14 @@ def test_catalog_parsers_reject_malformed_entries() -> None:
         catalog_http_route(Operation(name="x", summary="x", library="x", api="not-a-route"))
     assert catalog_cli_argv(Operation(name="x", summary="x", library="x")) is None
     assert catalog_http_route(Operation(name="x", summary="x", library="x")) is None
+
+
+def test_catalog_library_paths_are_importable() -> None:
+    for item in OPERATIONS:
+        for token in item.library.split(" / "):
+            module_name, _, attr = token.rpartition(".")
+            module = importlib.import_module(module_name)
+            assert hasattr(module, attr), f"{item.library} does not resolve {token}"
 
 
 def test_system_commands_are_not_catalog_operations() -> None:

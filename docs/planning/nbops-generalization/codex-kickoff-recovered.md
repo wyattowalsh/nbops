@@ -17,7 +17,7 @@
 | ID | Task | Status | Evidence |
 | -- | ---- | ------ | -------- |
 | TASK-001 | Domain-general `src/nbops` package | done | `src/nbops/` |
-| TASK-002 | I/O via nbformat (load/save/validate/new) | done | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
+| TASK-002 | I/O via nbformat (load/save/validate/new); v4 omitted cell ids preserved | done | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
 | TASK-003 | Inspect (stats, outline, imports, outputs) | done | `src/nbops/inspect.py`; `nbops outputs` |
 | TASK-004 | Clean outputs/counts/ids/empty cells | done | `src/nbops/clean.py`; widgets and output-linked cell keys stripped with outputs |
 | TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py`; `add_tags` / `remove_tags` |
