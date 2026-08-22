@@ -28,3 +28,4 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - `nbops new` defaults kernelspec display name to `Python 3` (optional `--display-name`)
 - `from_percent_python` applies Jupytext YAML `kernelspec` when `name` is present
 - Output-linked cell metadata (`collapsed`, `scrolled`, `ExecuteTime`) is stripped only with outputs
+- Demo notebook contract tests (`examples/demo.ipynb`) and `just quality-gates` / `just smoke`

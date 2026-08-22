@@ -123,7 +123,7 @@ uv run ty check
 uv run pytest
 ```
 
-Or `just check`.
+Or `just check` / `just quality-gates`.
 
 Runtime settings use the `NBOPS_` prefix and can be placed in a working-directory
 `.env` file. See [`.env.example`](./.env.example).

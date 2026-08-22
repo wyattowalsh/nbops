@@ -11,6 +11,8 @@ uv run ty check
 uv run pytest
 ```
 
+Or `just check` / `just quality-gates` (includes demo compatibility smoke).
+
 4. Do not commit secrets, notebooks with huge outputs, or hand-edited lockfiles.
 5. Prefer absolute `nbops.*` imports.
 6. Follow the [Code of Conduct](./CODE_OF_CONDUCT.md).

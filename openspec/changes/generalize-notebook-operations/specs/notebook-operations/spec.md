@@ -96,3 +96,14 @@ matching `new_notebook` and `POST /notebooks/new`.
 
 - **WHEN** a caller runs `nbops new path.ipynb` with the default kernel
 - **THEN** the written notebook has `metadata.kernelspec.display_name` of `Python 3`
+
+### Requirement: Demo notebook contract
+
+`examples/demo.ipynb` SHALL remain a valid nbformat v4.5 compatibility fixture:
+four cells (markdown, code, code, markdown), stats 4/2/4, kernel display name
+`Python 3`, and a `demo` tag on the first code cell.
+
+#### Scenario: Demo layout
+
+- **WHEN** the demo notebook is loaded and validated
+- **THEN** cell ids are `title`, `area`, `print-area`, `done` and stats remain 4/2/4
