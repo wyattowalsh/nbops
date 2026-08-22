@@ -1,8 +1,7 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e` after adding `.env.example`,
-CLI `--version` / `--strip-metadata`, and `python -m nbops`. Local gates are
-**118 passed**, coverage **97.83%**. GitHub CI for this revision is pending push.
+Recorded on branch `cursor/nbops-generalization-673e` at `afd8400`.
+Local and GitHub gates are **118 passed**, coverage **97.83%**.
 
 ## Tooling
 
@@ -41,15 +40,15 @@ run's transcript (filename only). Recovered TASK-001–023 live in
 
 ## GitHub Actions
 
-Prior verified run [32587289076](https://github.com/wyattowalsh/nbops/actions/runs/32587289076)
-on `b3045f3` concluded **success** (all 5 jobs):
+Run [32587917364](https://github.com/wyattowalsh/nbops/actions/runs/32587917364)
+on `afd8400` concluded **success** (all 5 jobs):
 
 | Job | Result | Interpreter / notes |
 | --- | ------ | ------------------- |
 | `workflow-lint` | success | actionlint |
 | `lint` | success | ruff check + format |
 | `typecheck` | success | ty |
-| `test (3.12)` | success | CPython **3.12.14**, **113 passed**; Compatibility smoke includes `nbops validate`, `nbops outputs`, `nbops batch validate examples`; demo stats 4 / 2 / 4 |
-| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed), **113 passed**; same Compatibility smoke |
+| `test (3.12)` | success | CPython **3.12.14**, **118 passed**; Compatibility smoke includes `python -m nbops version`, `nbops --version`, `nbops validate`, `nbops outputs`, `nbops batch validate examples`; demo stats 4 / 2 / 4 |
+| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed `3.13.15`), **118 passed**; same Compatibility smoke |
 
-This revision adds `python -m nbops version` and `nbops --version` to Compatibility smoke.
+Prior verified runs on this branch: [32587289076](https://github.com/wyattowalsh/nbops/actions/runs/32587289076) (`b3045f3`, 113 tests) and [32587098439](https://github.com/wyattowalsh/nbops/actions/runs/32587098439) (`b22df3c`, 112 tests).
