@@ -50,7 +50,10 @@ CLI, and HTTP surfaces.
   survive output cleaning, and participate in cell-level diffs. `NB003` still
   flags empty source. `compute_stats` reports `attachment_cells` and
   `attachment_files` additively; `nbops stats` prints those counts plus widgets
-  without removing the original seven table rows.
+  without removing the original seven table rows. Inspect JSON lists each
+  attachment (library `list_attachments`) without a dedicated catalog operation.
+  Cell-level diff compares type, source, attachments, tags, and outputs; it
+  ignores execution counts and cell ids.
 
 ## Risks / Trade-offs
 

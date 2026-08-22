@@ -34,12 +34,13 @@ def test_public_from_percent_python_export() -> None:
 
 
 def test_public_outputs_validate_and_convert_exports() -> None:
-    from nbops import list_outputs, to_percent_python, validate_notebook
+    from nbops import list_attachments, list_outputs, to_percent_python, validate_notebook
     from nbops.io import new_notebook
 
     notebook = new_notebook()
     validate_notebook(notebook)
     assert list_outputs(notebook) == []
+    assert list_attachments(notebook) == []
     percent = to_percent_python(notebook)
     assert percent.startswith("# ---")
     assert "#   name: python3" in percent

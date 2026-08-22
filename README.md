@@ -104,7 +104,7 @@ curl -s -X POST http://127.0.0.1:8000/notebooks/stats \
 | `GET` | `/health` | Liveness |
 | `GET` | `/operations` | Operations catalog |
 | `POST` | `/notebooks/stats` | Cell/code statistics |
-| `POST` | `/notebooks/inspect` | Stats + outline + imports + outputs |
+| `POST` | `/notebooks/inspect` | Stats + outline + imports + outputs + attachments |
 | `POST` | `/notebooks/headings` | Markdown heading outline |
 | `POST` | `/notebooks/imports` | Top-level imports |
 | `POST` | `/notebooks/outputs` | Code-cell output inventory |
@@ -145,12 +145,12 @@ Runtime settings use the `NBOPS_` prefix and can be placed in a working-director
 ```text
 src/nbops/
   io.py         load, save, validate, new (v4 cell ids preserved as stored)
-  inspect.py    stats, outline, imports, outputs (stats include attachments)
+  inspect.py    stats, outline, imports, outputs, attachments
   clean.py      strip outputs / counts / ids (attachments kept)
   transform.py  filter, concat, split, kernel, tags
   lint.py       structural quality
   convert.py    percent Python, script, Markdown (inlines attachments)
-  diff.py       cell-level diff (type, source, attachments)
+  diff.py       cell-level diff (type, source, attachments, tags, outputs)
   batch.py      directory walks
   execute.py    optional nbclient execution
   cli.py        Typer CLI

@@ -22,7 +22,7 @@ from nbops.cells import (
     preview,
 )
 from nbops.io import load_notebook
-from nbops.models import Heading, ImportRecord, NotebookStats, OutputRecord
+from nbops.models import AttachmentRecord, Heading, ImportRecord, NotebookStats, OutputRecord
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -228,3 +228,53 @@ def _output_text(output: Mapping[str, Any], output_type: str) -> str:
                 return value
         return " ".join(str(value) for value in data.values())
     return ""
+
+
+def list_attachments(notebook: Mapping[str, Any]) -> list[AttachmentRecord]:
+    """Inventory cell attachments in document order.
+
+    Uses the nbformat cell ``attachments`` field, falling back to
+    ``metadata.attachments``. This is an inspect helper, not a catalog operation.
+    """
+    records: list[AttachmentRecord] = []
+    for cell_index, cell in enumerate(cells_of(notebook)):
+        if not isinstance(cell, dict):
+            continue
+        attachments = cell_attachments(cell)
+        if not attachments:
+            continue
+        for filename, bundle in attachments.items():
+            if not isinstance(filename, str) or not filename:
+                continue
+            mime_types, size = _attachment_inventory(bundle)
+            records.append(
+                AttachmentRecord(
+                    cell_index=cell_index,
+                    filename=filename,
+                    mime_types=mime_types,
+                    size=size,
+                )
+            )
+    return records
+
+
+def _attachment_inventory(bundle: Any) -> tuple[list[str], int]:
+    if not isinstance(bundle, dict):
+        return [], 0
+    mime_types: list[str] = []
+    size = 0
+    for mime, payload in bundle.items():
+        mime_types.append(str(mime))
+        size += _attachment_payload_size(payload)
+    mime_types.sort()
+    return mime_types, size
+
+
+def _attachment_payload_size(payload: Any) -> int:
+    if isinstance(payload, str):
+        return len(payload)
+    if isinstance(payload, list):
+        return sum(len(str(part)) for part in payload)
+    if payload is None:
+        return 0
+    return len(str(payload))

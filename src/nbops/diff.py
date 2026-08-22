@@ -6,7 +6,7 @@ import json
 from difflib import SequenceMatcher
 from typing import TYPE_CHECKING, Any
 
-from nbops.cells import cell_attachments, cell_source, cells_of, preview
+from nbops.cells import cell_attachments, cell_source, cell_tags, cells_of, preview
 from nbops.models import CellDiff, NotebookDiff
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 def diff_notebooks(left: Mapping[str, object], right: Mapping[str, object]) -> NotebookDiff:
-    """Diff two notebooks by cell type, source, and attachments."""
+    """Diff two notebooks by cell type, source, attachments, tags, and outputs."""
     left_cells = [_signature(cell) for cell in cells_of(left)]
     right_cells = [_signature(cell) for cell in cells_of(right)]
     matcher = SequenceMatcher(a=left_cells, b=right_cells, autojunk=False)
@@ -99,18 +99,27 @@ def diff_notebooks(left: Mapping[str, object], right: Mapping[str, object]) -> N
     )
 
 
-def _signature(cell: object) -> tuple[str, str, str]:
+def _signature(cell: object) -> tuple[str, str, str, str, str]:
     if not isinstance(cell, dict):
-        return ("unknown", "", "")
+        return ("unknown", "", "", "", "")
     return (
         str(cell.get("cell_type") or "unknown"),
         cell_source(cell),
-        _attachments_signature(cell_attachments(cell)),
+        _json_signature(cell_attachments(cell)),
+        _json_signature(sorted(cell_tags(cell))),
+        _outputs_signature(cell),
     )
 
 
-def _attachments_signature(attachments: dict[str, Any]) -> str:
+def _outputs_signature(cell: dict[str, Any]) -> str:
+    outputs = cell.get("outputs")
+    if not isinstance(outputs, list):
+        outputs = []
+    return _json_signature(outputs)
+
+
+def _json_signature(value: Any) -> str:
     try:
-        return json.dumps(attachments, sort_keys=True, default=str)
+        return json.dumps(value, sort_keys=True, default=str)
     except (TypeError, ValueError):
         return ""

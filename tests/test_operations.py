@@ -54,8 +54,10 @@ def test_operation_catalog_names_are_unique() -> None:
     assert all(item.library for item in OPERATIONS)
     inspect = next(item for item in OPERATIONS if item.name == "inspect")
     assert "output" in inspect.summary.lower()
+    assert "attachment" in inspect.summary.lower()
     stats = next(item for item in OPERATIONS if item.name == "stats")
     assert "attachment" in stats.summary.lower()
+    assert "attachments" not in names
     tag = next(item for item in OPERATIONS if item.name == "tag")
     assert "remove_tags" in tag.library
 

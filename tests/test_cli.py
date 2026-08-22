@@ -123,6 +123,13 @@ def test_stats_table_reports_widgets_and_attachments(tmp_path: Path) -> None:
     assert "Widgets       : yes" in result.stdout
     assert "Attachment cells: 1" in result.stdout
     assert "Attachment files: 2" in result.stdout
+    inspect = runner.invoke(app, ["inspect", str(path)])
+    assert inspect.exit_code == 0
+    payload = json.loads(inspect.stdout)
+    assert payload["stats"]["attachment_cells"] == 1
+    assert payload["stats"]["attachment_files"] == 2
+    assert [item["filename"] for item in payload["attachments"]] == ["a.png", "b.png"]
+    assert payload["attachments"][0]["cell_index"] == 0
 
 
 def test_inspect_headings_imports_lint(sample_notebook_file: Path) -> None:
@@ -131,6 +138,7 @@ def test_inspect_headings_imports_lint(sample_notebook_file: Path) -> None:
     payload = json.loads(inspect_result.stdout)
     assert payload["stats"]["total_cells"] == 4
     assert payload["stats"]["attachment_cells"] == 0
+    assert payload["attachments"] == []
     assert payload["outline"][0]["title"] == "Title"
     assert payload["outputs"][0]["output_type"] == "stream"
 

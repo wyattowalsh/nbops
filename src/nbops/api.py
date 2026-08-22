@@ -13,10 +13,17 @@ from nbops.clean import clean_notebook
 from nbops.convert import convert_notebook, from_percent_python
 from nbops.diff import diff_notebooks
 from nbops.exceptions import ExecuteError, InvalidNotebookError, MissingExtraError
-from nbops.inspect import compute_stats, extract_imports, list_outputs, outline
+from nbops.inspect import (
+    compute_stats,
+    extract_imports,
+    list_attachments,
+    list_outputs,
+    outline,
+)
 from nbops.io import new_notebook, validate_notebook
 from nbops.lint import lint_notebook
 from nbops.models import (
+    AttachmentRecord,
     CleanOptions,
     ConvertResult,
     Heading,
@@ -70,6 +77,7 @@ class InspectResponse(BaseModel):
     outline: list[Heading]
     imports: list[ImportRecord]
     outputs: list[OutputRecord]
+    attachments: list[AttachmentRecord] = Field(default_factory=list)
 
 
 class ConvertRequest(NotebookPayload):
@@ -156,7 +164,7 @@ def notebook_stats(request: StatsRequest) -> NotebookStats:
 
 @app.post("/notebooks/inspect", response_model=InspectResponse, tags=["notebooks"])
 def notebook_inspect(request: NotebookPayload) -> InspectResponse:
-    """Return stats, headings, imports, and outputs for a posted notebook."""
+    """Return stats, headings, imports, outputs, and attachments for a posted notebook."""
     try:
         document = request.notebook
         return InspectResponse(
@@ -164,6 +172,7 @@ def notebook_inspect(request: NotebookPayload) -> InspectResponse:
             outline=outline(document),
             imports=extract_imports(document),
             outputs=list_outputs(document),
+            attachments=list_attachments(document),
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc

@@ -95,3 +95,7 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - `compute_stats` / `nbops stats` / `POST /notebooks/stats` inventory cell
   attachments (`attachment_cells`, `attachment_files`) and print widgets plus
   those counts as extra CLI rows; the original seven-row table remains
+- Inspect JSON (`nbops inspect` / `POST /notebooks/inspect`) lists each cell
+  attachment via `list_attachments` without adding a catalog operation
+- Cell-level diff compares type, source, attachments, tags, and outputs;
+  execution counts and cell ids stay out of the signature

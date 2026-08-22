@@ -129,6 +129,25 @@ empty source when attachments are present.
 - **WHEN** `nbops stats` prints a table
 - **THEN** the original seven rows remain and extra rows report widgets plus
   attachment cell and file counts
+- **WHEN** a caller invokes `list_attachments` or `nbops inspect` /
+  `POST /notebooks/inspect`
+- **THEN** each attached file is listed with cell index, filename, MIME types,
+  and size. There is no dedicated catalog operation for attachments.
+
+### Requirement: Cell-level structural diff
+
+`diff_notebooks` / `nbops diff` / `POST /notebooks/diff` SHALL compare cells by
+type, source, attachments, tags, and outputs. Execution counts and cell ids
+SHALL not participate in the signature.
+
+#### Scenario: Tag and output changes are visible
+
+- **WHEN** two notebooks differ only in cell tags
+- **THEN** `diff_notebooks` reports a changed cell
+- **WHEN** two notebooks differ only in code-cell outputs
+- **THEN** `diff_notebooks` reports a changed cell
+- **WHEN** two notebooks differ only in `execution_count` or cell `id`
+- **THEN** `diff_notebooks` reports them identical
 
 ### Requirement: Percent-format tags and widget residue
 

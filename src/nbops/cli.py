@@ -16,7 +16,14 @@ from nbops.clean import clean_notebook
 from nbops.convert import convert_notebook, from_percent_python
 from nbops.diff import diff_notebooks
 from nbops.exceptions import ExecuteError, InvalidNotebookError, MissingExtraError, NbopsError
-from nbops.inspect import compute_stats, extract_imports, list_outputs, outline, stats_for_file
+from nbops.inspect import (
+    compute_stats,
+    extract_imports,
+    list_attachments,
+    list_outputs,
+    outline,
+    stats_for_file,
+)
 from nbops.io import load_notebook, new_notebook, save_notebook, validate_notebook
 from nbops.lint import lint_notebook
 from nbops.models import CleanOptions
@@ -143,13 +150,14 @@ def stats(
 def inspect_cmd(
     notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
 ) -> None:
-    """Emit the full inspect payload (stats, outline, imports, outputs) as JSON."""
+    """Emit the full inspect payload (stats, outline, imports, outputs, attachments) as JSON."""
     document = _load(notebook, validate=False)
     payload = {
         "stats": compute_stats(document).model_dump(),
         "outline": [item.model_dump() for item in outline(document)],
         "imports": [item.model_dump() for item in extract_imports(document)],
         "outputs": [item.model_dump() for item in list_outputs(document)],
+        "attachments": [item.model_dump() for item in list_attachments(document)],
     }
     _emit_json(payload)
 

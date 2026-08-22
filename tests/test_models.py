@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from nbops.models import NotebookStats, OutputRecord, ValidateResponse
+from nbops.models import AttachmentRecord, NotebookStats, OutputRecord, ValidateResponse
 
 
 def test_output_record_defaults() -> None:
@@ -18,6 +18,12 @@ def test_notebook_stats_empty_cells_description_includes_attachments() -> None:
     assert "no attachments" in description
     assert NotebookStats.model_fields["attachment_cells"].default == 0
     assert NotebookStats.model_fields["attachment_files"].default == 0
+
+
+def test_attachment_record_defaults() -> None:
+    record = AttachmentRecord(cell_index=2, filename="plot.png")
+    assert record.mime_types == []
+    assert record.size == 0
 
 
 def test_validate_response_invalid() -> None:

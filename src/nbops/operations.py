@@ -27,7 +27,7 @@ OPERATIONS: tuple[Operation, ...] = (
     ),
     Operation(
         name="inspect",
-        summary="Stats plus markdown outline, top-level imports, and output inventory.",
+        summary="Stats plus markdown outline, top-level imports, outputs, and attachments.",
         library="nbops.inspect",
         cli="nbops inspect",
         api="POST /notebooks/inspect",
@@ -92,7 +92,7 @@ OPERATIONS: tuple[Operation, ...] = (
     ),
     Operation(
         name="diff",
-        summary="Cell-level structural diff.",
+        summary="Cell-level structural diff (type, source, attachments, tags, outputs).",
         library="nbops.diff.diff_notebooks",
         cli="nbops diff",
         api="POST /notebooks/diff",

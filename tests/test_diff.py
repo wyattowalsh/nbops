@@ -149,3 +149,74 @@ def test_diff_detects_attachment_only_changes() -> None:
         ]
     }
     assert diff_notebooks(cycled, empty).identical is False
+
+
+def test_diff_detects_tag_and_output_only_changes() -> None:
+    left = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "id": "a",
+                "metadata": {"tags": ["demo"]},
+                "source": "print(1)\n",
+                "execution_count": None,
+                "outputs": [],
+            }
+        ]
+    }
+    tagged = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "id": "a",
+                "metadata": {"tags": ["demo", "keep"]},
+                "source": "print(1)\n",
+                "execution_count": None,
+                "outputs": [],
+            }
+        ]
+    }
+    executed_count_only = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "id": "b",
+                "metadata": {"tags": ["demo"]},
+                "source": "print(1)\n",
+                "execution_count": 1,
+                "outputs": [],
+            }
+        ]
+    }
+    with_output = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "id": "a",
+                "metadata": {"tags": ["demo"]},
+                "source": "print(1)\n",
+                "execution_count": None,
+                "outputs": [{"output_type": "stream", "name": "stdout", "text": "1\n"}],
+            }
+        ]
+    }
+    assert diff_notebooks(left, tagged).changed == 1
+    assert diff_notebooks(left, executed_count_only).identical is True
+    changed = diff_notebooks(left, with_output)
+    assert changed.identical is False
+    assert changed.changed == 1
+
+    cycle: dict[str, Any] = {}
+    cycle["self"] = cycle
+    cycled_outputs = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "id": "a",
+                "metadata": {"tags": ["demo"]},
+                "source": "print(1)\n",
+                "outputs": [cycle],
+            }
+        ]
+    }
+    assert diff_notebooks(cycled_outputs, left).changed == 1

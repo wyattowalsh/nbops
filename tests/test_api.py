@@ -99,12 +99,42 @@ def test_demo_notebook_stats_http_contract() -> None:
     assert body["tags"] == ["demo"]
 
 
+def test_inspect_inventories_attachments() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "See plot\n",
+                "attachments": {"plot.png": {"image/png": "aaa"}},
+            }
+        ],
+        "metadata": {},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    inspect = client.post("/notebooks/inspect", json={"notebook": notebook})
+    assert inspect.status_code == 200
+    body = inspect.json()
+    assert body["stats"]["attachment_cells"] == 1
+    assert body["stats"]["attachment_files"] == 1
+    assert body["attachments"] == [
+        {
+            "cell_index": 0,
+            "filename": "plot.png",
+            "mime_types": ["image/png"],
+            "size": 3,
+        }
+    ]
+
+
 def test_inspect_headings_imports_from_py(sample_notebook: dict[str, Any]) -> None:
     inspect = client.post("/notebooks/inspect", json={"notebook": sample_notebook})
     assert inspect.status_code == 200
     assert inspect.json()["outline"][0]["title"] == "Title"
     assert inspect.json()["outputs"][0]["output_type"] == "stream"
     assert inspect.json()["stats"]["attachment_cells"] == 0
+    assert inspect.json()["attachments"] == []
 
     headings = client.post("/notebooks/headings", json={"notebook": sample_notebook})
     assert headings.status_code == 200

@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 
 from nbops.core import NotebookStats, compute_stats, load_notebook, stats_for_file
-from nbops.inspect import extract_imports, list_outputs, outline
+from nbops.inspect import extract_imports, list_attachments, list_outputs, outline
 
 
 def test_compute_stats_counts_cells(sample_notebook: dict[str, Any]) -> None:
@@ -348,3 +348,61 @@ def test_list_outputs_fallbacks_and_non_list() -> None:
     assert records[2].preview == "<b>x</b>"
     assert "abc" in (records[3].preview or "")
     assert records[4].output_type == "unknown"
+
+
+def test_list_attachments_inventories_cell_and_metadata_files() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "See plot\n",
+                "attachments": {
+                    "plot.png": {"image/png": "aaa", "text/plain": "<Figure>"},
+                    "note.txt": {"text/plain": ["hello", " world"]},
+                },
+            },
+            {
+                "cell_type": "raw",
+                "metadata": {"attachments": {"meta.svg": {"image/svg+xml": "<svg/>"}}},
+                "source": "raw\n",
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "x = 1\n",
+                "attachments": {"": {"image/png": "skip"}, 1: {"image/png": "skip"}},
+            },
+            "skip-me",
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "none\n",
+                "attachments": {"broken": "nope"},
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "empty payload\n",
+                "attachments": {"empty.bin": {"application/octet-stream": None, "x": 12}},
+            },
+        ]
+    }
+    records = list_attachments(notebook)
+    assert [item.filename for item in records] == [
+        "plot.png",
+        "note.txt",
+        "meta.svg",
+        "broken",
+        "empty.bin",
+    ]
+    assert records[0].cell_index == 0
+    assert records[0].mime_types == ["image/png", "text/plain"]
+    assert records[0].size == len("aaa") + len("<Figure>")
+    assert records[1].size == len("hello") + len(" world")
+    assert records[2].cell_index == 1
+    assert records[3].mime_types == []
+    assert records[3].size == 0
+    assert records[4].mime_types == ["application/octet-stream", "x"]
+    assert records[4].size == len("12")
+    assert list_attachments({"cells": []}) == []

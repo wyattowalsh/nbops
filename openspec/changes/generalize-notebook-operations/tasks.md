@@ -51,3 +51,5 @@
 - [x] 1.49 Attachments count as cell content for empty-cell stats/clean, survive output cleaning, and participate in cell diffs
 - [x] 1.50 CI compatibility smoke covers `convert --to py` / `--to script` / `--to md` like `just smoke`
 - [x] 1.51 `compute_stats` inventories attachments (`attachment_cells` / `attachment_files`); CLI extras print widgets and attachment counts; original seven stats rows stay
+- [x] 1.52 Inspect payload lists attachments (`list_attachments`); not a catalog operation
+- [x] 1.53 Cell-level diff includes tags and outputs (not execution counts or ids)

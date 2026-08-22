@@ -69,6 +69,15 @@ class OutputRecord(BaseModel):
     size: int = Field(0, ge=0)
 
 
+class AttachmentRecord(BaseModel):
+    """One nbformat cell attachment."""
+
+    cell_index: int = Field(..., ge=0)
+    filename: str
+    mime_types: list[str] = Field(default_factory=list)
+    size: int = Field(0, ge=0)
+
+
 class ValidateResponse(BaseModel):
     """Result of nbformat schema validation."""
 

@@ -18,12 +18,12 @@
 | -- | ---- | ------ | -------- |
 | TASK-001 | Domain-general `src/nbops` package | done | `src/nbops/` |
 | TASK-002 | I/O via nbformat (load/save/validate/new); v4 omitted cell ids preserved | done | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
-| TASK-003 | Inspect (stats, outline, imports, outputs) | done | `src/nbops/inspect.py`; `nbops outputs`; `extract_imports` skips IPython magics / non-Python kernels / `%%writefile`; heading outline is ATX+setext and skips fences; `compute_stats` reports `attachment_cells` / `attachment_files`; CLI extras print widgets and attachment counts |
+| TASK-003 | Inspect (stats, outline, imports, outputs, attachments) | done | `src/nbops/inspect.py`; `nbops outputs`; inspect JSON lists attachments via `list_attachments` (not a catalog op); `extract_imports` skips IPython magics / non-Python kernels / `%%writefile`; heading outline is ATX+setext and skips fences; `compute_stats` reports `attachment_cells` / `attachment_files`; CLI extras print widgets and attachment counts |
 | TASK-004 | Clean outputs/counts/ids/empty cells | done | `src/nbops/clean.py`; widgets and output-linked cell keys stripped with outputs; attachments kept; attachment-only cells are not dropped as empty |
 | TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py`; `add_tags` / `remove_tags` |
 | TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py`; `NB007` is IPython-aware and skipped for non-Python kernels and file-body magics; `NB002` uses the shared heading extractor |
 | TASK-007 | Convert to percent py / script / md, plus percent roundtrip | done | `src/nbops/convert.py`; tags, ids, optional Jupytext titles, generic `key=value`/JSON cell metadata, and kernelspec YAML round-trip; `[md]` alias; omitted ids stay omitted; markdown inlines `attachment:` and code-cell `image/*` outputs as `data:` URIs, emits stream/error/text outputs, and appends unreferenced image attachments |
-| TASK-008 | Cell-level diff | done | `src/nbops/diff.py`; signature is type + source + attachments |
+| TASK-008 | Cell-level diff | done | `src/nbops/diff.py`; signature is type + source + attachments + tags + outputs (not execution counts or ids) |
 | TASK-009 | Directory batch + tqdm | done | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}` |
 | TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py`; omitted cell ids restored after execute |
 | TASK-011 | Typer CLI for every catalog operation | done | `src/nbops/cli.py`; system commands `version`/`serve` are not catalog ops |
