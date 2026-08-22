@@ -74,7 +74,10 @@ def convert_notebook(notebook: Mapping[str, Any], fmt: str) -> ConvertResult:
     raise ValueError(f"Unsupported conversion format: {fmt}")
 
 
-_PERCENT_HEADER = re.compile(r"^# %%(?:\s*\[(?P<kind>[\w-]+)\])?(?P<meta>\s+.*)?$")
+_PERCENT_HEADER = re.compile(
+    r"^# %%(?:\s+(?P<title>(?:(?!\s*\[)(?!\s*\w+=).)+))?"
+    r"(?:\s*\[(?P<kind>[\w-]+)\])?(?P<meta>\s+\w+=.*)?\s*$"
+)
 _PERCENT_TAGS = re.compile(r"\btags\s*=\s*")
 _PERCENT_ID = re.compile(r"\bid\s*=\s*")
 _UNQUOTED_ID = re.compile(r"[A-Za-z0-9_-]+")
@@ -100,6 +103,7 @@ def from_percent_python(text: str) -> dict[str, Any]:
     current_kind = "code"
     current_meta: dict[str, Any] = {}
     current_id: str | None = None
+    current_title: str | None = None
     current_lines: list[str] = []
     started = False
 
@@ -110,6 +114,8 @@ def from_percent_python(text: str) -> dict[str, Any]:
             return
         source = "\n".join(current_lines).strip("\n")
         metadata = dict(current_meta)
+        if current_title:
+            metadata["title"] = current_title
         if current_kind in {"markdown", "raw"}:
             source = _unquote_percent_comment(source)
             cell: dict[str, Any] = {
@@ -139,6 +145,7 @@ def from_percent_python(text: str) -> dict[str, Any]:
             current_kind = _percent_kind(match.group("kind"))
             current_meta = _percent_cell_metadata(match.group("meta"))
             current_id = _percent_cell_id(match.group("meta"))
+            current_title = _percent_title_text(match.group("title"))
             continue
         current_lines.append(line)
     if started or any(line.strip() for line in current_lines):
@@ -150,6 +157,8 @@ def from_percent_python(text: str) -> dict[str, Any]:
 def _percent_cell_header(cell: Mapping[str, Any]) -> str:
     cell_type = cell.get("cell_type")
     kind = "" if cell_type == "code" else f" [{cell_type}]"
+    title = _percent_title_text(_mapping_title(cell))
+    title_part = f" {title}" if title else ""
     parts: list[str] = []
     cell_id = cell.get("id")
     if isinstance(cell_id, str) and cell_id:
@@ -158,7 +167,24 @@ def _percent_cell_header(cell: Mapping[str, Any]) -> str:
     if tags:
         parts.append(f"tags={json.dumps(tags)}")
     suffix = f" {' '.join(parts)}" if parts else ""
-    return f"# %%{kind}{suffix}"
+    return f"# %%{title_part}{kind}{suffix}"
+
+
+def _mapping_title(cell: Mapping[str, Any]) -> str | None:
+    metadata = cell.get("metadata")
+    if not isinstance(metadata, dict):
+        return None
+    raw_title = metadata.get("title")
+    return raw_title if isinstance(raw_title, str) else None
+
+
+def _percent_title_text(raw: str | None) -> str | None:
+    if not raw or not raw.strip():
+        return None
+    title = raw.strip()
+    if "[" in title or "=" in title:
+        return None
+    return title
 
 
 def _percent_kind(kind: str | None) -> str:

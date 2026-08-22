@@ -32,3 +32,4 @@
 - [x] 1.30 Execute restores omitted v4 cell ids so `NB009` survives `nbops exec`
 - [x] 1.31 Concat uniquifies duplicate present ids without filling omitted ids; batch lint uses `NBOPS_MAX_OUTPUT_CHARS`
 - [x] 1.32 Percent convert round-trips present cell ids and leaves omitted ids omitted on `from-py`
+- [x] 1.33 Percent convert parses Jupytext optional cell titles so `[markdown]`/`[raw]` after a title keep the right cell type

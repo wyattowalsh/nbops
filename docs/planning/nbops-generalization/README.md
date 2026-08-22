@@ -26,7 +26,7 @@ the exhaustive program derived from:
 | G4 | Clean outputs, counts, ids, empty cells | `src/nbops/clean.py` (widgets and output-linked cell keys stripped with outputs) |
 | G5 | Transform: filter, concat, split, kernel, tags, cell ids | `src/nbops/transform.py`; concat uniquifies duplicate present ids only |
 | G6 | Structural lint catalog NB000–NB011 | `src/nbops/lint.py` `ISSUE_CATALOG` |
-| G7 | Convert to percent py, script, markdown, and percent roundtrip | `src/nbops/convert.py` (cell tags and ids round-trip; `[md]` alias; Jupytext YAML kernelspec) |
+| G7 | Convert to percent py, script, markdown, and percent roundtrip | `src/nbops/convert.py` (tags, ids, optional titles; `[md]` alias; Jupytext YAML kernelspec) |
 | G8 | Cell-level diff | `src/nbops/diff.py` |
 | G9 | Directory batch operations | `src/nbops/batch.py` + `nbops batch {stats,lint,clean,validate}`; batch lint uses `NBOPS_MAX_OUTPUT_CHARS` |
 | G10 | Optional execute extra | `src/nbops/execute.py` + `[execute]` extra; omitted cell ids restored after execute |

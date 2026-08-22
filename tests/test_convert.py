@@ -205,6 +205,60 @@ def test_from_percent_python_ignores_malformed_ids() -> None:
     assert "id" not in mapping["cells"][0]
 
 
+def test_from_percent_python_parses_jupytext_cell_titles() -> None:
+    notebook = from_percent_python(
+        '# %% My Title [markdown] tags=["intro"]\n# Hello\n\n# %% Plot\nprint(1)\n'
+    )
+    assert notebook["cells"][0]["cell_type"] == "markdown"
+    assert notebook["cells"][0]["metadata"]["title"] == "My Title"
+    assert notebook["cells"][0]["metadata"]["tags"] == ["intro"]
+    assert notebook["cells"][1]["cell_type"] == "code"
+    assert notebook["cells"][1]["metadata"]["title"] == "Plot"
+
+
+def test_percent_roundtrip_preserves_cell_titles() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "id": "t",
+                "metadata": {"title": "Intro", "tags": ["intro"]},
+                "source": "# Hello\n",
+            },
+            {
+                "cell_type": "code",
+                "metadata": {"title": "Plot"},
+                "source": "print(1)\n",
+            },
+        ]
+    }
+    text = to_percent_python(notebook)
+    assert "# %% Intro [markdown]" in text
+    assert "# %% Plot" in text
+    restored = from_percent_python(text)
+    assert restored["cells"][0]["cell_type"] == "markdown"
+    assert restored["cells"][0]["metadata"]["title"] == "Intro"
+    assert restored["cells"][0]["id"] == "t"
+    assert restored["cells"][1]["metadata"]["title"] == "Plot"
+
+
+def test_percent_title_helpers_reject_unsafe_and_non_string_titles() -> None:
+    from nbops.convert import _percent_cell_header, _percent_title_text
+
+    assert _percent_title_text(None) is None
+    assert _percent_title_text("  ") is None
+    assert _percent_title_text("bad[title]") is None
+    assert _percent_title_text("a=b") is None
+    unsafe = _percent_cell_header(
+        {"cell_type": "code", "metadata": {"title": "bad=title"}, "source": "x"}
+    )
+    assert "bad=title" not in unsafe
+    numbered = _percent_cell_header({"cell_type": "code", "metadata": {"title": 12}, "source": "x"})
+    assert numbered == "# %%"
+    missing = _percent_cell_header({"cell_type": "code", "metadata": None, "source": "x"})
+    assert missing == "# %%"
+
+
 def test_from_percent_python_parses_single_quoted_tags() -> None:
     notebook = from_percent_python("# %% tags=['active']\nprint(1)\n")
     assert notebook["cells"][0]["metadata"]["tags"] == ["active"]

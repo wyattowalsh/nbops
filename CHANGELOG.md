@@ -11,8 +11,8 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - nbformat schema validation (`nbops validate` / `POST /notebooks/validate`)
 - Directory batch: `nbops batch {stats,lint,clean,validate}` (fail-closed on errors)
 - Percent-format roundtrip (`nbops convert --to py` / `nbops from-py`), including cell tags
-  (`[md]` is accepted as markdown; tags with `]` inside quotes round-trip) and cell ids
-  (header `id=`; omitted ids stay omitted)
+  (`[md]` is accepted as markdown; tags with `]` inside quotes round-trip), cell ids
+  (header `id=`; omitted ids stay omitted), and Jupytext optional cell titles
 - Concatenation uniquifies duplicate present cell ids and leaves omitted ids omitted
 - Tag CLI/API can add or remove cell tags
 - Optional `nbops[execute]` extra (nbclient)
@@ -54,3 +54,4 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - `concat_notebooks` no longer fills omitted cell ids (explicit `nbops ids` does)
 - `nbops batch lint` honors `NBOPS_MAX_OUTPUT_CHARS` like `nbops lint` and HTTP lint
 - Percent convert emits/parses Jupytext `id=` cell headers; `from-py` does not assign missing ids
+- Percent convert parses Jupytext optional cell titles (`# %% Title [markdown]`) and round-trips `metadata.title`
