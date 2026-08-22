@@ -66,6 +66,25 @@ def test_set_kernelspec_and_tags(sample_notebook: dict[str, Any]) -> None:
         add_tags(sample_notebook, 99, ["x"])
 
 
+def test_filter_predicate_and_kernelspec_without_metadata() -> None:
+    notebook = {
+        "cells": [
+            {"cell_type": "code", "metadata": {}, "source": "a = 1\n", "outputs": []},
+            {"cell_type": "markdown", "metadata": {}, "source": "# Keep\n"},
+        ]
+    }
+    filtered = filter_cells(
+        notebook,
+        predicate=lambda cell: cell.get("cell_type") == "markdown",
+    )
+    assert len(filtered["cells"]) == 1
+    updated = set_kernelspec({"cells": []}, name="python3", display_name="Py", language="python")
+    assert updated["metadata"]["kernelspec"]["name"] == "python3"
+    assert updated["metadata"]["language_info"]["name"] == "python"
+    tagged = add_tags({"cells": [{"cell_type": "code", "source": "x", "metadata": None}]}, 0, ["t"])
+    assert tagged["cells"][0]["metadata"]["tags"] == ["t"]
+
+
 def test_ensure_cell_ids_fills_missing_and_duplicates() -> None:
     notebook = {
         "cells": [

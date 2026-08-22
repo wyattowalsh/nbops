@@ -136,3 +136,26 @@ def test_convert_rejects_unknown_format(sample_notebook: dict[str, Any]) -> None
         json={"notebook": sample_notebook, "format": "pdf"},
     )
     assert response.status_code == 422
+
+
+def test_tag_and_execute_error_paths(
+    monkeypatch: pytest.MonkeyPatch, sample_notebook: dict[str, Any]
+) -> None:
+    tagged = client.post(
+        "/notebooks/tag",
+        json={"notebook": sample_notebook, "cell_index": 99, "tags": ["x"]},
+    )
+    assert tagged.status_code == 422
+
+    from nbops import execute as execute_mod
+
+    class Boom:
+        def __init__(self, node: Any, **kwargs: Any) -> None:
+            pass
+
+        def execute(self) -> Any:
+            raise RuntimeError("kernel died")
+
+    monkeypatch.setattr(execute_mod, "_notebook_client_class", lambda: Boom)
+    response = client.post("/notebooks/execute", json={"notebook": sample_notebook})
+    assert response.status_code == 422

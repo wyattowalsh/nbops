@@ -251,3 +251,55 @@ def test_filter_and_tag_require_output(sample_notebook_file: Path) -> None:
     ops = runner.invoke(app, ["ops"])
     assert ops.exit_code == 0
     assert "stats" in ops.stdout
+
+
+def test_cli_error_paths(tmp_path: Path, sample_notebook_file: Path) -> None:
+    inspect = runner.invoke(app, ["inspect", str(tmp_path / "missing.ipynb")])
+    assert inspect.exit_code != 0
+
+    bad = tmp_path / "bad.ipynb"
+    bad.write_text("{not json", encoding="utf-8")
+    headings = runner.invoke(app, ["headings", str(bad)])
+    assert headings.exit_code != 0
+
+    warn_only = tmp_path / "warn.ipynb"
+    warn_only.write_text(
+        json.dumps(
+            {
+                "cells": [
+                    {
+                        "cell_type": "code",
+                        "id": "c1",
+                        "metadata": {},
+                        "source": "x = 1\n",
+                        "outputs": [],
+                        "execution_count": 1,
+                    }
+                ],
+                "metadata": {},
+                "nbformat": 4,
+                "nbformat_minor": 5,
+            }
+        ),
+        encoding="utf-8",
+    )
+    strict = runner.invoke(app, ["lint", str(warn_only), "--strict"])
+    assert strict.exit_code != 0
+
+    kernel = runner.invoke(
+        app, ["kernel", str(sample_notebook_file), "--name", "python3", "--no-in-place"]
+    )
+    assert kernel.exit_code != 0
+
+    tag_bad = runner.invoke(
+        app, ["tag", str(sample_notebook_file), "--cell", "99", "--add", "x", "--in-place"]
+    )
+    assert tag_bad.exit_code != 0
+
+    batch_dir = tmp_path / "empty-batch"
+    batch_dir.mkdir()
+    (batch_dir / "bad.ipynb").write_text("{not json", encoding="utf-8")
+    batch_lint = runner.invoke(app, ["batch", "lint", str(batch_dir)])
+    assert batch_lint.exit_code != 0
+    batch_clean = runner.invoke(app, ["batch", "clean", str(batch_dir)])
+    assert batch_clean.exit_code != 0

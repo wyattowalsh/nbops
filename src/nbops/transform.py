@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import re
 import uuid
-from collections.abc import Callable, Iterable, Mapping, Sequence
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from nbops.cells import as_notebook_dict, cell_source, cell_tags, cells_of
 from nbops.io import new_notebook
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable, Mapping, Sequence
 
 _HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 

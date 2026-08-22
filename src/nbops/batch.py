@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from tqdm import tqdm
 
 from nbops.models import BatchItem
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
 
 
 def iter_notebooks(root: str | Path, *, recursive: bool = True) -> list[Path]:

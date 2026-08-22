@@ -18,3 +18,10 @@ def test_source_helpers() -> None:
 def test_source_non_string() -> None:
     assert cell_source({"source": 123}) == ""
     assert cell_source({}) == ""
+
+
+def test_cell_tags_non_list() -> None:
+    from nbops.cells import cell_tags
+
+    assert cell_tags({"metadata": {"tags": "setup"}}) == []
+    assert cell_tags({"metadata": "nope"}) == []

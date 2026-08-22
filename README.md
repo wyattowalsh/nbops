@@ -129,3 +129,5 @@ examples/       demo notebook
 ## License
 
 MIT. See [LICENSE](./LICENSE).
+
+See also [SECURITY.md](./SECURITY.md) and [CHANGELOG.md](./CHANGELOG.md).

@@ -79,10 +79,11 @@ src = ["src", "tests"]
 extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "N", "UP", "B", "A", "SIM"]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "SIM", "TCH"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["A001"]
+"tests/**" = ["A001", "TC", "TCH"]
+"src/nbops/cli.py" = ["TC", "TCH"]
 
 [tool.ty.src]
 include = ["src"]
@@ -106,7 +107,7 @@ possibly-missing-import = "ignore"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--strict-markers --cov=nbops --cov-report=term-missing --cov-fail-under=85 --import-mode=importlib"
+addopts = "--strict-markers --cov=nbops --cov-report=term-missing --cov-fail-under=90 --import-mode=importlib"
 markers = [
     "slow: marks tests as slow",
     "integration: marks tests requiring optional extras or kernels",

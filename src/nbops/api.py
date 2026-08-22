@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -36,6 +35,9 @@ from nbops.transform import (
     set_kernelspec,
     split_by_headings,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
 
 
 @asynccontextmanager

@@ -39,3 +39,7 @@ the exhaustive program derived from:
 | G17 | uv lockfile and justfile | `uv.lock`, `justfile` |
 | G18 | Shared operations catalog | `src/nbops/operations.py` |
 | G19 | Environment-backed settings (`NBOPS_`) | `src/nbops/settings.py` |
+| G20 | SECURITY.md | `SECURITY.md` |
+| G21 | Dependabot for pip and GitHub Actions | `.github/dependabot.yml` |
+| G22 | Pre-commit hooks + ruff | `.pre-commit-config.yaml` |
+| G23 | Coverage gate 90% + actionlint CI | `pyproject.toml`, `.github/workflows/ci.yml` |

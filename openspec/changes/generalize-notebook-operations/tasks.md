@@ -8,3 +8,4 @@
 - [x] 1.6 CI, justfile, AGENTS.md, README
 - [x] 1.7 Operations catalog + `NBOPS_` settings
 - [x] 1.8 Lint codes NB000–NB011 (NB009 missing cell ids)
+- [x] 1.9 SECURITY.md, Dependabot, pre-commit, CHANGELOG, actionlint, coverage 90

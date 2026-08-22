@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from nbops.cells import as_mapping, nested_mapping
 from nbops.exceptions import ExecuteError, MissingExtraError
 from nbops.io import dumps_notebook, parse_notebook
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+    from pathlib import Path
 
 
 def execute_notebook(

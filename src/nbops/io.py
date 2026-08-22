@@ -4,13 +4,15 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import nbformat
 from nbformat.validator import NotebookValidationError
 
-from nbops.cells import Notebook
 from nbops.exceptions import InvalidNotebookError, NotebookNotFoundError
+
+if TYPE_CHECKING:
+    from nbops.cells import Notebook
 
 DEFAULT_NBFORMAT = 4
 DEFAULT_NBFORMAT_MINOR = 5

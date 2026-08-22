@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from nbops.cells import cell_source, cells_of
 from nbops.models import ConvertResult
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 def to_percent_python(notebook: Mapping[str, Any]) -> str:

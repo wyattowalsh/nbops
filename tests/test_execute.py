@@ -32,7 +32,7 @@ def test_execute_success_with_fake_client(
             return self.node
 
     monkeypatch.setattr("nbops.execute._notebook_client_class", lambda: FakeClient)
-    executed = execute_notebook(sample_notebook, timeout=5, kernel_name="python3")
+    executed = execute_notebook(sample_notebook, timeout=5, kernel_name="python3", cwd=".")
     assert executed["nbformat"] == 4
     assert len(executed["cells"]) == 4
 

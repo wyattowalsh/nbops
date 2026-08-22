@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from nbops.cells import as_notebook_dict, is_empty_cell
 from nbops.models import CleanOptions
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 _OUTPUT_RESET_METADATA = ("collapsed", "scrolled", "ExecuteTime")
 

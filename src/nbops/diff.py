@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from difflib import SequenceMatcher
+from typing import TYPE_CHECKING
 
 from nbops.cells import cell_source, cells_of, preview
 from nbops.models import CellDiff, NotebookDiff
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 def diff_notebooks(left: Mapping[str, object], right: Mapping[str, object]) -> NotebookDiff:

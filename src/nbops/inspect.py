@@ -5,8 +5,7 @@ from __future__ import annotations
 import ast
 import re
 from collections.abc import Mapping
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from nbops.cells import (
     as_mapping,
@@ -19,6 +18,9 @@ from nbops.cells import (
 )
 from nbops.io import load_notebook
 from nbops.models import Heading, ImportRecord, NotebookStats
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 _HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 
