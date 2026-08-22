@@ -2,11 +2,18 @@
 
 from __future__ import annotations
 
-import ast
 from collections.abc import Mapping
 from typing import Any
 
-from nbops.cells import as_mapping, cell_source, cells_of, is_empty_cell, nested_mapping
+from nbops.cells import (
+    as_mapping,
+    cell_source,
+    cells_of,
+    is_empty_cell,
+    is_python_notebook,
+    nested_mapping,
+    parse_code_cell,
+)
 from nbops.models import LintIssue, LintReport
 
 DEFAULT_MAX_OUTPUT_CHARS = 100_000
@@ -59,6 +66,7 @@ def lint_notebook(
 
     seen_ids: dict[str, int] = {}
     has_title = False
+    check_python = is_python_notebook(notebook)
     for index, cell in enumerate(cells):
         if not isinstance(cell, dict):
             issues.append(
@@ -109,17 +117,18 @@ def lint_notebook(
             continue
         source = cell_source(cell)
         if source.strip():
-            try:
-                ast.parse(source)
-            except SyntaxError as exc:
-                issues.append(
-                    LintIssue(
-                        code="NB007",
-                        severity="error",
-                        message=f"Code cell has invalid Python syntax: {exc.msg}.",
-                        cell_index=index,
+            if check_python:
+                try:
+                    parse_code_cell(source)
+                except SyntaxError as exc:
+                    issues.append(
+                        LintIssue(
+                            code="NB007",
+                            severity="error",
+                            message=f"Code cell has invalid Python syntax: {exc.msg}.",
+                            cell_index=index,
+                        )
                     )
-                )
             if cell.get("execution_count") is None and not _has_outputs(cell):
                 issues.append(
                     LintIssue(

@@ -30,6 +30,10 @@ CLI, and HTTP surfaces.
   `from-py` does not fill omitted ids.
   Optional Jupytext cell titles (`# %% Title [markdown]`) are parsed so the
   bracketed type is not dropped. The kernel client may see temporary ids internally.
+- `NB007` / `extract_imports` parse Python as IPython notebook code (line magics,
+  shell, help, assignment magics). Python 3.12+ `ast.parse` accepts top-level await.
+  Non-Python cell magics and declared non-Python kernels are skipped. IPython is
+  not a runtime dependency.
 - Optional execution is an extra so the default install stays kernel-free
 - Batch walks skip `.ipynb_checkpoints`
 - Settings load from `NBOPS_*` environment variables via pydantic-settings

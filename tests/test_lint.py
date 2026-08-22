@@ -101,3 +101,69 @@ def test_lint_output_size_and_non_mapping_outputs() -> None:
     assert "NB004" in codes
     nameless = [issue for issue in report.issues if issue.code == "NB004"]
     assert nameless[0].message.endswith("(error).")
+
+
+def test_lint_accepts_ipython_magics_and_toplevel_await() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "id": "title",
+                "metadata": {},
+                "source": "# Title\n",
+            },
+            {
+                "cell_type": "code",
+                "id": "magics",
+                "execution_count": 1,
+                "metadata": {},
+                "outputs": [{"output_type": "stream", "name": "stdout", "text": "ok\n"}],
+                "source": "%matplotlib inline\nimport os\nawait fetch()\n",
+            },
+            {
+                "cell_type": "code",
+                "id": "bash",
+                "execution_count": 1,
+                "metadata": {},
+                "outputs": [],
+                "source": "%%bash\necho hi\n",
+            },
+        ],
+        "metadata": {"kernelspec": {"name": "python3"}},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    report = lint_notebook(notebook)
+    codes = {issue.code for issue in report.issues}
+    assert "NB007" not in codes
+    assert report.passed is True
+
+
+def test_lint_skips_python_syntax_for_non_python_kernels() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "id": "title",
+                "metadata": {},
+                "source": "# Title\n",
+            },
+            {
+                "cell_type": "code",
+                "id": "r-code",
+                "execution_count": 1,
+                "metadata": {},
+                "outputs": [],
+                "source": "library(ggplot2)\n",
+            },
+        ],
+        "metadata": {
+            "kernelspec": {"name": "ir", "display_name": "R", "language": "r"},
+            "language_info": {"name": "r"},
+        },
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    report = lint_notebook(notebook)
+    assert "NB007" not in {issue.code for issue in report.issues}
+    assert report.passed is True

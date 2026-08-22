@@ -13,8 +13,10 @@ from nbops.cells import (
     cell_tags,
     cells_of,
     is_empty_cell,
+    is_python_notebook,
     nested_mapping,
     non_empty_line_count,
+    parse_code_cell,
     preview,
 )
 from nbops.io import load_notebook
@@ -119,14 +121,18 @@ def outline(notebook: Mapping[str, Any]) -> list[Heading]:
 
 def extract_imports(notebook: Mapping[str, Any]) -> list[ImportRecord]:
     """Extract top-level import statements from code cells."""
+    if not is_python_notebook(notebook):
+        return []
     records: list[ImportRecord] = []
     for index, cell in enumerate(cells_of(notebook)):
         if not isinstance(cell, dict) or cell.get("cell_type") != "code":
             continue
         source = cell_source(cell)
         try:
-            tree = ast.parse(source)
+            tree = parse_code_cell(source)
         except SyntaxError:
+            continue
+        if tree is None:
             continue
         for node in ast.iter_child_nodes(tree):
             if isinstance(node, ast.Import):
@@ -136,7 +142,7 @@ def extract_imports(notebook: Mapping[str, Any]) -> list[ImportRecord]:
                             module=alias.name,
                             names=[alias.asname or alias.name],
                             cell_index=index,
-                            raw=ast.get_source_segment(source, node) or alias.name,
+                            raw=ast.unparse(node),
                         )
                     )
             elif isinstance(node, ast.ImportFrom):
@@ -147,7 +153,7 @@ def extract_imports(notebook: Mapping[str, Any]) -> list[ImportRecord]:
                         module=module,
                         names=names,
                         cell_index=index,
-                        raw=ast.get_source_segment(source, node) or module,
+                        raw=ast.unparse(node),
                     )
                 )
     return records

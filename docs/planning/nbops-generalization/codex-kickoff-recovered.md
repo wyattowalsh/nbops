@@ -18,10 +18,10 @@
 | -- | ---- | ------ | -------- |
 | TASK-001 | Domain-general `src/nbops` package | done | `src/nbops/` |
 | TASK-002 | I/O via nbformat (load/save/validate/new); v4 omitted cell ids preserved | done | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
-| TASK-003 | Inspect (stats, outline, imports, outputs) | done | `src/nbops/inspect.py`; `nbops outputs` |
+| TASK-003 | Inspect (stats, outline, imports, outputs) | done | `src/nbops/inspect.py`; `nbops outputs`; `extract_imports` skips IPython magics / non-Python kernels |
 | TASK-004 | Clean outputs/counts/ids/empty cells | done | `src/nbops/clean.py`; widgets and output-linked cell keys stripped with outputs |
 | TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py`; `add_tags` / `remove_tags` |
-| TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py` |
+| TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py`; `NB007` is IPython-aware and skipped for non-Python kernels |
 | TASK-007 | Convert to percent py / script / md, plus percent roundtrip | done | `src/nbops/convert.py`; tags, ids, optional Jupytext titles, generic `key=value`/JSON cell metadata, and kernelspec YAML round-trip; `[md]` alias; omitted ids stay omitted |
 | TASK-008 | Cell-level diff | done | `src/nbops/diff.py` |
 | TASK-009 | Directory batch + tqdm | done | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}` |

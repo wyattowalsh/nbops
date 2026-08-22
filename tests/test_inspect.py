@@ -84,6 +84,64 @@ def test_extract_imports_from_import(sample_notebook: dict[str, Any]) -> None:
     assert "pathlib" in modules
 
 
+def test_extract_imports_skips_magics_and_non_python_cells() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": (
+                    "%matplotlib inline\n"
+                    "import pandas as pd\n"
+                    "from os import path as p\n"
+                    "from . import util\n"
+                ),
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "import os\nawait fetch()\n",
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "%%bash\necho hi\nimport should_ignore\n",
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "def (\n",
+            },
+        ]
+    }
+    imports = extract_imports(notebook)
+    assert [item.module for item in imports] == ["pandas", "os", "", "os"]
+    assert imports[0].raw == "import pandas as pd"
+    assert imports[1].names == ["p"]
+    assert imports[2].names == ["util"]
+    assert imports[3].raw == "import os"
+
+
+def test_extract_imports_skips_non_python_notebooks() -> None:
+    notebook = {
+        "metadata": {"kernelspec": {"name": "ir", "language": "r"}},
+        "cells": [
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "import should_ignore\n",
+            }
+        ],
+    }
+    assert extract_imports(notebook) == []
+
+
+def test_extract_imports_skips_when_parse_returns_none(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("nbops.inspect.parse_code_cell", lambda _source: None)
+    notebook = {"cells": [{"cell_type": "code", "metadata": {}, "source": "import os\n"}]}
+    assert extract_imports(notebook) == []
+
+
 def test_list_outputs_stream_and_error(
     sample_notebook: dict[str, Any], error_notebook: dict[str, Any]
 ) -> None:

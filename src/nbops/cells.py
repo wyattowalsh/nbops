@@ -2,11 +2,37 @@
 
 from __future__ import annotations
 
+import ast
 import copy
+import re
 from collections.abc import Mapping
 from typing import Any
 
 Notebook = dict[str, Any]
+
+_NON_PYTHON_CELL_MAGICS = frozenset(
+    {
+        "bash",
+        "sh",
+        "html",
+        "javascript",
+        "js",
+        "latex",
+        "markdown",
+        "perl",
+        "ruby",
+        "script",
+        "svg",
+        "sql",
+    }
+)
+_PYTHON_LANGUAGES = frozenset({"python", "ipython"})
+_CELL_MAGIC = re.compile(r"^[ \t]*%%([A-Za-z_][A-Za-z0-9_]*)")
+_LINE_ESCAPE = re.compile(r"^[ \t]*(?:%{1,3}[A-Za-z_][A-Za-z0-9_]*|!|\?)")
+_TRAILING_HELP = re.compile(r"^[ \t]*\S+\?\s*$")
+_ASSIGN_MAGIC = re.compile(
+    r"^([ \t]*[A-Za-z_][A-Za-z0-9_]*[ \t]*=[ \t]*)%{1,3}[A-Za-z_][A-Za-z0-9_]*[ \t]*(.*)$"
+)
 
 
 def as_notebook_dict(notebook: Mapping[str, Any] | Notebook) -> Notebook:
@@ -74,3 +100,65 @@ def preview(text: str, limit: int = 80) -> str:
     if len(collapsed) <= limit:
         return collapsed
     return collapsed[: limit - 1] + "…"
+
+
+def is_python_notebook(notebook: Mapping[str, Any]) -> bool:
+    """Return whether the notebook declares a Python (or IPython) language.
+
+    Missing language metadata is treated as Python so the original stats
+    scaffold and incomplete kernelspecs keep the historical lint/import
+    behavior. Declared non-Python languages such as ``r`` skip Python AST.
+    """
+    metadata = as_mapping(notebook.get("metadata"))
+    language_info = nested_mapping(metadata, "language_info")
+    kernelspec = nested_mapping(metadata, "kernelspec")
+    declared = language_info.get("name") or kernelspec.get("language")
+    if not isinstance(declared, str) or not declared.strip():
+        return True
+    return declared.strip().lower() in _PYTHON_LANGUAGES
+
+
+def strip_ipython_magics(source: str) -> str | None:
+    """Return cell source with IPython magics removed, or ``None`` if not Python.
+
+    Non-Python cell magics such as ``%%bash`` return ``None`` so callers can skip
+    syntax checks and import extraction. Line magics, shell bangs, and help
+    suffixes are dropped; assignment magics keep the left-hand side.
+    """
+    lines = source.splitlines()
+    for line in lines:
+        if not line.strip():
+            continue
+        match = _CELL_MAGIC.match(line)
+        if match is not None and match.group(1).lower() in _NON_PYTHON_CELL_MAGICS:
+            return None
+        break
+    kept: list[str] = []
+    for line in lines:
+        if not line.strip():
+            kept.append(line)
+            continue
+        if _CELL_MAGIC.match(line) or _LINE_ESCAPE.match(line) or _TRAILING_HELP.match(line):
+            continue
+        assigned = _ASSIGN_MAGIC.match(line)
+        if assigned is not None:
+            rhs = assigned.group(2)
+            kept.append(f"{assigned.group(1)}{rhs if rhs.strip() else '...'}")
+            continue
+        kept.append(line)
+    return "\n".join(kept)
+
+
+def parse_code_cell(source: str) -> ast.Module | None:
+    """Parse a notebook code cell as Python.
+
+    Returns ``None`` when the cell is a non-Python cell magic. Invalid Python
+    raises :class:`SyntaxError`. On Python 3.12+, ``ast.parse`` already accepts
+    top-level ``await``.
+    """
+    cleaned = strip_ipython_magics(source)
+    if cleaned is None:
+        return None
+    if not cleaned.strip():
+        return ast.parse("")
+    return ast.parse(cleaned)

@@ -20,10 +20,10 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | -- | ----------- | -------- | ------ |
 | G1 / TASK-001 | Domain-general `src/nbops` package | `src/nbops/` modules; package name `nbops`; no NBA-specific code | verified (recovered) |
 | G2 / TASK-002 | I/O load/save/validate/new | `src/nbops/io.py`; v4 omitted cell ids preserved; `nbops validate`; `POST /notebooks/validate`; `tests/test_io.py` | verified (recovered) |
-| G3 / TASK-003 | Inspect stats/outline/imports/outputs | `list_outputs`; CLI/API `outputs`; inspect payload includes outputs | verified (recovered) |
+| G3 / TASK-003 | Inspect stats/outline/imports/outputs | `list_outputs`; CLI/API `outputs`; inspect payload includes outputs; `extract_imports` is IPython-aware and skips non-Python kernels | verified (recovered) |
 | G4 / TASK-004 | Clean outputs/counts/ids/empty | `src/nbops/clean.py`; widgets and output-linked cell keys stripped with outputs; `tests/test_clean.py` | verified (recovered) |
 | G5 / TASK-005 | Transform filter/concat/split/kernel/tags/ids | concat uniquifies duplicate present ids and leaves omitted ids omitted; `add_tags` / `remove_tags`; `tests/test_transform.py` | verified (recovered) |
-| G6 / TASK-006 | Lint NB000–NB011 | `ISSUE_CATALOG` length 12; tests cover NB000–NB011 | verified (recovered) |
+| G6 / TASK-006 | Lint NB000–NB011 | `ISSUE_CATALOG` length 12; tests cover NB000–NB011; `NB007` is IPython-aware and skipped for non-Python kernels | verified (recovered) |
 | G7 / TASK-007 | Convert py/script/md + percent roundtrip | `to_percent_python` / `from_percent_python`; tags, cell ids, optional Jupytext titles, generic `key=value`/JSON cell metadata, and kernelspec YAML round-trip; `[md]` alias; bracket-safe lists; omitted ids stay omitted | verified (recovered) |
 | G8 / TASK-008 | Cell-level diff | `src/nbops/diff.py`; `tests/test_diff.py` | verified (recovered) |
 | G9 / TASK-009 | Batch directory + tqdm | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}`; stats/clean fail-closed | verified (recovered) |

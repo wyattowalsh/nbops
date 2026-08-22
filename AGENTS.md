@@ -62,6 +62,9 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   emits/parses header `id=` values, optional Jupytext cell titles, other
   cell metadata (`key=value` or a JSON object), and a kernelspec YAML
   front matter, and does not fill omitted ids on `from-py`.
+- `NB007` and `extract_imports` parse Python cells through IPython-aware magics/await
+  handling and skip non-Python cell magics plus notebooks whose declared language is
+  not Python. Do not add IPython as a dependency.
 - `nbops serve` and `nbops version` are system commands, not catalog operations.
 
 ## Out of scope unless explicitly requested

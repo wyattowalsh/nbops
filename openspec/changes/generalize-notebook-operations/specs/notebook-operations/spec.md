@@ -167,3 +167,20 @@ four cells (markdown, code, code, markdown), stats 4/2/4, kernel display name
 
 - **WHEN** the demo notebook is loaded and validated
 - **THEN** cell ids are `title`, `area`, `print-area`, `done` and stats remain 4/2/4
+
+### Requirement: Python-aware code parsing
+
+`NB007` and `extract_imports` SHALL parse Python notebook code through
+IPython-aware magics stripping, skip non-Python cell magics, and skip Python
+AST checks when the notebook declares a non-Python language. Missing language
+metadata SHALL keep the historical Python behavior. Top-level `await` is valid
+on the supported Python 3.12+ parsers.
+
+#### Scenario: IPython magics are not syntax errors
+
+- **WHEN** a Python code cell starts with `%matplotlib inline` or uses top-level `await`
+- **THEN** lint does not report `NB007` and `extract_imports` still finds following imports
+- **WHEN** a code cell is a non-Python cell magic such as `%%bash`
+- **THEN** lint does not report `NB007` and that cell contributes no imports
+- **WHEN** a notebook declares kernelspec/language `r`
+- **THEN** lint does not report `NB007` for R source and `extract_imports` returns no records

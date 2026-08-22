@@ -59,3 +59,7 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   (`key=value` pairs and JSON objects, including dotted keys and `collapsed`/`slideshow`)
 - Percent convert emits Jupytext `kernelspec` YAML so convert→from-py keeps kernel
   name, display name, and language
+- `NB007` and `extract_imports` parse IPython line magics, shell bangs, help suffixes,
+  assignment magics, and top-level `await` (accepted by Python 3.12+ `ast.parse`);
+  non-Python cell magics and non-Python kernels (for example `ir` / `R`) are skipped
+  instead of being treated as invalid Python
