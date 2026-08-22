@@ -506,9 +506,12 @@ def test_to_markdown_inlines_code_cell_output_images() -> None:
     }
     markdown = to_markdown(notebook)
     assert "```python\nplot()\n```" in markdown
+    assert "    hi" in markdown
     assert "![output-0](data:image/png;base64,aaa)" in markdown
     assert "![output-1](data:image/svg+xml;charset=utf-8," in markdown
     assert markdown.count("![output-") == 2
+    assert "<Figure>" not in markdown
+    assert "    1" in markdown
 
 
 def test_to_markdown_skips_code_cell_without_output_list() -> None:
@@ -518,6 +521,73 @@ def test_to_markdown_skips_code_cell_without_output_list() -> None:
     markdown = to_markdown(notebook)
     assert "```python" in markdown
     assert "![output-" not in markdown
+
+
+def test_to_markdown_includes_stream_error_and_markdown_outputs() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "print(1)\n",
+                "outputs": [
+                    {"output_type": "stream", "name": "stdout", "text": ["hello\n", "world\n"]},
+                    {"output_type": "stream", "name": "stderr", "text": ""},
+                    {"output_type": "stream", "name": "stdout", "text": 123},
+                    {"output_type": "update_display_data"},
+                    {
+                        "output_type": "display_data",
+                        "data": {"text/markdown": "  ", "text/plain": "\n"},
+                        "metadata": {},
+                    },
+                    {"output_type": "error", "ename": "", "evalue": "", "traceback": ["\n"]},
+                    {
+                        "output_type": "error",
+                        "ename": "ValueError",
+                        "evalue": "bad",
+                        "traceback": ["\x1b[31mValueError\x1b[0m: bad"],
+                    },
+                    {
+                        "output_type": "execute_result",
+                        "data": {"text/markdown": "**ok**\n"},
+                        "metadata": {},
+                        "execution_count": 1,
+                    },
+                ],
+            }
+        ]
+    }
+    markdown = to_markdown(notebook)
+    assert "    hello" in markdown
+    assert "    world" in markdown
+    assert "    ValueError: bad" in markdown
+    assert "\x1b" not in markdown
+    assert "**ok**" in markdown
+    assert "123" not in markdown
+
+
+def test_to_markdown_error_without_traceback_uses_ename() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "raise\n",
+                "outputs": [
+                    {
+                        "output_type": "error",
+                        "ename": "RuntimeError",
+                        "evalue": "boom",
+                        "traceback": [],
+                    },
+                    {"output_type": "error"},
+                ],
+            }
+        ]
+    }
+    markdown = to_markdown(notebook)
+    assert "    RuntimeError: boom" in markdown
+    assert "    Error" in markdown
 
 
 def test_to_markdown_ignores_empty_metadata_attachments() -> None:

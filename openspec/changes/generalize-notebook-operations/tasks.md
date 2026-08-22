@@ -44,3 +44,4 @@
 - [x] 1.42 Percent convert round-trips nbformat cell `attachments` (not as cell metadata)
 - [x] 1.43 Markdown convert inlines `attachment:` / `attachment://` refs as `data:` URIs
 - [x] 1.44 Markdown convert inlines code-cell `image/*` display/execute outputs as `data:` URIs
+- [x] 1.45 Markdown convert emits stream, error, and remaining `text/plain` / `text/markdown` outputs

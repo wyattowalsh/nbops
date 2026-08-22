@@ -199,7 +199,9 @@ rewrite `attachment:` / `attachment://` references in markdown and raw cells to
 types. Unknown attachment names SHALL be left unchanged. Percent conversion
 SHALL keep `attachment:` references in cell source. Code-cell `display_data` and
 `execute_result` outputs with `image/*` data SHALL be appended as Markdown
-`data:` images after the fenced source.
+`data:` images after the fenced source. Stream, error, and remaining
+`text/plain` outputs SHALL be appended as indented blocks with ANSI stripped.
+`text/markdown` outputs without an image SHALL be appended as Markdown.
 
 #### Scenario: IPython magics are not syntax errors
 
@@ -235,3 +237,7 @@ SHALL keep `attachment:` references in cell source. Code-cell `display_data` and
 - **THEN** the unknown reference is unchanged
 - **WHEN** a code cell has `display_data` / `execute_result` `image/*` output
 - **THEN** `to_markdown` appends a `data:` image after the fenced source
+- **WHEN** a code cell has stream, error, or `text/plain` output (and no image)
+- **THEN** `to_markdown` appends an indented block with ANSI sequences stripped
+- **WHEN** a code cell has `text/markdown` output and no image
+- **THEN** that markdown is appended as-is

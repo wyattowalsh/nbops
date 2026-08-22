@@ -31,7 +31,8 @@ CLI, and HTTP surfaces.
   (inferred language when omitted; `language_info.name` when there is no
   kernelspec name); `from-py` does not fill omitted ids.
   Markdown conversion inlines `attachment:` links as `data:` URIs and appends
-  code-cell `image/*` outputs as Markdown images.
+  code-cell `image/*` outputs as Markdown images. Stream, error, and text
+  outputs are included (indented / markdown) after fenced source.
   Optional Jupytext cell titles (`# %% Title [markdown]`) are parsed so the
   bracketed type is not dropped. The kernel client may see temporary ids internally.
 - `NB007` / `extract_imports` parse Python as IPython notebook code (line magics,

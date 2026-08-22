@@ -79,3 +79,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   `attachment://` links as `data:` URIs from cell attachments
 - Markdown conversion also inlines code-cell `image/*` display/execute outputs as
   `data:` images after the fenced source
+- Markdown conversion emits stream, error, and remaining `text/plain` outputs as
+  indented blocks (ANSI stripped) and `text/markdown` outputs as Markdown

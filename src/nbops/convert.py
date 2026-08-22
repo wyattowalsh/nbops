@@ -80,7 +80,10 @@ def to_markdown(notebook: Mapping[str, Any]) -> str:
     rewritten to ``data:`` URIs from that cell's nbformat attachments so the
     converted file is self-contained. Unknown names are left unchanged.
     Image ``display_data`` / ``execute_result`` outputs on code cells are
-    appended as Markdown images.
+    appended as Markdown images. Stream, error, and remaining ``text/plain``
+    outputs are appended as indented blocks (ANSI stripped), matching
+    nbconvert's Markdown exporter. ``text/plain`` is omitted when an image
+    payload is present so figure reprs like ``<Figure>`` are not duplicated.
     """
     language = notebook_code_language(notebook)
     chunks: list[str] = []
@@ -94,7 +97,7 @@ def to_markdown(notebook: Mapping[str, Any]) -> str:
                 chunks.append(_inline_attachment_references(source, _cell_attachments(cell)))
         else:
             chunks.append(f"```{language}\n{source}\n```" if source else f"```{language}\n```")
-            chunks.extend(_code_cell_output_images(cell))
+            chunks.extend(_code_cell_output_blocks(cell))
     return ("\n\n".join(chunks).rstrip() + "\n") if chunks else ""
 
 
@@ -786,28 +789,78 @@ def _lookup_attachment_uri(name: str, uris: dict[str, str]) -> str | None:
     return None
 
 
-def _code_cell_output_images(cell: Mapping[str, Any]) -> list[str]:
-    """Return Markdown images for image/* display and execute_result outputs."""
+_ANSI_ESCAPE_RE = re.compile(r"\x1b\[[0-9;:]*[A-Za-z]")
+
+
+def _strip_ansi(text: str) -> str:
+    return _ANSI_ESCAPE_RE.sub("", text)
+
+
+def _join_text_payload(value: Any) -> str:
+    if isinstance(value, list):
+        return "".join(str(part) for part in value)
+    if isinstance(value, str):
+        return value
+    return ""
+
+
+def _indent_markdown_output(text: str) -> str:
+    cleaned = _strip_ansi(text).rstrip("\n")
+    if not cleaned:
+        return ""
+    return "\n".join(f"    {line}" for line in cleaned.split("\n"))
+
+
+def _error_output_text(output: Mapping[str, Any]) -> str:
+    traceback = output.get("traceback")
+    if isinstance(traceback, list) and traceback:
+        return _join_text_payload(traceback)
+    ename = output.get("ename") or "Error"
+    evalue = output.get("evalue")
+    if evalue:
+        return f"{ename}: {evalue}"
+    return str(ename)
+
+
+def _code_cell_output_blocks(cell: Mapping[str, Any]) -> list[str]:
+    """Return Markdown for code-cell images, streams, errors, and text outputs."""
     outputs = cell.get("outputs")
     if not isinstance(outputs, list):
         return []
-    images: list[str] = []
+    blocks: list[str] = []
+    image_index = 0
     for output in outputs:
         if not isinstance(output, dict):
             continue
-        if output.get("output_type") not in {"display_data", "execute_result"}:
-            continue
-        data = output.get("data")
-        if not isinstance(data, dict):
-            continue
-        image_bundle = {
-            key: value for key, value in data.items() if str(key).lower().startswith("image/")
-        }
-        uri = _mime_bundle_data_uri(image_bundle)
-        if uri is None:
-            continue
-        images.append(f"![output-{len(images)}]({uri})")
-    return images
+        output_type = output.get("output_type")
+        if output_type in {"display_data", "execute_result"}:
+            data = output.get("data")
+            if not isinstance(data, dict):
+                continue
+            image_bundle = {
+                key: value for key, value in data.items() if str(key).lower().startswith("image/")
+            }
+            uri = _mime_bundle_data_uri(image_bundle)
+            if uri is not None:
+                blocks.append(f"![output-{image_index}]({uri})")
+                image_index += 1
+                continue
+            markdown = _join_text_payload(data.get("text/markdown"))
+            if markdown.strip():
+                blocks.append(_strip_ansi(markdown).rstrip("\n"))
+                continue
+            indented = _indent_markdown_output(_join_text_payload(data.get("text/plain")))
+            if indented:
+                blocks.append(indented)
+        elif output_type == "stream":
+            indented = _indent_markdown_output(_join_text_payload(output.get("text")))
+            if indented:
+                blocks.append(indented)
+        elif output_type == "error":
+            indented = _indent_markdown_output(_error_output_text(output))
+            if indented:
+                blocks.append(indented)
+    return blocks
 
 
 def _inline_attachment_references(source: str, attachments: Any) -> str:
