@@ -97,6 +97,27 @@ def test_from_percent_python_ignores_kernelspec_without_name() -> None:
     assert notebook["metadata"]["kernelspec"]["name"] == "python3"
 
 
+def test_from_percent_python_kernelspec_parser_edges() -> None:
+    text = (
+        "# ---\n"
+        "#\n"
+        "#kernelspec:\n"
+        "#\n"
+        "#  name: ir\n"
+        "#  argv: []\n"
+        "#  bogus\n"
+        "#  display_name:\n"
+        "orphan-line\n"
+        "# ---\n"
+        "# %%\n"
+        "print(1)\n"
+    )
+    notebook = from_percent_python(text)
+    kernelspec = notebook["metadata"]["kernelspec"]
+    assert kernelspec["name"] == "ir"
+    assert cell_source(notebook["cells"][0]).rstrip() == "print(1)"
+
+
 def test_from_percent_python_skips_jupytext_front_matter() -> None:
     text = (
         "\n"

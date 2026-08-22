@@ -1,21 +1,22 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e`. Last fully GitHub-verified
-SHA before this completeness revision is `46cbd35` (run
+Recorded on branch `cursor/nbops-generalization-673e` after Jupytext kernelspec,
+`nbops new` display-name, and output-linked clean-key completeness. Local gates:
+**151 passed**, coverage **99.19%**.
+
+Last GitHub-verified SHA before this completeness revision: `46cbd35` (run
 [32590114562](https://github.com/wyattowalsh/nbops/actions/runs/32590114562),
-**144 passed** on CPython 3.12.14 and 3.13.15). This revision adds Jupytext
-kernelspec application, `nbops new` display-name parity, and output-linked clean
-keys; local/CI counts for the new HEAD are recorded after the gates run.
+**144 passed** on CPython 3.12.14 and 3.13.15).
 
 ## Tooling
 
 | Gate | Result |
 | ---- | ------ |
 | `uv sync --locked --group dev` | lockfile resolved; editable `nbops==0.2.0` |
-| `uv run ruff check src tests` | pending on this HEAD (last green: `46cbd35`) |
-| `uv run ruff format --check src tests` | pending on this HEAD |
-| `uv run ty check` | pending on this HEAD |
-| `uv run pytest` | last GitHub-verified: **144 passed**, coverage **98.87%** at `a9672fe`; `46cbd35` succeeded with the same 144-test suite |
+| `uv run ruff check src tests` | All checks passed |
+| `uv run ruff format --check src tests` | files already formatted |
+| `uv run ty check` | All checks passed |
+| `uv run pytest` | **151 passed**, coverage **99.19%** (fail-under 90); `src/nbops/convert.py`, `clean.py`, `cli.py`, `transform.py` at **100%** |
 
 ## Runtime smoke
 
@@ -52,3 +53,4 @@ Run [32590114562](https://github.com/wyattowalsh/nbops/actions/runs/32590114562)
 on `46cbd35` concluded **success** (all 5 jobs). Prior verified run
 [32589716713](https://github.com/wyattowalsh/nbops/actions/runs/32589716713) on
 `a9672fe` reported **144 passed** on CPython **3.12.14** and **3.13.15**.
+CI for this HEAD is pending.
