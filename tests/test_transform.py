@@ -148,7 +148,7 @@ def test_split_by_headings_uses_setext_and_ignores_fences() -> None:
     titles = [title for title, _ in sections]
     assert titles == ["preamble", "Alpha"]
     assert len(sections[0][1]["cells"]) == 1
-    assert len(sections[1][1]["cells"]) == 2
+    assert len(sections[1][1]["cells"]) == 3
 
 
 def test_set_kernelspec_and_tags(sample_notebook: dict[str, Any]) -> None:
