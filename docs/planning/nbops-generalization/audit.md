@@ -12,7 +12,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 
 | Requirement | Evidence inspected | Status |
 | ----------- | ------------------ | ------ |
-| Execute every item in `nbops-generalization-codex-kickoff-context-20260822` | Filename only in the run transcript (`/goal … \` nbops-generalization-codex-kickoff-context-20260822 \``); schema is `role`/`text` with no attachment body. Absent from `/workspace`, GitHub `wyattowalsh/nbops` (`main` + feature branches), Wyatt public repo trees (`agents`, `prompts`, `nbadb`, `dotfiles`, `cwa`, `proxywhirl`, `riso`, `template`), gists (404), Drive/Gmail/Linear/Tavily MCP (`needsAuth`), `/tmp/research/*` clones, and all five nbops cloud-agent transcripts | **missing** |
+| Execute every item in `nbops-generalization-codex-kickoff-context-20260822` | Filename only in the run transcript (`/goal … \` nbops-generalization-codex-kickoff-context-20260822 \``); schema is `role`/`text` with no attachment body. Absent from `/workspace`, GitHub `wyattowalsh/nbops` (`main` + feature branches), Wyatt public repo trees (`agents`, `prompts`, `nbadb`, `dotfiles`, `cwa`, `proxywhirl`, `riso`, `template`, `openopps`, `shortcuts`, `specs`, `ctx-index`, `colab-snippets`, `personal-website`, `skills`, `webmedia-dl`), raw GitHub/gist/`w4w.dev` URLs (404), Drive/Gmail/Linear/Tavily MCP (`needsAuth`), `/tmp/research/*` clones, and all five nbops cloud-agent transcripts | **missing** |
 
 ## Recovered program (not a substitute)
 
@@ -30,7 +30,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G10 / TASK-010 | Optional execute extra | `pyproject.toml` `[execute]`; extra mocked in default tests | verified (recovered) |
 | G11 / TASK-011 | Typer CLI for every catalog op | `test_catalog_cli_and_api_surfaces_exist` (20 ops); `nbops serve`/`version` are system commands | verified (recovered) |
 | G12 / TASK-012 | FastAPI covering catalog + `GET /operations` | same invariant test | verified (recovered) |
-| G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI | verified (recovered) |
+| G13 / TASK-013 | Stats scaffold compatibility | demo 4/2/4 via CLI, library, HTTP, CI; original seven-row CLI table; incomplete kernelspec fixture; README `uvicorn nbops.api:app` + curl health/stats | verified (recovered) |
 | G14 / TASK-014 | Tests mirroring src, coverage ≥90% | `tests/` mirrors modules plus `test_demo_notebook.py`; **164 passed**, **100.00%** (GitHub `acc442f`) | verified (recovered) |
 | G15 / TASK-015 | CI ruff + ty + pytest 3.12/3.13 + actionlint | Run [32591701982](https://github.com/wyattowalsh/nbops/actions/runs/32591701982) on `acc442f`: **164 passed**, **100.00%** on CPython **3.12.14** and **3.13.15** | verified (recovered) |
 | G16 / TASK-016 | AGENTS, CONTRIBUTING, README, CHANGELOG | plus `CODE_OF_CONDUCT.md`, `CLAUDE.md` → AGENTS.md, issue/PR templates, CODEOWNERS, FUNDING.yml, `.editorconfig`, `openspec/config.yaml` | verified (recovered) |
@@ -65,3 +65,5 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | GitHub MCP | unavailable (`error` during tool discovery) |
 | Wyatt public gists | No gist named `nbops-generalization-codex-kickoff-context-20260822` |
 | `wyattowalsh/cwa` `CODEX_KICKOFF.md` | CWA Wave 1 overlay (TASK-001–019 for that repo), not the nbops dump |
+| HuggingFace model search for the dump name | empty `[]` |
+| `nbops.w4w.dev` | DNS does not resolve |

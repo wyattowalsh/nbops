@@ -1,0 +1,104 @@
+"""Compatibility locks for the original stats-only scaffold.
+
+The ``cursor/setup-dev-environment-a5a8`` tree shipped 19 pytest cases covering
+``compute_stats``, ``nbops stats``, and ``POST /notebooks/stats``, plus a README
+that started the API with ``uvicorn nbops.api:app``. These tests keep that
+surface working after generalization.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+from fastapi.testclient import TestClient
+from typer.testing import CliRunner
+
+from nbops import NotebookStats, __version__, compute_stats
+from nbops.api import app as api_app
+from nbops.cli import app as cli_app
+from nbops.core import load_notebook, stats_for_file
+
+ROOT = Path(__file__).resolve().parents[1]
+runner = CliRunner()
+client = TestClient(api_app)
+
+
+def test_readme_documents_original_uvicorn_and_curl_stats() -> None:
+    text = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert "uv run nbops serve --host 0.0.0.0 --port 8000" in text
+    assert "uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000" in text
+    assert "curl -s http://127.0.0.1:8000/health" in text
+    assert "http://127.0.0.1:8000/notebooks/stats" in text
+
+
+def test_package_root_still_exports_original_compute_stats() -> None:
+    assert callable(compute_stats)
+    assert NotebookStats.__name__ == "NotebookStats"
+
+
+def test_original_scaffold_stats_library(original_scaffold_notebook: dict[str, Any]) -> None:
+    result = compute_stats(original_scaffold_notebook)
+    assert isinstance(result, NotebookStats)
+    assert result.total_cells == 4
+    assert result.code_cells == 2
+    assert result.markdown_cells == 1
+    assert result.raw_cells == 1
+    assert result.code_lines == 4
+    assert result.kernel == "Python 3"
+    assert result.language == "python"
+
+
+def test_original_scaffold_load_and_stats_for_file(
+    original_scaffold_notebook_file: Path,
+) -> None:
+    loaded = load_notebook(original_scaffold_notebook_file)
+    assert loaded["nbformat"] == 4
+    assert "name" not in loaded["metadata"]["kernelspec"]
+    result = stats_for_file(original_scaffold_notebook_file)
+    assert result.total_cells == 4
+    assert result.code_lines == 4
+    assert result.kernel == "Python 3"
+
+
+def test_original_scaffold_cli_table_prints_seven_rows(
+    original_scaffold_notebook_file: Path,
+) -> None:
+    result = runner.invoke(cli_app, ["stats", str(original_scaffold_notebook_file)])
+    assert result.exit_code == 0
+    assert "Total cells   : 4" in result.stdout
+    assert "Code cells    : 2" in result.stdout
+    assert "Markdown cells: 1" in result.stdout
+    assert "Raw cells     : 1" in result.stdout
+    assert "Code lines    : 4" in result.stdout
+    assert "Kernel        : Python 3" in result.stdout
+    assert "Language      : python" in result.stdout
+
+
+def test_original_scaffold_cli_json(original_scaffold_notebook_file: Path) -> None:
+    result = runner.invoke(cli_app, ["stats", str(original_scaffold_notebook_file), "--json"])
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["total_cells"] == 4
+    assert payload["language"] == "python"
+    assert payload["kernel"] == "Python 3"
+
+
+def test_original_scaffold_http_health_and_stats(
+    original_scaffold_notebook: dict[str, Any],
+) -> None:
+    health = client.get("/health")
+    assert health.status_code == 200
+    body = health.json()
+    assert body["status"] == "ok"
+    assert body["version"] == __version__
+
+    response = client.post("/notebooks/stats", json={"notebook": original_scaffold_notebook})
+    assert response.status_code == 200
+    stats = response.json()
+    assert stats["total_cells"] == 4
+    assert stats["code_cells"] == 2
+    assert stats["code_lines"] == 4
+    assert stats["kernel"] == "Python 3"
+    assert stats["language"] == "python"

@@ -28,7 +28,7 @@
 | TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py` |
 | TASK-011 | Typer CLI for every catalog operation | done | `src/nbops/cli.py`; system commands `version`/`serve` are not catalog ops |
 | TASK-012 | FastAPI surface + `GET /operations` | done | `src/nbops/api.py` |
-| TASK-013 | Preserve stats scaffold contract | done | `core.py`, `stats`, `/notebooks/stats` |
+| TASK-013 | Preserve stats scaffold contract | done | `core.py`, `stats`, `/notebooks/stats`; original seven-row CLI table; `uvicorn nbops.api:app` in README |
 | TASK-014 | Tests mirroring src, coverage ≥90% | done | `tests/`, `--cov-fail-under=90` |
 | TASK-015 | CI: actionlint + ruff + ty + pytest 3.12/3.13 | done | `.github/workflows/ci.yml` |
 | TASK-016 | AGENTS.md, CONTRIBUTING.md, README, CHANGELOG | done | repo root + `CODE_OF_CONDUCT.md` + `CLAUDE.md` |

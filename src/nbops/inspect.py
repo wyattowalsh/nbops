@@ -30,7 +30,8 @@ def compute_stats(notebook: Mapping[str, Any] | Any) -> NotebookStats:
     """Compute :class:`NotebookStats` from an in-memory notebook mapping.
 
     This function is intentionally lenient so callers can inspect incomplete
-    documents. Strict schema validation belongs in :func:`nbops.io.load_notebook`.
+    documents. Strict schema validation belongs in :func:`nbops.io.validate_notebook`
+    or :func:`nbops.io.load_notebook` with ``validate=True``.
     """
     if not isinstance(notebook, Mapping) or not isinstance(notebook.get("cells"), list):
         raise ValueError("Invalid notebook: expected a mapping with a 'cells' list.")

@@ -13,6 +13,12 @@ batch, and optional execute.
 - **WHEN** a caller invokes `nbops.core.load_notebook(path)` on a v4 JSON notebook
   that would fail nbformat schema checks (for example a kernelspec without `name`)
 - **THEN** the document loads and stats can still be computed
+- **WHEN** a reader follows the README HTTP quickstart
+- **THEN** both `nbops serve` and `uvicorn nbops.api:app` are documented, along with
+  curl examples for `GET /health` and `POST /notebooks/stats`
+- **WHEN** `nbops stats` prints a table for the original stats-scaffold fixture
+- **THEN** the original seven rows are present (total/code/markdown/raw cells, code
+  lines, kernel, language)
 
 ### Requirement: Lint catalog
 

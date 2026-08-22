@@ -87,6 +87,15 @@ uv run nbops batch validate examples
 
 ```bash
 uv run nbops serve --host 0.0.0.0 --port 8000
+# equivalent original scaffold command:
+uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
+```
+
+```bash
+curl -s http://127.0.0.1:8000/health
+curl -s -X POST http://127.0.0.1:8000/notebooks/stats \
+  -H 'content-type: application/json' \
+  -d "{\"notebook\": $(cat examples/demo.ipynb)}"
 ```
 
 | Method | Path | Purpose |

@@ -25,6 +25,7 @@ uv run nbops --help
 uv run nbops --version
 uv run python -m nbops version
 uv run nbops serve --host 0.0.0.0 --port 8000
+# equivalent: uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000
 just check
 just quality-gates
 # If just is not installed: uvx --from rust-just just quality-gates
