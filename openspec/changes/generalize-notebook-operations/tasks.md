@@ -15,3 +15,5 @@
 - [x] 1.13 `.env.example`, CLI `--version` / `--strip-metadata`, `python -m nbops`
 - [x] 1.14 System `nbops serve`; fail-closed `kernel`/`exec` writes
 - [x] 1.15 `CLAUDE.md` pointer to `AGENTS.md` (Claude Code / Codex shared surface)
+- [x] 1.16 Percent tag roundtrip; clean strips `metadata.widgets` with outputs
+- [x] 1.17 `.editorconfig`, OpenSpec `config.yaml`, `[md]` percent alias, bracket-safe tags

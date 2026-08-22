@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import ast
+import json
 import re
 from typing import TYPE_CHECKING, Any
 
-from nbops.cells import cell_source, cells_of
+from nbops.cells import cell_source, cell_tags, cells_of
 from nbops.io import new_notebook
 from nbops.models import ConvertResult
 from nbops.transform import ensure_cell_ids
@@ -22,14 +24,12 @@ def to_percent_python(notebook: Mapping[str, Any]) -> str:
             continue
         cell_type = cell.get("cell_type")
         source = cell_source(cell).rstrip()
-        if cell_type == "markdown":
+        header = _percent_cell_header(cell)
+        if cell_type == "markdown" or cell_type == "raw":
             quoted = "\n".join(f"# {line}" if line else "#" for line in source.splitlines()) or "#"
-            chunks.append(f"# %% [markdown]\n{quoted}")
-        elif cell_type == "raw":
-            quoted = "\n".join(f"# {line}" if line else "#" for line in source.splitlines()) or "#"
-            chunks.append(f"# %% [raw]\n{quoted}")
+            chunks.append(f"{header}\n{quoted}")
         else:
-            chunks.append(f"# %%\n{source}")
+            chunks.append(f"{header}\n{source}")
     text = "\n\n".join(chunks).rstrip() + "\n"
     return text if chunks else ""
 
@@ -74,7 +74,8 @@ def convert_notebook(notebook: Mapping[str, Any], fmt: str) -> ConvertResult:
     raise ValueError(f"Unsupported conversion format: {fmt}")
 
 
-_PERCENT_HEADER = re.compile(r"^# %%(?:\s*\[(?P<kind>[\w-]+)\])?(?:\s+.*)?$")
+_PERCENT_HEADER = re.compile(r"^# %%(?:\s*\[(?P<kind>[\w-]+)\])?(?P<meta>\s+.*)?$")
+_PERCENT_TAGS = re.compile(r"\btags\s*=\s*")
 _JUPYTEXT_FENCE = "# ---"
 
 
@@ -83,6 +84,7 @@ def from_percent_python(text: str) -> dict[str, Any]:
     notebook = new_notebook()
     cells: list[dict[str, Any]] = []
     current_kind = "code"
+    current_meta: dict[str, Any] = {}
     current_lines: list[str] = []
     started = False
 
@@ -92,12 +94,13 @@ def from_percent_python(text: str) -> dict[str, Any]:
             current_lines = []
             return
         source = "\n".join(current_lines).strip("\n")
+        metadata = dict(current_meta)
         if current_kind in {"markdown", "raw"}:
             source = _unquote_percent_comment(source)
             cells.append(
                 {
                     "cell_type": current_kind,
-                    "metadata": {},
+                    "metadata": metadata,
                     "source": f"{source}\n" if source else "",
                 }
             )
@@ -106,7 +109,7 @@ def from_percent_python(text: str) -> dict[str, Any]:
                 {
                     "cell_type": "code",
                     "execution_count": None,
-                    "metadata": {},
+                    "metadata": metadata,
                     "outputs": [],
                     "source": f"{source}\n" if source else "",
                 }
@@ -119,14 +122,83 @@ def from_percent_python(text: str) -> dict[str, Any]:
             if started or current_lines:
                 flush()
             started = True
-            kind = (match.group("kind") or "code").lower()
-            current_kind = kind if kind in {"markdown", "raw"} else "code"
+            current_kind = _percent_kind(match.group("kind"))
+            current_meta = _percent_cell_metadata(match.group("meta"))
             continue
         current_lines.append(line)
     if started or any(line.strip() for line in current_lines):
         flush()
     notebook["cells"] = cells
     return ensure_cell_ids(notebook)
+
+
+def _percent_cell_header(cell: Mapping[str, Any]) -> str:
+    cell_type = cell.get("cell_type")
+    kind = "" if cell_type == "code" else f" [{cell_type}]"
+    tags = cell_tags(cell)
+    suffix = f" tags={json.dumps(tags)}" if tags else ""
+    return f"# %%{kind}{suffix}"
+
+
+def _percent_kind(kind: str | None) -> str:
+    token = (kind or "code").lower()
+    if token in {"markdown", "md"}:
+        return "markdown"
+    if token == "raw":
+        return "raw"
+    return "code"
+
+
+def _percent_cell_metadata(meta: str | None) -> dict[str, Any]:
+    if not meta or not meta.strip():
+        return {}
+    match = _PERCENT_TAGS.search(meta)
+    if match is None:
+        return {}
+    raw = _leading_list_literal(meta[match.end() :])
+    if raw is None:
+        return {}
+    try:
+        tags = json.loads(raw)
+    except json.JSONDecodeError:
+        try:
+            tags = ast.literal_eval(raw)
+        except (SyntaxError, ValueError):
+            return {}
+    if not isinstance(tags, list):
+        return {}
+    return {"tags": [str(tag) for tag in tags]}
+
+
+def _leading_list_literal(text: str) -> str | None:
+    stripped = text.lstrip()
+    if not stripped.startswith("["):
+        return None
+    quote: str | None = None
+    escape = False
+    depth = 0
+    for index, char in enumerate(stripped):
+        if quote is not None:
+            if escape:
+                escape = False
+                continue
+            if char == "\\":
+                escape = True
+                continue
+            if char == quote:
+                quote = None
+            continue
+        if char in {'"', "'"}:
+            quote = char
+            continue
+        if char == "[":
+            depth += 1
+            continue
+        if char == "]":
+            depth -= 1
+            if depth == 0:
+                return stripped[: index + 1]
+    return None
 
 
 def _strip_jupytext_front_matter(text: str) -> str:

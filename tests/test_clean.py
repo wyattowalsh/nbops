@@ -31,3 +31,18 @@ def test_clean_drop_empty_and_ids(sample_notebook: dict[str, Any]) -> None:
         not (isinstance(cell, dict) and cell.get("source") == "") for cell in cleaned["cells"]
     )
     assert len(cleaned["cells"]) == 4
+
+
+def test_clean_strips_notebook_widget_metadata(sample_notebook: dict[str, Any]) -> None:
+    sample_notebook["metadata"]["widgets"] = {"state": {"x": {}}}
+    cleaned = clean_notebook(sample_notebook)
+    assert "widgets" not in cleaned["metadata"]
+    assert sample_notebook["metadata"]["widgets"] == {"state": {"x": {}}}
+    kept = clean_notebook(sample_notebook, CleanOptions(outputs=False, execution_counts=False))
+    assert kept["metadata"]["widgets"] == {"state": {"x": {}}}
+
+
+def test_clean_skips_non_mapping_notebook_metadata() -> None:
+    notebook = {"cells": [], "metadata": ["nope"]}
+    cleaned = clean_notebook(notebook)
+    assert cleaned["metadata"] == ["nope"]

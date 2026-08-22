@@ -47,4 +47,9 @@ def clean_notebook(
             cell.pop("id", None)
         kept.append(cell)
     cleaned["cells"] = kept
+    if opts.outputs:
+        notebook_metadata = cleaned.get("metadata")
+        if isinstance(notebook_metadata, dict):
+            notebook_metadata.pop("widgets", None)
+            cleaned["metadata"] = notebook_metadata
     return cleaned

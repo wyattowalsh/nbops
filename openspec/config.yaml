@@ -1,0 +1,8 @@
+schema: spec-driven
+
+context: |
+  nbops is a domain-general Jupyter notebook operations toolkit (library, Typer
+  CLI, FastAPI). Stack: Python >=3.12, uv, hatchling, pydantic v2, pydantic-settings,
+  loguru, tenacity, tqdm, ruff, ty, pytest. Keep compute_stats / nbops stats /
+  POST /notebooks/stats as the compatibility surface. Out of scope: full nbconvert
+  HTML/PDF, JupyterHub/Binder, Kaggle publishing.

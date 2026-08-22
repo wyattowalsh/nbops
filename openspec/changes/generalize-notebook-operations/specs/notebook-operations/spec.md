@@ -49,3 +49,18 @@ share ids.
 - **WHEN** a caller invokes `validate_notebook`, `nbops validate`, or
   `POST /notebooks/validate`
 - **THEN** valid notebooks report success and invalid documents report an error
+
+### Requirement: Percent-format tags and widget residue
+
+Percent-format conversion SHALL round-trip cell tags. Cleaning outputs SHALL
+remove notebook-level widget state.
+
+#### Scenario: Percent tag roundtrip
+
+- **WHEN** a notebook with cell `metadata.tags` is converted to percent Python and back
+- **THEN** the restored cells keep those tags
+
+#### Scenario: Clean widget metadata
+
+- **WHEN** `clean_notebook` runs with `outputs=True` on a notebook that has `metadata.widgets`
+- **THEN** the cleaned copy has no `widgets` key and the input notebook is unchanged

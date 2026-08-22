@@ -10,7 +10,8 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Output inventory (`nbops outputs` / `POST /notebooks/outputs`)
 - nbformat schema validation (`nbops validate` / `POST /notebooks/validate`)
 - Directory batch: `nbops batch {stats,lint,clean,validate}` (fail-closed on errors)
-- Percent-format roundtrip (`nbops convert --to py` / `nbops from-py`)
+- Percent-format roundtrip (`nbops convert --to py` / `nbops from-py`), including cell tags
+  (`[md]` is accepted as markdown; tags with `]` inside quotes round-trip)
 - Concatenation assigns unique cell ids
 - Optional `nbops[execute]` extra (nbclient)
 - Compatibility with the stats-only scaffold: `compute_stats`, `nbops stats`,
@@ -19,5 +20,7 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - `NBOPS_` environment settings (optional working-directory `.env`; see `.env.example`)
 - CLI `--version` and `python -m nbops`
 - CLI `--strip-metadata` for extra cell metadata keys (`CleanOptions.metadata_keys`)
+- `clean_notebook` strips notebook-level `metadata.widgets` when stripping outputs
 - System command `nbops serve` (`--host`, `--port`, `--reload`); `just api` uses it
 - `nbops kernel` and `nbops exec` require `--output` or `--in-place` (no implicit overwrite)
+- Wyatt baseline `.editorconfig` and OpenSpec `openspec/config.yaml`

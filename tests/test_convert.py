@@ -45,6 +45,7 @@ def test_percent_roundtrip_preserves_cell_types_and_source(sample_notebook: dict
         assert left["cell_type"] == right["cell_type"]
         assert cell_source(left).rstrip() == cell_source(right).rstrip()
         assert isinstance(right.get("id"), str) and right["id"]
+        assert right.get("metadata", {}).get("tags", []) == left.get("metadata", {}).get("tags", [])
 
 
 def test_from_percent_python_empty_and_preamble() -> None:
@@ -75,7 +76,64 @@ def test_from_percent_python_skips_jupytext_front_matter() -> None:
     notebook = from_percent_python(text)
     assert [cell["cell_type"] for cell in notebook["cells"]] == ["markdown", "code"]
     assert cell_source(notebook["cells"][0]).rstrip() == "Hello"
+    assert notebook["cells"][0]["metadata"]["tags"] == ["intro"]
     assert cell_source(notebook["cells"][1]).rstrip() == "x = 1"
+
+
+def test_percent_roundtrip_preserves_tags() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {"tags": ["intro"]},
+                "source": "# Hello\n",
+            },
+            {
+                "cell_type": "code",
+                "metadata": {"tags": ["setup", "hide"]},
+                "source": "x = 1\n",
+            },
+        ]
+    }
+    text = to_percent_python(notebook)
+    assert 'tags=["intro"]' in text
+    assert 'tags=["setup", "hide"]' in text
+    restored = from_percent_python(text)
+    assert restored["cells"][0]["metadata"]["tags"] == ["intro"]
+    assert restored["cells"][1]["metadata"]["tags"] == ["setup", "hide"]
+
+
+def test_from_percent_python_parses_single_quoted_tags() -> None:
+    notebook = from_percent_python("# %% tags=['active']\nprint(1)\n")
+    assert notebook["cells"][0]["metadata"]["tags"] == ["active"]
+
+
+def test_from_percent_python_ignores_malformed_tags() -> None:
+    notebook = from_percent_python("# %% tags=[not-json\nprint(1)\n")
+    assert notebook["cells"][0]["metadata"] == {}
+
+
+def test_from_percent_python_ignores_non_list_tags() -> None:
+    notebook = from_percent_python('# %% tags={"hide": true}\nprint(1)\n')
+    assert notebook["cells"][0]["metadata"] == {}
+
+
+def test_from_percent_python_parses_tags_containing_brackets() -> None:
+    notebook = from_percent_python('# %% tags=["keep]me"]\nprint(1)\n')
+    assert notebook["cells"][0]["metadata"]["tags"] == ["keep]me"]
+    quoted = from_percent_python("# %% tags=['keep]me']\nprint(1)\n")
+    assert quoted["cells"][0]["metadata"]["tags"] == ["keep]me"]
+
+
+def test_from_percent_python_stringifies_non_string_tags() -> None:
+    notebook = from_percent_python("# %% tags=[1, 2]\nprint(1)\n")
+    assert notebook["cells"][0]["metadata"]["tags"] == ["1", "2"]
+
+
+def test_from_percent_python_treats_md_as_markdown() -> None:
+    notebook = from_percent_python("# %% [md]\n# Hello\n")
+    assert notebook["cells"][0]["cell_type"] == "markdown"
+    assert cell_source(notebook["cells"][0]).rstrip() == "Hello"
 
 
 def test_unquote_keeps_uncommented_markdown_lines() -> None:

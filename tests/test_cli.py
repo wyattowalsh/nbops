@@ -119,12 +119,16 @@ def test_clean_convert_concat_diff_new(tmp_path: Path, sample_notebook_file: Pat
         app, ["convert", str(sample_notebook_file), "--to", "py", "-o", str(out_py)]
     )
     assert to_py.exit_code == 0
-    assert out_py.read_text(encoding="utf-8").startswith("# %%")
+    percent = out_py.read_text(encoding="utf-8")
+    assert percent.startswith("# %%")
+    assert 'tags=["setup"]' in percent
 
     restored = tmp_path / "from-py.ipynb"
     from_py = runner.invoke(app, ["from-py", str(out_py), "-o", str(restored)])
     assert from_py.exit_code == 0
-    assert json.loads(restored.read_text(encoding="utf-8"))["cells"]
+    restored_cells = json.loads(restored.read_text(encoding="utf-8"))["cells"]
+    assert restored_cells
+    assert restored_cells[1]["metadata"]["tags"] == ["setup"]
 
     merged = tmp_path / "merged.ipynb"
     concat = runner.invoke(
