@@ -9,6 +9,8 @@ import pytest
 from nbops.cells import cell_source
 from nbops.convert import (
     _leading_list_literal,
+    _leading_scalar_literal,
+    _percent_cell_id,
     _percent_cell_metadata,
     convert_notebook,
     from_percent_python,
@@ -16,6 +18,7 @@ from nbops.convert import (
     to_percent_python,
     to_script,
 )
+from nbops.lint import lint_notebook
 
 
 def test_percent_and_script_and_markdown(sample_notebook: dict[str, Any]) -> None:
@@ -46,7 +49,7 @@ def test_percent_roundtrip_preserves_cell_types_and_source(sample_notebook: dict
     for left, right in zip(original_cells, restored["cells"], strict=True):
         assert left["cell_type"] == right["cell_type"]
         assert cell_source(left).rstrip() == cell_source(right).rstrip()
-        assert isinstance(right.get("id"), str) and right["id"]
+        assert right.get("id") == left.get("id")
         assert right.get("metadata", {}).get("tags", []) == left.get("metadata", {}).get("tags", [])
 
 
@@ -162,6 +165,44 @@ def test_percent_roundtrip_preserves_tags() -> None:
     restored = from_percent_python(text)
     assert restored["cells"][0]["metadata"]["tags"] == ["intro"]
     assert restored["cells"][1]["metadata"]["tags"] == ["setup", "hide"]
+    assert all("id" not in cell for cell in restored["cells"])
+
+
+def test_percent_roundtrip_preserves_omitted_cell_ids() -> None:
+    notebook = {
+        "cells": [
+            {"cell_type": "markdown", "metadata": {}, "source": "# Hello\n"},
+            {"cell_type": "code", "metadata": {}, "source": "x = 1\n"},
+        ]
+    }
+    text = to_percent_python(notebook)
+    assert "id=" not in text
+    restored = from_percent_python(text)
+    assert all("id" not in cell for cell in restored["cells"])
+    codes = {issue.code for issue in lint_notebook(restored).issues}
+    assert "NB009" in codes
+
+
+def test_from_percent_python_parses_header_ids() -> None:
+    notebook = from_percent_python(
+        '# %% [markdown] id="title" tags=["intro"]\n# Hello\n\n# %% id=area\nprint(1)\n'
+    )
+    assert notebook["cells"][0]["id"] == "title"
+    assert notebook["cells"][0]["metadata"]["tags"] == ["intro"]
+    assert notebook["cells"][1]["id"] == "area"
+    quoted = from_percent_python("# %% id='cell-1'\nprint(1)\n")
+    assert quoted["cells"][0]["id"] == "cell-1"
+
+
+def test_from_percent_python_ignores_malformed_ids() -> None:
+    unclosed = from_percent_python('# %% id="nope\nprint(1)\n')
+    assert "id" not in unclosed["cells"][0]
+    invalid_escape = from_percent_python('# %% id="\\xzz"\nprint(1)\n')
+    assert "id" not in invalid_escape["cells"][0]
+    empty = from_percent_python('# %% id=""\nprint(1)\n')
+    assert "id" not in empty["cells"][0]
+    mapping = from_percent_python("# %% id={not: scalar}\nprint(1)\n")
+    assert "id" not in mapping["cells"][0]
 
 
 def test_from_percent_python_parses_single_quoted_tags() -> None:
@@ -271,7 +312,13 @@ def test_percent_metadata_helpers_reject_empty_and_unbalanced_lists() -> None:
     assert _percent_cell_metadata(None) == {}
     assert _percent_cell_metadata("   ") == {}
     assert _percent_cell_metadata(" key=1") == {}
+    assert _percent_cell_id(None) is None
+    assert _percent_cell_id("   ") is None
+    assert _percent_cell_id(" key=1") is None
     assert _leading_list_literal("[[]") is None
+    assert _leading_scalar_literal("") is None
+    assert _leading_scalar_literal("   ") is None
+    assert _leading_scalar_literal("'unterminated") is None
     notebook = from_percent_python("# %% tags=[[]\nprint(1)\n")
     assert notebook["cells"][0]["metadata"] == {}
 
@@ -279,3 +326,8 @@ def test_percent_metadata_helpers_reject_empty_and_unbalanced_lists() -> None:
 def test_percent_metadata_rejects_non_list_decoded_tags(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("nbops.convert.json.loads", lambda _raw: {"hide": True})
     assert _percent_cell_metadata(' tags=["x"]') == {}
+
+
+def test_percent_id_rejects_non_string_decoded_scalar(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("nbops.convert.json.loads", lambda _raw: 12)
+    assert _leading_scalar_literal('"x"') is None

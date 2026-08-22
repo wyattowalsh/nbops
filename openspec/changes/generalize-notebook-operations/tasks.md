@@ -31,3 +31,4 @@
 - [x] 1.29 Frozen original stats-scaffold pytest suite; Dependabot `uv` ecosystem for `uv.lock`
 - [x] 1.30 Execute restores omitted v4 cell ids so `NB009` survives `nbops exec`
 - [x] 1.31 Concat uniquifies duplicate present ids without filling omitted ids; batch lint uses `NBOPS_MAX_OUTPUT_CHARS`
+- [x] 1.32 Percent convert round-trips present cell ids and leaves omitted ids omitted on `from-py`

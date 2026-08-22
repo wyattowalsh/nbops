@@ -121,6 +121,7 @@ def test_inspect_headings_imports_from_py(sample_notebook: dict[str, Any]) -> No
     assert from_py.status_code == 200
     cells = from_py.json()["notebook"]["cells"]
     assert [cell["cell_type"] for cell in cells] == ["markdown", "code"]
+    assert all("id" not in cell for cell in cells)
 
 
 def test_inspect_lint_clean_convert(sample_notebook: dict[str, Any]) -> None:

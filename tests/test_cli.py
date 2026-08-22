@@ -129,6 +129,7 @@ def test_clean_convert_concat_diff_new(tmp_path: Path, sample_notebook_file: Pat
     restored_cells = json.loads(restored.read_text(encoding="utf-8"))["cells"]
     assert restored_cells
     assert restored_cells[1]["metadata"]["tags"] == ["setup"]
+    assert restored_cells[1]["id"] == "code-os"
 
     merged = tmp_path / "merged.ipynb"
     concat = runner.invoke(

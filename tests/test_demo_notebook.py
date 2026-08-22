@@ -66,4 +66,5 @@ def test_demo_notebook_stats_lint_and_percent_roundtrip() -> None:
         "code",
         "markdown",
     ]
+    assert [cell["id"] for cell in restored["cells"]] == ["title", "area", "print-area", "done"]
     assert restored["cells"][1]["metadata"]["tags"] == ["demo"]

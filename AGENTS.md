@@ -58,7 +58,8 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   require `--output` or `--in-place` and do not overwrite the input by default.
 - Load/save/execute/concat preserve omitted cell ids on v4 notebooks (`NB009`,
   `clean --strip-ids`). Concat uniquifies duplicate *present* ids only;
-  `nbops ids` / `POST /notebooks/ids` assign missing ids.
+  `nbops ids` / `POST /notebooks/ids` assign missing ids. Percent convert
+  emits/parses header `id=` values and does not fill omitted ids on `from-py`.
 - `nbops serve` and `nbops version` are system commands, not catalog operations.
 
 ## Out of scope unless explicitly requested

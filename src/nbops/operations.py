@@ -149,7 +149,7 @@ OPERATIONS: tuple[Operation, ...] = (
     ),
     Operation(
         name="from-py",
-        summary="Parse a Jupytext-style percent Python script into a notebook.",
+        summary="Parse a Jupytext-style percent Python script; restore header cell ids.",
         library="nbops.convert.from_percent_python",
         cli="nbops from-py",
         api="POST /notebooks/from-py",

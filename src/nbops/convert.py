@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 from nbops.cells import cell_source, cell_tags, cells_of
 from nbops.io import new_notebook
 from nbops.models import ConvertResult
-from nbops.transform import ensure_cell_ids, set_kernelspec
+from nbops.transform import set_kernelspec
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -76,11 +76,17 @@ def convert_notebook(notebook: Mapping[str, Any], fmt: str) -> ConvertResult:
 
 _PERCENT_HEADER = re.compile(r"^# %%(?:\s*\[(?P<kind>[\w-]+)\])?(?P<meta>\s+.*)?$")
 _PERCENT_TAGS = re.compile(r"\btags\s*=\s*")
+_PERCENT_ID = re.compile(r"\bid\s*=\s*")
+_UNQUOTED_ID = re.compile(r"[A-Za-z0-9_-]+")
 _JUPYTEXT_FENCE = "# ---"
 
 
 def from_percent_python(text: str) -> dict[str, Any]:
-    """Parse a Jupytext-style percent script into an nbformat v4 notebook."""
+    """Parse a Jupytext-style percent script into an nbformat v4 notebook.
+
+    Cell ids present in ``# %%`` headers are restored. Omitted ids stay omitted;
+    use :func:`nbops.transform.ensure_cell_ids` / ``nbops ids`` to assign them.
+    """
     notebook = new_notebook()
     kernelspec = _kernelspec_from_jupytext_front_matter(text)
     if kernelspec is not None:
@@ -93,6 +99,7 @@ def from_percent_python(text: str) -> dict[str, Any]:
     cells: list[dict[str, Any]] = []
     current_kind = "code"
     current_meta: dict[str, Any] = {}
+    current_id: str | None = None
     current_lines: list[str] = []
     started = False
 
@@ -105,23 +112,22 @@ def from_percent_python(text: str) -> dict[str, Any]:
         metadata = dict(current_meta)
         if current_kind in {"markdown", "raw"}:
             source = _unquote_percent_comment(source)
-            cells.append(
-                {
-                    "cell_type": current_kind,
-                    "metadata": metadata,
-                    "source": f"{source}\n" if source else "",
-                }
-            )
+            cell: dict[str, Any] = {
+                "cell_type": current_kind,
+                "metadata": metadata,
+                "source": f"{source}\n" if source else "",
+            }
         else:
-            cells.append(
-                {
-                    "cell_type": "code",
-                    "execution_count": None,
-                    "metadata": metadata,
-                    "outputs": [],
-                    "source": f"{source}\n" if source else "",
-                }
-            )
+            cell = {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": metadata,
+                "outputs": [],
+                "source": f"{source}\n" if source else "",
+            }
+        if current_id:
+            cell["id"] = current_id
+        cells.append(cell)
         current_lines = []
 
     for line in _strip_jupytext_front_matter(text).splitlines():
@@ -132,19 +138,26 @@ def from_percent_python(text: str) -> dict[str, Any]:
             started = True
             current_kind = _percent_kind(match.group("kind"))
             current_meta = _percent_cell_metadata(match.group("meta"))
+            current_id = _percent_cell_id(match.group("meta"))
             continue
         current_lines.append(line)
     if started or any(line.strip() for line in current_lines):
         flush()
     notebook["cells"] = cells
-    return ensure_cell_ids(notebook)
+    return notebook
 
 
 def _percent_cell_header(cell: Mapping[str, Any]) -> str:
     cell_type = cell.get("cell_type")
     kind = "" if cell_type == "code" else f" [{cell_type}]"
+    parts: list[str] = []
+    cell_id = cell.get("id")
+    if isinstance(cell_id, str) and cell_id:
+        parts.append(f"id={json.dumps(cell_id)}")
     tags = cell_tags(cell)
-    suffix = f" tags={json.dumps(tags)}" if tags else ""
+    if tags:
+        parts.append(f"tags={json.dumps(tags)}")
+    suffix = f" {' '.join(parts)}" if parts else ""
     return f"# %%{kind}{suffix}"
 
 
@@ -176,6 +189,44 @@ def _percent_cell_metadata(meta: str | None) -> dict[str, Any]:
     if not isinstance(tags, list):
         return {}
     return {"tags": [str(tag) for tag in tags]}
+
+
+def _percent_cell_id(meta: str | None) -> str | None:
+    if not meta or not meta.strip():
+        return None
+    match = _PERCENT_ID.search(meta)
+    if match is None:
+        return None
+    value = _leading_scalar_literal(meta[match.end() :])
+    if not isinstance(value, str) or not value:
+        return None
+    return value
+
+
+def _leading_scalar_literal(text: str) -> str | None:
+    stripped = text.lstrip()
+    if not stripped:
+        return None
+    if stripped[0] in {'"', "'"}:
+        quote = stripped[0]
+        escape = False
+        for index, char in enumerate(stripped[1:], start=1):
+            if escape:
+                escape = False
+                continue
+            if char == "\\":
+                escape = True
+                continue
+            if char == quote:
+                raw = stripped[: index + 1]
+                try:
+                    value = json.loads(raw) if quote == '"' else ast.literal_eval(raw)
+                except (json.JSONDecodeError, SyntaxError, ValueError):
+                    return None
+                return value if isinstance(value, str) else None
+        return None
+    match = _UNQUOTED_ID.match(stripped)
+    return match.group(0) if match else None
 
 
 def _leading_list_literal(text: str) -> str | None:
