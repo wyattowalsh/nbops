@@ -76,6 +76,15 @@ def test_original_scaffold_cli_table_prints_seven_rows(
     assert "Language      : python" in result.stdout
 
 
+def test_original_scaffold_cli_invalid_json_fails_cleanly(tmp_path: Path) -> None:
+    """Library ValueError on bad JSON must surface as a CLI error, not a traceback."""
+    bad = tmp_path / "bad.ipynb"
+    bad.write_text("{not json", encoding="utf-8")
+    result = runner.invoke(cli_app, ["stats", str(bad)])
+    assert result.exit_code != 0
+    assert "valid JSON" in result.output
+
+
 def test_original_scaffold_cli_json(original_scaffold_notebook_file: Path) -> None:
     result = runner.invoke(cli_app, ["stats", str(original_scaffold_notebook_file), "--json"])
     assert result.exit_code == 0

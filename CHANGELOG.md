@@ -33,3 +33,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Demo notebook contract tests (`examples/demo.ipynb`) and `just quality-gates` / `just smoke`
 - Original scaffold API start remains documented: `uvicorn nbops.api:app` plus curl
   `GET /health` and `POST /notebooks/stats`
+- `nbops stats` reports invalid JSON through the same fail-closed CLI error path as
+  inspect/validate (no unhandled traceback)

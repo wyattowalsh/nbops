@@ -117,7 +117,7 @@ def stats(
     ] = False,
 ) -> None:
     """Compute and display statistics for a Jupyter notebook."""
-    result = stats_for_file(notebook, validate=False)
+    result = compute_stats(_load(notebook, validate=False))
     if as_json:
         _emit_json(result)
         return
