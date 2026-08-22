@@ -13,6 +13,7 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Percent-format roundtrip (`nbops convert --to py` / `nbops from-py`), including cell tags
   (`[md]` is accepted as markdown; tags with `]` inside quotes round-trip)
 - Concatenation assigns unique cell ids
+- Tag CLI/API can add or remove cell tags
 - Optional `nbops[execute]` extra (nbclient)
 - Compatibility with the stats-only scaffold: `compute_stats`, `nbops stats`,
   `POST /notebooks/stats`

@@ -27,6 +27,7 @@ from nbops.transform import (
     concat_notebooks,
     ensure_cell_ids,
     filter_cells,
+    remove_tags,
     set_kernelspec,
     split_by_headings,
 )
@@ -469,17 +470,23 @@ def tag_cmd(
     notebook: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
     cell: Annotated[int, typer.Option("--cell", min=0)],
     add: Annotated[list[str] | None, typer.Option("--add")] = None,
+    remove: Annotated[list[str] | None, typer.Option("--remove")] = None,
     output: Annotated[Path | None, typer.Option("--output", "-o")] = None,
     in_place: Annotated[bool, typer.Option("--in-place")] = False,
 ) -> None:
-    """Add tags to a cell by index."""
-    tags = list(add or [])
-    if not tags:
-        _fail("Specify at least one --add TAG.")
+    """Add or remove tags on a cell by index."""
+    to_add = list(add or [])
+    to_remove = list(remove or [])
+    if not to_add and not to_remove:
+        _fail("Specify at least one --add TAG or --remove TAG.")
     if output is None and not in_place:
         _fail("Specify --output PATH or --in-place.")
     try:
-        updated = add_tags(_load(notebook, validate=False), cell, tags)
+        updated = _load(notebook, validate=False)
+        if to_add:
+            updated = add_tags(updated, cell, to_add)
+        if to_remove:
+            updated = remove_tags(updated, cell, to_remove)
     except (IndexError, TypeError) as exc:
         _fail(str(exc))
     dest = notebook if in_place else output

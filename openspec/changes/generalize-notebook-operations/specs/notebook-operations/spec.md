@@ -63,4 +63,6 @@ remove notebook-level widget state.
 #### Scenario: Clean widget metadata
 
 - **WHEN** `clean_notebook` runs with `outputs=True` on a notebook that has `metadata.widgets`
-- **THEN** the cleaned copy has no `widgets` key and the input notebook is unchanged
+- **WHEN** a caller adds or removes cell tags via `add_tags` / `remove_tags`,
+  `nbops tag`, or `POST /notebooks/tag`
+- **THEN** the returned notebook has the requested tags present or absent on that cell

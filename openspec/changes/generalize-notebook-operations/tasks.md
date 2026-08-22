@@ -17,3 +17,4 @@
 - [x] 1.15 `CLAUDE.md` pointer to `AGENTS.md` (Claude Code / Codex shared surface)
 - [x] 1.16 Percent tag roundtrip; clean strips `metadata.widgets` with outputs
 - [x] 1.17 `.editorconfig`, OpenSpec `config.yaml`, `[md]` percent alias, bracket-safe tags
+- [x] 1.18 Tag add/remove on CLI and HTTP (`remove_tags`)

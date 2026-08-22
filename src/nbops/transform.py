@@ -146,6 +146,24 @@ def ensure_cell_ids(notebook: Mapping[str, Any]) -> dict[str, Any]:
 
 def add_tags(notebook: Mapping[str, Any], cell_index: int, tags: Sequence[str]) -> dict[str, Any]:
     """Return a copy with ``tags`` added to ``cell_index``."""
+    updated, cell, existing = _cell_tag_state(notebook, cell_index)
+    cell["metadata"]["tags"] = list(dict.fromkeys([*existing, *tags]))
+    return updated
+
+
+def remove_tags(
+    notebook: Mapping[str, Any], cell_index: int, tags: Sequence[str]
+) -> dict[str, Any]:
+    """Return a copy with ``tags`` removed from ``cell_index``."""
+    updated, cell, existing = _cell_tag_state(notebook, cell_index)
+    drop = {str(tag) for tag in tags}
+    cell["metadata"]["tags"] = [tag for tag in existing if tag not in drop]
+    return updated
+
+
+def _cell_tag_state(
+    notebook: Mapping[str, Any], cell_index: int
+) -> tuple[dict[str, Any], dict[str, Any], list[str]]:
     updated = as_notebook_dict(notebook)
     cells = cells_of(updated)
     if cell_index < 0 or cell_index >= len(cells):
@@ -161,12 +179,10 @@ def add_tags(notebook: Mapping[str, Any], cell_index: int, tags: Sequence[str]) 
         if isinstance(metadata.get("tags"), list)
         else []
     )
-    merged = list(dict.fromkeys([*existing, *tags]))
-    metadata["tags"] = merged
     cell["metadata"] = metadata
     cells[cell_index] = cell
     updated["cells"] = cells
-    return updated
+    return updated, cell, existing
 
 
 def _first_heading(source: str, prefix: str) -> str | None:

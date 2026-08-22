@@ -319,6 +319,23 @@ def test_ops_filter_tag_ids_and_batch_clean(tmp_path: Path, sample_notebook_file
     )
     assert tag.exit_code == 0
 
+    untagged = tmp_path / "untagged.ipynb"
+    removed = runner.invoke(
+        app,
+        [
+            "tag",
+            str(sample_notebook_file),
+            "--cell",
+            "1",
+            "--remove",
+            "setup",
+            "-o",
+            str(untagged),
+        ],
+    )
+    assert removed.exit_code == 0
+    assert json.loads(untagged.read_text(encoding="utf-8"))["cells"][1]["metadata"]["tags"] == []
+
     missing_ids = tmp_path / "noid.ipynb"
     missing_ids.write_text(
         json.dumps(

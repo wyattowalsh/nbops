@@ -36,6 +36,7 @@ from nbops.transform import (
     concat_notebooks,
     ensure_cell_ids,
     filter_cells,
+    remove_tags,
     set_kernelspec,
     split_by_headings,
 )
@@ -112,7 +113,8 @@ class FilterRequest(NotebookPayload):
 
 class TagRequest(NotebookPayload):
     cell_index: int = Field(..., ge=0)
-    tags: list[str] = Field(..., min_length=1)
+    tags: list[str] = Field(default_factory=list, description="Tags to add.")
+    remove: list[str] = Field(default_factory=list, description="Tags to remove.")
 
 
 class ExecuteRequest(NotebookPayload):
@@ -257,11 +259,16 @@ def notebook_filter(request: FilterRequest) -> NotebookDocument:
 
 @app.post("/notebooks/tag", response_model=NotebookDocument, tags=["notebooks"])
 def notebook_tag(request: TagRequest) -> NotebookDocument:
-    """Add tags to a cell in a posted notebook."""
+    """Add and/or remove tags on a cell in a posted notebook."""
+    if not request.tags and not request.remove:
+        raise HTTPException(status_code=422, detail="Specify tags to add and/or remove.")
     try:
-        return NotebookDocument(
-            notebook=add_tags(request.notebook, request.cell_index, request.tags)
-        )
+        notebook = request.notebook
+        if request.tags:
+            notebook = add_tags(notebook, request.cell_index, request.tags)
+        if request.remove:
+            notebook = remove_tags(notebook, request.cell_index, request.remove)
+        return NotebookDocument(notebook=notebook)
     except (IndexError, TypeError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 

@@ -26,6 +26,7 @@ from nbops.transform import (
     concat_notebooks,
     ensure_cell_ids,
     filter_cells,
+    remove_tags,
     set_kernelspec,
     split_by_headings,
 )
@@ -50,6 +51,7 @@ __all__ = [
     "load_notebook",
     "new_notebook",
     "outline",
+    "remove_tags",
     "save_notebook",
     "set_kernelspec",
     "split_by_headings",

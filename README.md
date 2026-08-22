@@ -71,6 +71,7 @@ uv run nbops kernel examples/demo.ipynb --name python3 --language python -o /tmp
 uv run nbops exec examples/demo.ipynb -o /tmp/executed.ipynb
 uv run nbops filter examples/demo.ipynb --type code -o /tmp/code.ipynb
 uv run nbops tag examples/demo.ipynb --cell 0 --add intro -o /tmp/tagged.ipynb
+uv run nbops tag examples/demo.ipynb --cell 1 --remove demo -o /tmp/untagged.ipynb
 uv run nbops ids examples/demo.ipynb -o /tmp/ids.ipynb
 uv run nbops ops
 uv run nbops batch stats examples --json
@@ -101,7 +102,7 @@ uv run nbops serve --host 0.0.0.0 --port 8000
 | `POST` | `/notebooks/concat` | Concatenate notebooks |
 | `POST` | `/notebooks/split` | Split on markdown headings |
 | `POST` | `/notebooks/filter` | Keep cells by type/tag |
-| `POST` | `/notebooks/tag` | Add cell tags |
+| `POST` | `/notebooks/tag` | Add or remove cell tags |
 | `POST` | `/notebooks/ids` | Assign unique cell ids |
 | `POST` | `/notebooks/kernel` | Set kernelspec |
 | `POST` | `/notebooks/diff` | Cell-level diff |

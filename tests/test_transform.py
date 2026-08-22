@@ -11,6 +11,7 @@ from nbops.transform import (
     concat_notebooks,
     ensure_cell_ids,
     filter_cells,
+    remove_tags,
     set_kernelspec,
     split_by_headings,
 )
@@ -90,6 +91,10 @@ def test_filter_predicate_and_kernelspec_without_metadata() -> None:
     assert updated["metadata"]["language_info"]["name"] == "python"
     tagged = add_tags({"cells": [{"cell_type": "code", "source": "x", "metadata": None}]}, 0, ["t"])
     assert tagged["cells"][0]["metadata"]["tags"] == ["t"]
+    untagged = remove_tags(tagged, 0, ["t", "missing"])
+    assert untagged["cells"][0]["metadata"]["tags"] == []
+    with pytest.raises(IndexError):
+        remove_tags(tagged, 99, ["x"])
 
 
 def test_filter_skips_non_mapping_cells() -> None:

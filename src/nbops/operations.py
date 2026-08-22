@@ -135,7 +135,7 @@ OPERATIONS: tuple[Operation, ...] = (
     ),
     Operation(
         name="tag",
-        summary="Add tags to a cell.",
+        summary="Add or remove tags on a cell.",
         library="nbops.transform.add_tags",
         cli="nbops tag",
         api="POST /notebooks/tag",

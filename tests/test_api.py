@@ -110,6 +110,19 @@ def test_operations_split_filter_tag_ids_new(sample_notebook: dict[str, Any]) ->
     assert tagged.status_code == 200
     assert "intro" in tagged.json()["notebook"]["cells"][0]["metadata"]["tags"]
 
+    untagged = client.post(
+        "/notebooks/tag",
+        json={"notebook": sample_notebook, "cell_index": 1, "remove": ["setup"]},
+    )
+    assert untagged.status_code == 200
+    assert untagged.json()["notebook"]["cells"][1]["metadata"]["tags"] == []
+
+    empty_tag = client.post(
+        "/notebooks/tag",
+        json={"notebook": sample_notebook, "cell_index": 0},
+    )
+    assert empty_tag.status_code == 422
+
     ids = client.post("/notebooks/ids", json={"notebook": sample_notebook})
     assert ids.status_code == 200
     assert ids.json()["notebook"]["cells"][0]["id"]

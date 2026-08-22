@@ -20,7 +20,7 @@
 | TASK-002 | I/O via nbformat (load/save/validate/new) | done | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
 | TASK-003 | Inspect (stats, outline, imports, outputs) | done | `src/nbops/inspect.py`; `nbops outputs` |
 | TASK-004 | Clean outputs/counts/ids/empty cells | done | `src/nbops/clean.py`; widgets stripped with outputs |
-| TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py` |
+| TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py`; `add_tags` / `remove_tags` |
 | TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py` |
 | TASK-007 | Convert to percent py / script / md, plus percent roundtrip | done | `src/nbops/convert.py`; cell tags round-trip; `[md]` alias |
 | TASK-008 | Cell-level diff | done | `src/nbops/diff.py` |
