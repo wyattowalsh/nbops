@@ -24,6 +24,15 @@ _NON_PYTHON_CELL_MAGICS = frozenset(
         "script",
         "svg",
         "sql",
+        "writefile",
+        "file",
+        "cython",
+        "fortran",
+        "r",
+        "julia",
+        "octave",
+        "xml",
+        "dot",
     }
 )
 _PYTHON_LANGUAGES = frozenset({"python", "ipython"})
@@ -38,6 +47,10 @@ _TRAILING_HELP = re.compile(r"^[ \t]*\S+\?\s*$")
 _ASSIGN_MAGIC = re.compile(
     r"^([ \t]*[A-Za-z_][A-Za-z0-9_]*[ \t]*=[ \t]*)%{1,3}[A-Za-z_][A-Za-z0-9_]*[ \t]*(.*)$"
 )
+_FENCE_OPEN = re.compile(r"^( {0,3})(`{3,}|~{3,})")
+_FENCE_CLOSE = re.compile(r"^( {0,3})(`{3,}|~{3,})[ \t]*$")
+_ATX_HEADING = re.compile(r"^( {0,3})(#{1,6})[ \t]+(.+?)[ \t]*$")
+_SETEXT_UNDERLINE = re.compile(r"^( {0,3})(=+|-+)[ \t]*$")
 
 
 def as_notebook_dict(notebook: Mapping[str, Any] | Notebook) -> Notebook:
@@ -107,6 +120,62 @@ def preview(text: str, limit: int = 80) -> str:
     return collapsed[: limit - 1] + "…"
 
 
+def markdown_headings(source: str) -> list[tuple[int, str]]:
+    """Return ``(level, title)`` headings from a markdown cell, in order.
+
+    ATX (``#``–``######``) and setext (``===`` / ``---``) headings are
+    recognized. Fenced code blocks (backticks or tildes) and 4-space indented
+    lines are skipped so example ``#`` comments are not treated as titles.
+    """
+    headings: list[tuple[int, str]] = []
+    lines = source.splitlines()
+    fence_char: str | None = None
+    fence_len = 0
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        if fence_char is not None:
+            closer = _FENCE_CLOSE.match(line)
+            if closer is not None:
+                marker = closer.group(2)
+                if marker[0] == fence_char and len(marker) >= fence_len:
+                    fence_char = None
+                    fence_len = 0
+            index += 1
+            continue
+        opener = _FENCE_OPEN.match(line)
+        if opener is not None:
+            marker = opener.group(2)
+            fence_char = marker[0]
+            fence_len = len(marker)
+            index += 1
+            continue
+        atx = _ATX_HEADING.match(line)
+        if atx is not None:
+            title = atx.group(3).strip()
+            if title:
+                headings.append((len(atx.group(2)), title))
+            index += 1
+            continue
+        if index + 1 < len(lines):
+            underline = _SETEXT_UNDERLINE.match(lines[index + 1])
+            title = line.strip()
+            if (
+                underline is not None
+                and title
+                and not line.startswith("    ")
+                and not line.startswith("\t")
+                and not title.startswith("#")
+            ):
+                marker = underline.group(2)
+                level = 1 if marker.startswith("=") else 2
+                headings.append((level, title))
+                index += 2
+                continue
+        index += 1
+    return headings
+
+
 def _language_from_kernelspec_name(name: Any) -> str | None:
     """Infer a language id from a kernelspec name when language fields are omitted."""
     if not isinstance(name, str) or not name.strip():
@@ -169,8 +238,10 @@ def strip_ipython_magics(source: str) -> str | None:
     """Return cell source with IPython magics removed, or ``None`` if not Python.
 
     Non-Python cell magics such as ``%%bash`` return ``None`` so callers can skip
-    syntax checks and import extraction. Line magics, shell bangs, and help
-    suffixes are dropped; assignment magics keep the left-hand side.
+    syntax checks and import extraction. File-body magics (``%%writefile`` /
+    ``%%file``) and other non-Python cell magics (``%%cython``, ``%%R``, …) are
+    skipped the same way. Line magics, shell bangs, and help suffixes are
+    dropped; assignment magics keep the left-hand side.
     """
     lines = source.splitlines()
     for line in lines:

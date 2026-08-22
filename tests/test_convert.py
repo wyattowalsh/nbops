@@ -379,6 +379,69 @@ def test_to_markdown_does_not_rewrite_code_cells() -> None:
     assert "data:image/png" not in markdown
 
 
+def test_to_markdown_appends_unreferenced_image_attachments() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "See figure.\n",
+                "attachments": {
+                    "plot.png": {"image/png": "aaa"},
+                    "note.txt": {"text/plain": "hello"},
+                },
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "![plot](attachment:plot.png)\n",
+                "attachments": {
+                    "plot.png": {"image/png": "bbb"},
+                    "extra.png": {"image/png": "ccc"},
+                },
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "",
+                "attachments": {"solo.png": {"image/png": "ddd"}},
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "orphan\n",
+                "attachments": {
+                    "": {"image/png": "nope"},
+                    1: {"image/png": "nope"},
+                    "skip": "nope",
+                    "empty.png": {"image/png": ""},
+                },
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": '<img src="attachment:logo.png">\n',
+                "attachments": {
+                    "logo.png": {"image/png": "eee"},
+                    "bonus.png": {"image/png": "fff"},
+                },
+            },
+        ]
+    }
+    markdown = to_markdown(notebook)
+    assert "See figure." in markdown
+    assert "![plot.png](data:image/png;base64,aaa)" in markdown
+    assert "data:text/plain;base64,hello" not in markdown
+    assert "data:image/png;base64,bbb" in markdown
+    assert markdown.count("data:image/png;base64,bbb") == 1
+    assert "![extra.png](data:image/png;base64,ccc)" in markdown
+    assert "![solo.png](data:image/png;base64,ddd)" in markdown
+    assert markdown.count("data:image/png;base64,eee") == 1
+    assert "![bonus.png](data:image/png;base64,fff)" in markdown
+    assert "orphan" in markdown
+    assert "data:image/png;base64,nope" not in markdown
+
+
 def test_to_markdown_inlines_list_payload_and_url_encoded_name() -> None:
     notebook = _markdown_with_attachments(
         "![plot](attachment:my%20plot.png)\n",
@@ -753,6 +816,7 @@ def test_to_script_strips_ipython_magics_and_skips_cell_magics() -> None:
         "cells": [
             {"cell_type": "code", "source": "%matplotlib inline\nimport os\n"},
             {"cell_type": "code", "source": "%%bash\necho hi\n"},
+            {"cell_type": "code", "source": "%%writefile out.txt\nhello\n"},
             {"cell_type": "code", "source": "%pwd\n"},
             {"cell_type": "code", "source": "x = %time 1 + 1\n"},
         ],
@@ -761,6 +825,7 @@ def test_to_script_strips_ipython_magics_and_skips_cell_magics() -> None:
     assert script == "import os\n\nx = 1 + 1\n"
     assert "%matplotlib" not in script
     assert "echo hi" not in script
+    assert "hello" not in script
     ast.parse(script)
 
 

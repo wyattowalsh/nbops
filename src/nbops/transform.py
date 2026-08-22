@@ -2,17 +2,14 @@
 
 from __future__ import annotations
 
-import re
 import uuid
 from typing import TYPE_CHECKING, Any
 
-from nbops.cells import as_notebook_dict, cell_source, cell_tags, cells_of
+from nbops.cells import as_notebook_dict, cell_source, cell_tags, cells_of, markdown_headings
 from nbops.io import new_notebook
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Mapping, Sequence
-
-_HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 
 
 def filter_cells(
@@ -71,7 +68,6 @@ def split_by_headings(
     """
     if level < 1 or level > 6:
         raise ValueError("Heading level must be between 1 and 6.")
-    prefix = "#" * level
     template = as_notebook_dict(notebook)
     template["cells"] = []
     sections: list[tuple[str, dict[str, Any]]] = []
@@ -87,7 +83,7 @@ def split_by_headings(
 
     for cell in cells_of(notebook):
         if isinstance(cell, dict) and cell.get("cell_type") == "markdown":
-            heading = _first_heading(cell_source(cell), prefix)
+            heading = _first_heading(cell_source(cell), level)
             if heading is not None:
                 flush()
                 current_title = heading
@@ -208,13 +204,9 @@ def _cell_tag_state(
     return updated, cell, existing
 
 
-def _first_heading(source: str, prefix: str) -> str | None:
-    for line in source.splitlines():
-        stripped = line.strip()
-        match = _HEADING_RE.match(stripped)
-        if match is None:
-            continue
-        if match.group(1) == prefix:
-            return match.group(2).strip()
+def _first_heading(source: str, level: int) -> str | None:
+    for heading_level, title in markdown_headings(source):
+        if heading_level == level:
+            return title
         return None
     return None

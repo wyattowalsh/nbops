@@ -132,6 +132,25 @@ def test_split_by_headings() -> None:
     assert len(sections[1][1]["cells"]) == 2
 
 
+def test_split_by_headings_uses_setext_and_ignores_fences() -> None:
+    notebook = {
+        "cells": [
+            {"cell_type": "markdown", "metadata": {}, "source": "```\n# ignored\n```\n"},
+            {"cell_type": "markdown", "metadata": {}, "source": "Alpha\n=====\n"},
+            {"cell_type": "code", "metadata": {}, "source": "a = 1\n", "outputs": []},
+            {"cell_type": "markdown", "metadata": {}, "source": "## Not a split\n"},
+        ],
+        "metadata": {},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    sections = split_by_headings(notebook, level=1)
+    titles = [title for title, _ in sections]
+    assert titles == ["preamble", "Alpha"]
+    assert len(sections[0][1]["cells"]) == 1
+    assert len(sections[1][1]["cells"]) == 2
+
+
 def test_set_kernelspec_and_tags(sample_notebook: dict[str, Any]) -> None:
     updated = set_kernelspec(sample_notebook, name="ir", display_name="R", language="r")
     assert updated["metadata"]["kernelspec"]["name"] == "ir"

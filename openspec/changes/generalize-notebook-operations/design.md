@@ -31,13 +31,17 @@ CLI, and HTTP surfaces.
   (inferred language when omitted; `language_info.name` when there is no
   kernelspec name); `from-py` does not fill omitted ids.
   Markdown conversion inlines `attachment:` links as `data:` URIs and appends
-  code-cell `image/*` outputs as Markdown images. Stream, error, and text
+  code-cell `image/*` outputs as Markdown images. Unreferenced markdown/raw
+  `image/*` attachments are appended too. Stream, error, and text
   outputs are included (indented / markdown) after fenced source.
   Optional Jupytext cell titles (`# %% Title [markdown]`) are parsed so the
   bracketed type is not dropped. The kernel client may see temporary ids internally.
+- Heading outline, `split_by_headings`, and `NB002` share one markdown heading
+  extractor (ATX + setext; fenced/indented hashes are not titles).
 - `NB007` / `extract_imports` parse Python as IPython notebook code (line magics,
   shell, help, assignment magics). Python 3.12+ `ast.parse` accepts top-level await.
-  Non-Python cell magics and declared non-Python kernels are skipped. IPython is
+  Non-Python cell magics (`%%bash`, `%%writefile`, `%%cython`, `%%R`, …) and
+  declared non-Python kernels are skipped. IPython is
   not a runtime dependency.
 - Optional execution is an extra so the default install stays kernel-free
 - Batch walks skip `.ipynb_checkpoints`

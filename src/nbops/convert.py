@@ -79,11 +79,12 @@ def to_markdown(notebook: Mapping[str, Any]) -> str:
     ``attachment:`` / ``attachment://`` links in markdown and raw cells are
     rewritten to ``data:`` URIs from that cell's nbformat attachments so the
     converted file is self-contained. Unknown names are left unchanged.
-    Image ``display_data`` / ``execute_result`` outputs on code cells are
-    appended as Markdown images. Stream, error, and remaining ``text/plain``
-    outputs are appended as indented blocks (ANSI stripped), matching
-    nbconvert's Markdown exporter. ``text/plain`` is omitted when an image
-    payload is present so figure reprs like ``<Figure>`` are not duplicated.
+    Image attachments that are not referenced in the cell source are appended
+    so they are not dropped. Image ``display_data`` / ``execute_result`` outputs
+    on code cells are appended as Markdown images. Stream, error, and remaining
+    ``text/plain`` outputs are appended as indented blocks (ANSI stripped),
+    matching nbconvert's Markdown exporter. ``text/plain`` is omitted when an
+    image payload is present so figure reprs like ``<Figure>`` are not duplicated.
     """
     language = notebook_code_language(notebook)
     chunks: list[str] = []
@@ -93,8 +94,12 @@ def to_markdown(notebook: Mapping[str, Any]) -> str:
         cell_type = cell.get("cell_type")
         source = cell_source(cell).rstrip()
         if cell_type == "markdown" or cell_type == "raw":
-            if source:
-                chunks.append(_inline_attachment_references(source, _cell_attachments(cell)))
+            attachments = _cell_attachments(cell)
+            rewritten = _inline_attachment_references(source, attachments)
+            referenced = _referenced_attachment_keys(source, attachments)
+            if rewritten:
+                chunks.append(rewritten)
+            chunks.extend(_unreferenced_attachment_images(attachments, referenced))
         else:
             chunks.append(f"```{language}\n{source}\n```" if source else f"```{language}\n```")
             chunks.extend(_code_cell_output_blocks(cell))
@@ -787,6 +792,48 @@ def _lookup_attachment_uri(name: str, uris: dict[str, str]) -> str | None:
         if uri is not None:
             return uri
     return None
+
+
+def _attachment_key_for_ref(name: str, attachments: dict[str, Any]) -> str | None:
+    lookup = set(_attachment_lookup_keys(name))
+    for filename in attachments:
+        if not isinstance(filename, str) or not filename:
+            continue
+        if filename in lookup or lookup.intersection(_attachment_lookup_keys(filename)):
+            return filename
+    return None
+
+
+def _referenced_attachment_keys(source: str, attachments: Any) -> set[str]:
+    if not source or not isinstance(attachments, dict):
+        return set()
+    referenced: set[str] = set()
+    for regex in (_MD_ATTACHMENT_RE, _HTML_ATTACHMENT_RE, _REF_ATTACHMENT_RE):
+        for match in regex.finditer(source):
+            key = _attachment_key_for_ref(match.group("name"), attachments)
+            if key is not None:
+                referenced.add(key)
+    return referenced
+
+
+def _unreferenced_attachment_images(attachments: Any, referenced: set[str]) -> list[str]:
+    if not isinstance(attachments, dict):
+        return []
+    blocks: list[str] = []
+    for filename, bundle in attachments.items():
+        if not isinstance(filename, str) or not filename or filename in referenced:
+            continue
+        if not isinstance(bundle, dict):
+            continue
+        image_bundle = {
+            key: value for key, value in bundle.items() if str(key).lower().startswith("image/")
+        }
+        uri = _mime_bundle_data_uri(image_bundle) if image_bundle else None
+        if uri is None:
+            continue
+        alt = filename.replace("[", "").replace("]", "")
+        blocks.append(f"![{alt}]({uri})")
+    return blocks
 
 
 _ANSI_ESCAPE_RE = re.compile(r"\x1b\[[0-9;:]*[A-Za-z]")

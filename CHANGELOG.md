@@ -81,3 +81,9 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   `data:` images after the fenced source
 - Markdown conversion emits stream, error, and remaining `text/plain` outputs as
   indented blocks (ANSI stripped) and `text/markdown` outputs as Markdown
+- Markdown conversion appends unreferenced `image/*` attachments on markdown/raw
+  cells so `--to md` does not drop them
+- Heading outline, `split_by_headings`, and lint `NB002` share one extractor:
+  ATX plus setext headings, skipping fenced code and 4-space indented hashes
+- `%%writefile` / `%%file` / `%%cython` / `%%R` (and similar file-body or
+  non-Python cell magics) are skipped by `NB007`, import extraction, and `to_script`

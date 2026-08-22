@@ -11,6 +11,7 @@ from nbops.cells import (
     cells_of,
     is_empty_cell,
     is_python_notebook,
+    markdown_headings,
     nested_mapping,
     parse_code_cell,
 )
@@ -109,10 +110,10 @@ def lint_notebook(
                 )
             )
         cell_type = cell.get("cell_type")
-        if cell_type == "markdown":
-            source = cell_source(cell).lstrip()
-            if source.startswith("# "):
-                has_title = True
+        if cell_type == "markdown" and any(
+            level == 1 for level, _title in markdown_headings(cell_source(cell))
+        ):
+            has_title = True
         if cell_type != "code":
             continue
         source = cell_source(cell)

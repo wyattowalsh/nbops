@@ -10,6 +10,7 @@ from nbops.cells import (
     cell_source,
     is_empty_cell,
     is_python_notebook,
+    markdown_headings,
     non_empty_line_count,
     parse_code_cell,
     preview,
@@ -73,6 +74,10 @@ def test_strip_ipython_magics_and_parse_code_cell() -> None:
     assert awaited is not None
     assert strip_ipython_magics("\n\n%%HTML\n<div></div>\n") is None
     assert strip_ipython_magics("%%sql\nSELECT 1\n") is None
+    assert strip_ipython_magics("%%writefile out.txt\nhello world\n") is None
+    assert parse_code_cell("%%file notes.md\nnot python\n") is None
+    assert strip_ipython_magics("%%R\nlibrary(ggplot2)\n") is None
+    assert strip_ipython_magics("%%cython\ncdef int x = 1\n") is None
     with pytest.raises(SyntaxError):
         parse_code_cell("def (\n")
     assert strip_ipython_magics("") == ""
@@ -131,3 +136,38 @@ def test_is_python_notebook_defaults_and_declared_languages() -> None:
     assert notebook_code_language({"metadata": {"language_info": {"name": "ipython"}}}) == "python"
     assert notebook_code_language({"metadata": {"kernelspec": {"name": "julia-1.10"}}}) == "julia"
     assert notebook_code_language({"metadata": {"kernelspec": {"name": "octave"}}}) == "octave"
+
+
+def test_markdown_headings_skips_fences_and_reads_setext() -> None:
+    source = (
+        "Intro\n"
+        "=====\n"
+        "\n"
+        "```python\n"
+        "# not a heading\n"
+        "```\n"
+        "\n"
+        "Section\n"
+        "-------\n"
+        "\n"
+        "~~~md\n"
+        "# still not\n"
+        "~~~\n"
+        "\n"
+        "    # indented code\n"
+        "\n"
+        "## Real\n"
+        "\n"
+        "```\n"
+        "# unclosed fence heading ignored\n"
+    )
+    assert markdown_headings(source) == [(1, "Intro"), (2, "Section"), (2, "Real")]
+    assert markdown_headings("# Title\n") == [(1, "Title")]
+    assert markdown_headings("```\n# Title\n```\n") == []
+    assert markdown_headings("   # Indented ATX\n") == [(1, "Indented ATX")]
+    assert markdown_headings("    # Four space code\n") == []
+    assert markdown_headings("") == []
+    assert markdown_headings("#\n") == []
+    assert markdown_headings("Bare\n\n---\n") == []
+    assert markdown_headings("```\n# x\n~~~\n# Y\n```\n# After\n") == [(1, "After")]
+    assert markdown_headings("~~~~~\n# x\n~~~\n# still\n~~~~~\n# After\n") == [(1, "After")]

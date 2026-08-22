@@ -85,6 +85,24 @@ SHALL leave omitted ids omitted.
   `POST /notebooks/validate`
 - **THEN** valid notebooks report success and invalid documents report an error
 
+### Requirement: Markdown heading outline
+
+`outline` / `nbops headings` / `POST /notebooks/headings` SHALL extract ATX
+(``#``–``######``) and setext (``===`` / ``---``) headings from markdown cells.
+Fenced code blocks and 4-space indented lines SHALL not count as headings.
+`split_by_headings` SHALL use the same extractor; the first heading in a cell
+must match the split level. Lint ``NB002`` SHALL treat a level-1 heading from
+that extractor as a notebook title.
+
+#### Scenario: Setext titles and fenced hashes
+
+- **WHEN** a markdown cell has a setext heading ``Title`` underlined with ``====``
+- **THEN** outline reports level 1 ``Title`` and lint does not report ``NB002``
+- **WHEN** a markdown cell only contains a fenced block with ``# Title``
+- **THEN** that line is not a heading and lint reports ``NB002`` when no other H1 exists
+- **WHEN** `split_by_headings` runs at level 1
+- **THEN** setext H1 cells start sections and fenced ``#`` cells do not
+
 ### Requirement: Percent-format tags and widget residue
 
 Percent-format conversion SHALL round-trip cell tags, optional titles, present
@@ -208,7 +226,9 @@ Percent-format conversion SHALL keep magics in cell source. Markdown conversion
 SHALL fence code cells with the declared or inferred language id and SHALL
 rewrite `attachment:` / `attachment://` references in markdown and raw cells to
 `data:` URIs from that cell's nbformat attachments, preferring `image/*` MIME
-types. Unknown attachment names SHALL be left unchanged. Percent conversion
+types. Unknown attachment names SHALL be left unchanged. Unreferenced `image/*`
+attachments on markdown and raw cells SHALL be appended as Markdown images so
+they are not dropped. Percent conversion
 SHALL keep `attachment:` references in cell source. Code-cell `display_data` and
 `execute_result` outputs with `image/*` data SHALL be appended as Markdown
 `data:` images after the fenced source. Stream, error, and remaining
@@ -221,6 +241,9 @@ SHALL keep `attachment:` references in cell source. Code-cell `display_data` and
 - **THEN** lint does not report `NB007` and `extract_imports` still finds following imports
 - **WHEN** a code cell is a non-Python cell magic such as `%%bash`
 - **THEN** lint does not report `NB007` and that cell contributes no imports
+- **WHEN** a code cell is `%%writefile`, `%%file`, `%%cython`, or `%%R`
+- **THEN** lint does not report `NB007`, `extract_imports` skips the cell, and
+  `to_script` omits it
 - **WHEN** a notebook declares kernelspec/language `r`
 - **THEN** lint does not report `NB007` for R source and `extract_imports` returns no records
 - **WHEN** a notebook has kernelspec name `ir` and omits language fields
@@ -253,3 +276,9 @@ SHALL keep `attachment:` references in cell source. Code-cell `display_data` and
 - **THEN** `to_markdown` appends an indented block with ANSI sequences stripped
 - **WHEN** a code cell has `text/markdown` output and no image
 - **THEN** that markdown is appended as-is
+- **WHEN** a markdown or raw cell has an image attachment not referenced by `attachment:`
+- **THEN** `to_markdown` appends that image as a `data:` URI
+- **WHEN** the same image is already referenced in the cell source
+- **THEN** it is not appended a second time
+- **WHEN** an unreferenced attachment is not `image/*`
+- **THEN** it is not appended

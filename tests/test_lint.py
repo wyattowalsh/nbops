@@ -68,6 +68,61 @@ def test_lint_empty_notebook() -> None:
     assert report.passed is False
 
 
+def test_lint_title_accepts_setext_and_ignores_fenced_hashes() -> None:
+    titled = {
+        "cells": [
+            {"cell_type": "markdown", "id": "title", "metadata": {}, "source": "Demo\n====\n"},
+            {
+                "cell_type": "code",
+                "id": "ok",
+                "execution_count": 1,
+                "metadata": {},
+                "outputs": [],
+                "source": "x = 1\n",
+            },
+        ],
+        "metadata": {"kernelspec": {"name": "python3"}},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    assert "NB002" not in {issue.code for issue in lint_notebook(titled).issues}
+
+    fenced = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "id": "fenced",
+                "metadata": {},
+                "source": "```\n# Title\n```\n",
+            }
+        ],
+        "metadata": {"kernelspec": {"name": "python3"}},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    assert "NB002" in {issue.code for issue in lint_notebook(fenced).issues}
+
+
+def test_lint_skips_writefile_cell_magic() -> None:
+    notebook = {
+        "cells": [
+            {"cell_type": "markdown", "id": "title", "metadata": {}, "source": "# Title\n"},
+            {
+                "cell_type": "code",
+                "id": "write",
+                "execution_count": 1,
+                "metadata": {},
+                "outputs": [],
+                "source": "%%writefile notes.txt\nhello world\n",
+            },
+        ],
+        "metadata": {"kernelspec": {"name": "python3"}},
+        "nbformat": 4,
+        "nbformat_minor": 5,
+    }
+    assert "NB007" not in {issue.code for issue in lint_notebook(notebook).issues}
+
+
 def test_lint_output_size_and_non_mapping_outputs() -> None:
     notebook = {
         "cells": [

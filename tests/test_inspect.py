@@ -96,6 +96,24 @@ def test_outline_and_imports(sample_notebook: dict[str, Any]) -> None:
     assert imports[0].cell_index == 1
 
 
+def test_outline_setext_and_skips_fenced_headings() -> None:
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": "Demo\n====\n\n```\n# ignored\n```\n\n## Details\n",
+            },
+            {"cell_type": "code", "metadata": {}, "source": "x = 1\n"},
+        ]
+    }
+    headings = outline(notebook)
+    assert [(item.level, item.title, item.cell_index) for item in headings] == [
+        (1, "Demo", 0),
+        (2, "Details", 0),
+    ]
+
+
 def test_extract_imports_from_import(sample_notebook: dict[str, Any]) -> None:
     sample_notebook["cells"][2]["source"] = "from pathlib import Path, PurePath\n"
     imports = extract_imports(sample_notebook)
@@ -126,6 +144,11 @@ def test_extract_imports_skips_magics_and_non_python_cells() -> None:
                 "cell_type": "code",
                 "metadata": {},
                 "source": "%%bash\necho hi\nimport should_ignore\n",
+            },
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "source": "%%writefile notes.txt\nimport should_ignore\n",
             },
             {
                 "cell_type": "code",

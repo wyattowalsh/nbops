@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ast
-import re
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
@@ -15,6 +14,7 @@ from nbops.cells import (
     declared_code_language,
     is_empty_cell,
     is_python_notebook,
+    markdown_headings,
     nested_mapping,
     non_empty_line_count,
     parse_code_cell,
@@ -25,8 +25,6 @@ from nbops.models import Heading, ImportRecord, NotebookStats, OutputRecord
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-_HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 
 
 def compute_stats(notebook: Mapping[str, Any] | Any) -> NotebookStats:
@@ -109,13 +107,8 @@ def outline(notebook: Mapping[str, Any]) -> list[Heading]:
     for index, cell in enumerate(cells_of(notebook)):
         if not isinstance(cell, dict) or cell.get("cell_type") != "markdown":
             continue
-        for line in cell_source(cell).splitlines():
-            match = _HEADING_RE.match(line.strip())
-            if match is None:
-                continue
-            headings.append(
-                Heading(level=len(match.group(1)), title=match.group(2).strip(), cell_index=index)
-            )
+        for level, title in markdown_headings(cell_source(cell)):
+            headings.append(Heading(level=level, title=title, cell_index=index))
     return headings
 
 

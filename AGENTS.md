@@ -49,7 +49,8 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   `NBOPS_MAX_OUTPUT_CHARS`, `NBOPS_PROGRESS`). See `.env.example`.
 - Lint codes `NB000`–`NB011` are defined in `nbops.lint.ISSUE_CATALOG`.
 - Inspect: stats, outline, imports, and output inventory (`nbops outputs` /
-  `POST /notebooks/outputs`).
+  `POST /notebooks/outputs`). Heading outline (and `split_by_headings` / `NB002`)
+  uses ATX plus setext headings and ignores fenced or 4-space example hashes.
 - Validate notebooks against the nbformat schema (`nbops validate` /
   `POST /notebooks/validate`).
 - Directory batch operations: `nbops batch {stats,lint,clean,validate}`.
@@ -66,10 +67,12 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   `attachment:` / `attachment://` links as `data:` URIs from those attachments
   and appends code-cell `image/*` display/execute outputs as `data:` images.
   Stream, error, and remaining `text/plain` outputs are indented (ANSI stripped);
-  `text/markdown` outputs are appended as Markdown.
+  `text/markdown` outputs are appended as Markdown. Unreferenced `image/*`
+  attachments on markdown/raw cells are appended so `--to md` does not drop them.
 - `NB007` and `extract_imports` parse Python cells through IPython-aware magics/await
   handling and skip non-Python cell magics plus notebooks whose declared language is
-  not Python. Kernelspec names `python*`, `ir`, `julia*`, and `rust` are inferred when
+  not Python. File-body magics (`%%writefile` / `%%file`) and `%%cython` / `%%R` are
+  skipped the same way. Kernelspec names `python*`, `ir`, `julia*`, and `rust` are inferred when
   language fields are omitted. Do not add IPython as a dependency. `convert --to script`
   / `to_script` uses the same stripper so the emitted file is parseable Python.
   Percent format keeps magics. Markdown code fences use the declared/inferred language.
