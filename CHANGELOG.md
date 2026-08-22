@@ -68,3 +68,6 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Markdown conversion fences code cells with the declared or inferred language (`r` for
   `ir`, `julia` for `julia-*`); kernelspec names `ir` / `julia*` / `rust` are treated as
   non-Python when language fields are omitted
+- Percent convert infers missing kernelspec language from well-known names (`ir` → `r`),
+  round-trips `language_info.name` when there is no kernelspec name, and does not let a
+  default Python `language_info` hide a non-Python kernelspec name

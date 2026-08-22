@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from nbops.cells import cell_source
+from nbops.cells import cell_source, is_python_notebook
 from nbops.convert import (
     _at_percent_metadata,
     _consume_quoted_string,
@@ -428,7 +428,69 @@ def test_percent_roundtrip_preserves_non_python_kernelspec() -> None:
     assert kernelspec["name"] == "ir"
     assert kernelspec["display_name"] == "R"
     assert kernelspec["language"] == "r"
+    assert restored["metadata"]["language_info"]["name"] == "r"
     assert cell_source(restored["cells"][0]).rstrip() == "x <- 1"
+
+
+def test_percent_roundtrip_infers_language_from_kernelspec_name() -> None:
+    notebook = {
+        "metadata": {"kernelspec": {"name": "ir"}},
+        "cells": [{"cell_type": "code", "metadata": {}, "source": "library(ggplot2)\n"}],
+    }
+    text = to_percent_python(notebook)
+    assert "#   name: ir" in text
+    assert "#   language: r" in text
+    restored = from_percent_python(text)
+    assert restored["metadata"]["kernelspec"]["name"] == "ir"
+    assert restored["metadata"]["kernelspec"]["language"] == "r"
+    assert restored["metadata"]["language_info"]["name"] == "r"
+    assert is_python_notebook(restored) is False
+    assert to_script(restored) == "library(ggplot2)\n"
+
+
+def test_percent_roundtrip_language_info_without_kernelspec_name() -> None:
+    notebook = {
+        "metadata": {"language_info": {"name": "r"}},
+        "cells": [{"cell_type": "code", "metadata": {}, "source": "library(ggplot2)\n"}],
+    }
+    text = to_percent_python(notebook)
+    assert "language_info:" in text
+    assert "#   name: r" in text
+    assert "kernelspec:" not in text
+    restored = from_percent_python(text)
+    assert restored["metadata"]["language_info"]["name"] == "r"
+    assert is_python_notebook(restored) is False
+    assert to_script(restored) == "library(ggplot2)\n"
+
+
+def test_from_percent_python_applies_nested_language_info() -> None:
+    text = "# ---\n# jupyter:\n#   language_info:\n#     name: r\n# ---\n# %%\nlibrary(ggplot2)\n"
+    notebook = from_percent_python(text)
+    assert notebook["metadata"]["language_info"]["name"] == "r"
+    assert to_script(notebook) == "library(ggplot2)\n"
+
+
+def test_from_percent_python_ignores_inline_language_info() -> None:
+    text = "# ---\n# language_info: {name: r}\n# ---\n# %%\nprint(1)\n"
+    notebook = from_percent_python(text)
+    assert notebook["metadata"]["language_info"]["name"] == "python"
+
+
+def test_from_percent_uses_language_info_when_kernelspec_language_omitted() -> None:
+    text = (
+        "# ---\n"
+        "# kernelspec:\n"
+        "#   name: mystery\n"
+        "# language_info:\n"
+        "#   name: r\n"
+        "# ---\n"
+        "# %%\n"
+        "library(ggplot2)\n"
+    )
+    notebook = from_percent_python(text)
+    assert notebook["metadata"]["kernelspec"]["name"] == "mystery"
+    assert notebook["metadata"]["kernelspec"]["language"] == "r"
+    assert notebook["metadata"]["language_info"]["name"] == "r"
 
 
 def test_percent_omits_kernelspec_yaml_without_name() -> None:

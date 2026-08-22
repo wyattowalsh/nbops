@@ -99,6 +99,34 @@ def test_is_python_notebook_defaults_and_declared_languages() -> None:
     assert is_python_notebook({"metadata": {"kernelspec": {"name": "mystery"}}}) is True
     assert declared_code_language({"metadata": {"kernelspec": {"name": "ir"}}}) == "r"
     assert declared_code_language({"metadata": {"kernelspec": {"name": "  "}}}) is None
+    assert (
+        declared_code_language(
+            {
+                "metadata": {
+                    "kernelspec": {"name": "ir"},
+                    "language_info": {"name": "python"},
+                }
+            }
+        )
+        == "r"
+    )
+    assert (
+        declared_code_language(
+            {
+                "metadata": {
+                    "kernelspec": {"name": "python3", "language": "r"},
+                    "language_info": {"name": "python"},
+                }
+            }
+        )
+        == "r"
+    )
+    assert (
+        declared_code_language(
+            {"metadata": {"kernelspec": {"name": "python3"}, "language_info": {"name": "r"}}}
+        )
+        == "r"
+    )
     assert notebook_code_language({"cells": []}) == "python"
     assert notebook_code_language({"metadata": {"language_info": {"name": "ipython"}}}) == "python"
     assert notebook_code_language({"metadata": {"kernelspec": {"name": "julia-1.10"}}}) == "julia"

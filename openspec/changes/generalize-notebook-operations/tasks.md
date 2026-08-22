@@ -39,3 +39,4 @@
 - [x] 1.37 Promote implemented notebook-operations requirements into baseline `openspec/specs/` (change stays open until the original kickoff dump is applied)
 - [x] 1.38 `to_script` / `convert --to script` strips IPython magics and omits non-Python cell magics
 - [x] 1.39 Infer `ir` / `julia*` / `rust` from kernelspec name when language is omitted; Markdown fences use that language
+- [x] 1.40 Percent convert round-trips inferred kernelspec language and `language_info.name` without a kernelspec name

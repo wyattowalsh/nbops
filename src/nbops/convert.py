@@ -12,6 +12,7 @@ from nbops.cells import (
     cell_source,
     cell_tags,
     cells_of,
+    declared_code_language,
     is_python_notebook,
     notebook_code_language,
     strip_ipython_magics,
@@ -119,13 +120,26 @@ def from_percent_python(text: str) -> dict[str, Any]:
     """
     notebook = new_notebook()
     kernelspec = _kernelspec_from_jupytext_front_matter(text)
+    language_info_name = _jupytext_section_fields(text, "language_info", {"name"}).get("name")
     if kernelspec is not None:
+        language = kernelspec.get("language")
+        if not language:
+            inferred = declared_code_language(
+                {"metadata": {"kernelspec": {"name": kernelspec["name"]}}}
+            )
+            language = inferred or language_info_name
         notebook = set_kernelspec(
             notebook,
             name=kernelspec["name"],
             display_name=kernelspec.get("display_name"),
-            language=kernelspec.get("language"),
+            language=language,
         )
+    elif language_info_name:
+        metadata = dict(as_mapping(notebook.get("metadata")))
+        info = dict(as_mapping(metadata.get("language_info")))
+        info["name"] = language_info_name
+        metadata["language_info"] = info
+        notebook["metadata"] = metadata
     cells: list[dict[str, Any]] = []
     current_kind = "code"
     current_meta: dict[str, Any] = {}
@@ -561,50 +575,71 @@ def _yaml_emit_scalar(value: str) -> str:
 
 
 def _jupytext_kernelspec_front_matter(notebook: Mapping[str, Any]) -> str:
-    """Emit a Jupytext ``# ---`` header for a kernelspec that has a name."""
-    kernelspec = as_mapping(as_mapping(notebook.get("metadata")).get("kernelspec"))
+    """Emit a Jupytext ``# ---`` header for kernelspec and/or language_info."""
+    metadata = as_mapping(notebook.get("metadata"))
+    kernelspec = as_mapping(metadata.get("kernelspec"))
+    language_info = as_mapping(metadata.get("language_info"))
     name = kernelspec.get("name")
-    if not isinstance(name, str) or not name:
-        return ""
-    lines = ["# ---", "# kernelspec:"]
-    for key in ("name", "display_name", "language"):
-        value = kernelspec.get(key)
-        if isinstance(value, str) and value:
-            lines.append(f"#   {key}: {_yaml_emit_scalar(value)}")
-    lines.append("# ---")
-    return "\n".join(lines) + "\n"
+    info_name = language_info.get("name")
+    if isinstance(name, str) and name:
+        lines = ["# ---", "# kernelspec:"]
+        language = kernelspec.get("language")
+        if "language" not in kernelspec or language in {None, ""}:
+            language = declared_code_language({"metadata": {"kernelspec": {"name": name}}})
+        for key, value in (
+            ("name", name),
+            ("display_name", kernelspec.get("display_name")),
+            ("language", language),
+        ):
+            if isinstance(value, str) and value:
+                lines.append(f"#   {key}: {_yaml_emit_scalar(value)}")
+        lines.append("# ---")
+        return "\n".join(lines) + "\n"
+    if isinstance(info_name, str) and info_name.strip():
+        return f"# ---\n# language_info:\n#   name: {_yaml_emit_scalar(info_name.strip())}\n# ---\n"
+    return ""
 
 
-def _kernelspec_from_jupytext_front_matter(text: str) -> dict[str, str] | None:
-    """Read ``kernelspec`` name/display_name/language from a Jupytext YAML header."""
+def _jupytext_section_fields(text: str, section: str, keys: set[str]) -> dict[str, str]:
+    """Read string fields under ``section:`` in a Jupytext YAML header.
+
+    Inline mappings such as ``kernelspec: {name: ir}`` are ignored.
+    """
     lines = text.splitlines()
     span = _jupytext_front_matter_span(lines)
     if span is None:
-        return None
+        return {}
     start, closer = span
-    kernel_indent: int | None = None
+    section_indent: int | None = None
     fields: dict[str, str] = {}
+    header = f"{section}:"
     for raw in lines[start + 1 : closer]:
         yaml_line = _uncomment_jupytext_yaml_line(raw)
         if not yaml_line.strip():
             continue
         indent = len(yaml_line) - len(yaml_line.lstrip(" "))
         stripped = yaml_line.strip()
-        if kernel_indent is None:
-            if stripped.startswith("kernelspec:"):
-                kernel_indent = indent
+        if section_indent is None:
+            if stripped.startswith(header):
+                section_indent = indent
                 inline = stripped.partition(":")[2].strip()
                 if inline:
-                    return None
+                    return {}
             continue
-        if indent <= kernel_indent:
+        if indent <= section_indent:
             break
         key, sep, raw_value = stripped.partition(":")
         if not sep:
             continue
         value = _yaml_scalar(raw_value)
-        if key in {"name", "display_name", "language"} and value:
+        if key in keys and value:
             fields[key] = value
+    return fields
+
+
+def _kernelspec_from_jupytext_front_matter(text: str) -> dict[str, str] | None:
+    """Read ``kernelspec`` name/display_name/language from a Jupytext YAML header."""
+    fields = _jupytext_section_fields(text, "kernelspec", {"name", "display_name", "language"})
     if "name" not in fields:
         return None
     return fields

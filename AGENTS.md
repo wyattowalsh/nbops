@@ -68,6 +68,7 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   language fields are omitted. Do not add IPython as a dependency. `convert --to script`
   / `to_script` uses the same stripper so the emitted file is parseable Python.
   Percent format keeps magics. Markdown code fences use the declared/inferred language.
+  Percent convert infers missing kernelspec language and round-trips `language_info.name`.
 - `nbops serve` and `nbops version` are system commands, not catalog operations.
 - OpenSpec baseline requirements live in `openspec/specs/`; the
   `generalize-notebook-operations` change stays open until the original kickoff

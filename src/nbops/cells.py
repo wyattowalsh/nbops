@@ -119,22 +119,34 @@ def _language_from_kernelspec_name(name: Any) -> str | None:
     return _KERNEL_NAME_LANGUAGES.get(lowered)
 
 
+def _normalize_language(value: Any) -> str | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    name = value.strip().lower()
+    return "python" if name in _PYTHON_LANGUAGES else name
+
+
 def declared_code_language(notebook: Mapping[str, Any]) -> str | None:
     """Return a normalized code language, or ``None`` when unspecified.
 
-    ``language_info.name`` and ``kernelspec.language`` win. When those are
-    omitted, well-known kernelspec names such as ``python3``, ``ir``, and
-    ``julia-1.10`` are inferred. Unknown or missing names stay unspecified so
-    the original stats scaffold still counts as Python.
+    Non-Python ``kernelspec.language``, ``language_info.name``, and well-known
+    kernelspec names (``ir``, ``julia*``, ``rust``) win over a Python
+    ``language_info`` leftover. Missing metadata stays unspecified so the
+    original stats scaffold still counts as Python.
     """
     metadata = as_mapping(notebook.get("metadata"))
     language_info = nested_mapping(metadata, "language_info")
     kernelspec = nested_mapping(metadata, "kernelspec")
-    declared = language_info.get("name") or kernelspec.get("language")
-    if isinstance(declared, str) and declared.strip():
-        name = declared.strip().lower()
-        return "python" if name in _PYTHON_LANGUAGES else name
-    return _language_from_kernelspec_name(kernelspec.get("name"))
+    from_kern = _normalize_language(kernelspec.get("language"))
+    from_info = _normalize_language(language_info.get("name"))
+    from_name = _language_from_kernelspec_name(kernelspec.get("name"))
+    for candidate in (from_kern, from_info, from_name):
+        if candidate is not None and candidate != "python":
+            return candidate
+    for candidate in (from_kern, from_info, from_name):
+        if candidate == "python":
+            return "python"
+    return None
 
 
 def is_python_notebook(notebook: Mapping[str, Any]) -> bool:
