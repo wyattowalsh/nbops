@@ -126,3 +126,23 @@ def test_ensure_cell_ids_fills_missing_and_duplicates() -> None:
     ids = [cell["id"] for cell in updated["cells"] if isinstance(cell, dict)]
     assert all(isinstance(cell_id, str) and cell_id for cell_id in ids)
     assert len(set(ids)) == 3
+
+
+def test_ensure_cell_ids_retries_uuid_collision(monkeypatch: pytest.MonkeyPatch) -> None:
+    generated = iter(["taken1234567", "fresh1234567"])
+
+    class Token:
+        def __init__(self) -> None:
+            self.hex = next(generated)
+
+    monkeypatch.setattr("nbops.transform.uuid.uuid4", Token)
+    notebook = {
+        "cells": [
+            {"cell_type": "code", "id": "taken1234567", "metadata": {}, "source": "a\n"},
+            {"cell_type": "code", "metadata": {}, "source": "b\n"},
+        ]
+    }
+    updated = ensure_cell_ids(notebook)
+    ids = [cell["id"] for cell in updated["cells"]]
+    assert ids[0] == "taken1234567"
+    assert ids[1] == "fresh1234567"

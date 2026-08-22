@@ -27,7 +27,7 @@ OPERATIONS: tuple[Operation, ...] = (
     ),
     Operation(
         name="inspect",
-        summary="Stats plus markdown outline and top-level imports.",
+        summary="Stats plus markdown outline, top-level imports, and output inventory.",
         library="nbops.inspect",
         cli="nbops inspect",
         api="POST /notebooks/inspect",
@@ -136,7 +136,7 @@ OPERATIONS: tuple[Operation, ...] = (
     Operation(
         name="tag",
         summary="Add or remove tags on a cell.",
-        library="nbops.transform.add_tags",
+        library="nbops.transform.add_tags / nbops.transform.remove_tags",
         cli="nbops tag",
         api="POST /notebooks/tag",
     ),

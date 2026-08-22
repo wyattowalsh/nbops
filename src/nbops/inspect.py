@@ -1,4 +1,4 @@
-"""Inspect notebooks: statistics, outlines, and imports."""
+"""Inspect notebooks: statistics, outlines, imports, and outputs."""
 
 from __future__ import annotations
 

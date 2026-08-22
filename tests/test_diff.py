@@ -38,3 +38,19 @@ def test_changed_added_removed(sample_notebook: dict[str, Any]) -> None:
     assert report.identical is False
     assert report.changed + report.added + report.removed > 0
     assert report.right_cells == 3
+
+
+def test_diff_replace_with_unequal_span() -> None:
+    left = {"cells": [{"cell_type": "code", "metadata": {}, "source": "a = 1\n"}]}
+    right = {
+        "cells": [
+            {"cell_type": "code", "metadata": {}, "source": "b = 2\n"},
+            {"cell_type": "markdown", "metadata": {}, "source": "# Extra\n"},
+        ]
+    }
+    report = diff_notebooks(left, right)
+    assert report.identical is False
+    assert report.left_cells == 1
+    assert report.right_cells == 2
+    assert report.changed + report.added >= 1
+    assert any(cell.change in {"changed", "added"} for cell in report.cells)

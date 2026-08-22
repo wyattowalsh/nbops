@@ -151,6 +151,17 @@ def test_clean_convert_concat_diff_new(tmp_path: Path, sample_notebook_file: Pat
     new = runner.invoke(app, ["new", str(created)])
     assert new.exit_code == 0
     assert created.is_file()
+    created_payload = json.loads(created.read_text(encoding="utf-8"))
+    assert created_payload["metadata"]["kernelspec"]["display_name"] == "Python 3"
+    named = tmp_path / "named.ipynb"
+    custom = runner.invoke(
+        app,
+        ["new", str(named), "--kernel", "ir", "--language", "r", "--display-name", "R"],
+    )
+    assert custom.exit_code == 0
+    named_payload = json.loads(named.read_text(encoding="utf-8"))
+    assert named_payload["metadata"]["kernelspec"]["name"] == "ir"
+    assert named_payload["metadata"]["kernelspec"]["display_name"] == "R"
     empty_outputs = runner.invoke(app, ["outputs", str(created)])
     assert empty_outputs.exit_code == 0
     assert "no outputs" in empty_outputs.stdout

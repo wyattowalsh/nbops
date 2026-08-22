@@ -21,10 +21,10 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | G1 / TASK-001 | Domain-general `src/nbops` package | `src/nbops/` modules; package name `nbops`; no NBA-specific code | verified (recovered) |
 | G2 / TASK-002 | I/O load/save/validate/new | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate`; `tests/test_io.py` | verified (recovered) |
 | G3 / TASK-003 | Inspect stats/outline/imports/outputs | `list_outputs`; CLI/API `outputs`; inspect payload includes outputs | verified (recovered) |
-| G4 / TASK-004 | Clean outputs/counts/ids/empty | `src/nbops/clean.py`; widgets stripped with outputs; `tests/test_clean.py` | verified (recovered) |
+| G4 / TASK-004 | Clean outputs/counts/ids/empty | `src/nbops/clean.py`; widgets and output-linked cell keys stripped with outputs; `tests/test_clean.py` | verified (recovered) |
 | G5 / TASK-005 | Transform filter/concat/split/kernel/tags/ids | concat uniquifies cell ids; `add_tags` / `remove_tags`; `tests/test_transform.py` | verified (recovered) |
 | G6 / TASK-006 | Lint NB000–NB011 | `ISSUE_CATALOG` length 12; tests cover NB000–NB011 | verified (recovered) |
-| G7 / TASK-007 | Convert py/script/md + percent roundtrip | `to_percent_python` / `from_percent_python`; tags round-trip including `[md]` and bracket-safe lists | verified (recovered) |
+| G7 / TASK-007 | Convert py/script/md + percent roundtrip | `to_percent_python` / `from_percent_python`; tags round-trip including `[md]` and bracket-safe lists; Jupytext YAML kernelspec | verified (recovered) |
 | G8 / TASK-008 | Cell-level diff | `src/nbops/diff.py`; `tests/test_diff.py` | verified (recovered) |
 | G9 / TASK-009 | Batch directory + tqdm | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}`; stats/clean fail-closed | verified (recovered) |
 | G10 / TASK-010 | Optional execute extra | `pyproject.toml` `[execute]`; extra mocked in default tests | verified (recovered) |
@@ -50,7 +50,7 @@ HEAD at last local inspection is recorded in `validation-report.md`.
 | `uv run ruff check src tests` | passed | passed (`lint` job) |
 | `uv run ruff format --check src tests` | passed | passed (`lint` job) |
 | `uv run ty check` | passed | passed (`typecheck` job) |
-| `uv run pytest` | 144 passed, 98.87% | 144 passed on 3.12.14 **and** 3.13.15 at `a9672fe` ([32589716713](https://github.com/wyattowalsh/nbops/actions/runs/32589716713)) |
+| `uv run pytest` | 144 passed, 98.87% at `a9672fe`; GitHub success on `46cbd35` ([32590114562](https://github.com/wyattowalsh/nbops/actions/runs/32590114562)) | 144 passed on 3.12.14 **and** 3.13.15 at `a9672fe` ([32589716713](https://github.com/wyattowalsh/nbops/actions/runs/32589716713)); `46cbd35` succeeded |
 | `uv run nbops stats examples/demo.ipynb --json` | 4/2/4 | CI smoke on both interpreters |
 | `uv run nbops validate examples/demo.ipynb` | `ok` | CI Compatibility smoke on 3.12.14 and 3.13.15 |
 | `uv run nbops --version` / `python -m nbops version` | `0.2.0` | Compatibility smoke |

@@ -67,6 +67,7 @@ uv run nbops concat a.ipynb b.ipynb -o merged.ipynb
 uv run nbops split examples/demo.ipynb -o /tmp/parts
 uv run nbops diff a.ipynb b.ipynb
 uv run nbops new /tmp/empty.ipynb
+uv run nbops new /tmp/r.ipynb --kernel ir --language r --display-name R
 uv run nbops kernel examples/demo.ipynb --name python3 --language python -o /tmp/k.ipynb
 uv run nbops exec examples/demo.ipynb -o /tmp/executed.ipynb
 uv run nbops filter examples/demo.ipynb --type code -o /tmp/code.ipynb

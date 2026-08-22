@@ -38,8 +38,9 @@ def clean_notebook(
                 cell["execution_count"] = None
         metadata = cell.get("metadata")
         if isinstance(metadata, dict):
-            for key in _OUTPUT_RESET_METADATA:
-                metadata.pop(key, None)
+            if opts.outputs:
+                for key in _OUTPUT_RESET_METADATA:
+                    metadata.pop(key, None)
             for key in opts.metadata_keys:
                 metadata.pop(key, None)
             cell["metadata"] = metadata

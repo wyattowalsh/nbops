@@ -50,6 +50,10 @@ def test_operation_catalog_names_are_unique() -> None:
     assert "validate" in names
     assert len(names) == 20
     assert all(item.library for item in OPERATIONS)
+    inspect = next(item for item in OPERATIONS if item.name == "inspect")
+    assert "output" in inspect.summary.lower()
+    tag = next(item for item in OPERATIONS if item.name == "tag")
+    assert "remove_tags" in tag.library
 
 
 def test_catalog_cli_and_api_surfaces_exist() -> None:

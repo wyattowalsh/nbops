@@ -25,3 +25,6 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - System command `nbops serve` (`--host`, `--port`, `--reload`); `just api` uses it
 - `nbops kernel` and `nbops exec` require `--output` or `--in-place` (no implicit overwrite)
 - Wyatt baseline `.editorconfig` and OpenSpec `openspec/config.yaml`
+- `nbops new` defaults kernelspec display name to `Python 3` (optional `--display-name`)
+- `from_percent_python` applies Jupytext YAML `kernelspec` when `name` is present
+- Output-linked cell metadata (`collapsed`, `scrolled`, `ExecuteTime`) is stripped only with outputs

@@ -348,13 +348,17 @@ def diff_cmd(
 def new_cmd(
     path: Annotated[Path, typer.Argument(help="Path to write the new notebook.")],
     kernel: Annotated[str, typer.Option("--kernel")] = "python3",
+    display_name: Annotated[
+        str | None, typer.Option("--display-name", help="Kernel display name.")
+    ] = None,
     language: Annotated[str, typer.Option("--language")] = "python",
 ) -> None:
     """Create an empty nbformat v4 notebook."""
     if path.exists():
         _fail(f"Refusing to overwrite existing file: {path}")
+    resolved_display = display_name or ("Python 3" if kernel == "python3" else kernel)
     save_notebook(
-        new_notebook(kernel_name=kernel, display_name=kernel, language=language),
+        new_notebook(kernel_name=kernel, display_name=resolved_display, language=language),
         path,
         validate=True,
     )

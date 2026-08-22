@@ -1,17 +1,21 @@
 # Validation report (2026-08-22)
 
-Recorded on branch `cursor/nbops-generalization-673e` at `a9672fe`.
-Local and GitHub gates are **144 passed**, coverage **98.87%**.
+Recorded on branch `cursor/nbops-generalization-673e`. Last fully GitHub-verified
+SHA before this completeness revision is `46cbd35` (run
+[32590114562](https://github.com/wyattowalsh/nbops/actions/runs/32590114562),
+**144 passed** on CPython 3.12.14 and 3.13.15). This revision adds Jupytext
+kernelspec application, `nbops new` display-name parity, and output-linked clean
+keys; local/CI counts for the new HEAD are recorded after the gates run.
 
 ## Tooling
 
 | Gate | Result |
 | ---- | ------ |
 | `uv sync --locked --group dev` | lockfile resolved; editable `nbops==0.2.0` |
-| `uv run ruff check src tests` | All checks passed |
-| `uv run ruff format --check src tests` | files already formatted |
-| `uv run ty check` | All checks passed |
-| `uv run pytest` | **144 passed**, coverage **98.87%** (fail-under 90); `src/nbops/convert.py` and `src/nbops/clean.py` at **100%** |
+| `uv run ruff check src tests` | pending on this HEAD (last green: `46cbd35`) |
+| `uv run ruff format --check src tests` | pending on this HEAD |
+| `uv run ty check` | pending on this HEAD |
+| `uv run pytest` | last GitHub-verified: **144 passed**, coverage **98.87%** at `a9672fe`; `46cbd35` succeeded with the same 144-test suite |
 
 ## Runtime smoke
 
@@ -30,6 +34,7 @@ Local and GitHub gates are **144 passed**, coverage **98.87%**.
 
 Compatibility invariants (`compute_stats`, `nbops stats`, `POST /notebooks/stats`) hold.
 Mutating CLI (`clean`, `filter`, `tag`, `ids`, `kernel`, `exec`) requires `--output` or `--in-place`.
+`nbops new` defaults `kernelspec.display_name` to `Python 3`.
 
 ## Kickoff artifact
 
@@ -43,15 +48,7 @@ and are **not** a substitute for the original dump.
 
 ## GitHub Actions
 
-Run [32589716713](https://github.com/wyattowalsh/nbops/actions/runs/32589716713)
-on `a9672fe` concluded **success** (all 5 jobs):
-
-| Job | Result | Interpreter / notes |
-| --- | ------ | ------------------- |
-| `workflow-lint` | success | actionlint |
-| `lint` | success | ruff check + format |
-| `typecheck` | success | ty |
-| `test (3.12)` | success | CPython **3.12.14**, **144 passed**, coverage **98.87%**; Compatibility smoke includes `python -m nbops version`, `nbops --version`, `nbops validate`, `nbops outputs`, `nbops batch validate examples`, `nbops serve --help`; demo stats 4 / 2 / 4 |
-| `test (3.13)` | success | CPython **3.13.15** (`sys.version` printed `3.13.15`), **144 passed**; same Compatibility smoke |
-
-Prior verified runs on this branch include [32589531386](https://github.com/wyattowalsh/nbops/actions/runs/32589531386) (`631544d`, 137 tests; percent tags + widget clean), [32588732104](https://github.com/wyattowalsh/nbops/actions/runs/32588732104) (`b884224`, 128 tests), [32588626150](https://github.com/wyattowalsh/nbops/actions/runs/32588626150) (`24290d8`, serve + fail-closed writes), [32587917364](https://github.com/wyattowalsh/nbops/actions/runs/32587917364) (`afd8400`, 118 tests), and [32588007650](https://github.com/wyattowalsh/nbops/actions/runs/32588007650) (`6756640`).
+Run [32590114562](https://github.com/wyattowalsh/nbops/actions/runs/32590114562)
+on `46cbd35` concluded **success** (all 5 jobs). Prior verified run
+[32589716713](https://github.com/wyattowalsh/nbops/actions/runs/32589716713) on
+`a9672fe` reported **144 passed** on CPython **3.12.14** and **3.13.15**.

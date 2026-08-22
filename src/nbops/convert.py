@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Any
 from nbops.cells import cell_source, cell_tags, cells_of
 from nbops.io import new_notebook
 from nbops.models import ConvertResult
-from nbops.transform import ensure_cell_ids
+from nbops.transform import ensure_cell_ids, set_kernelspec
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -82,6 +82,14 @@ _JUPYTEXT_FENCE = "# ---"
 def from_percent_python(text: str) -> dict[str, Any]:
     """Parse a Jupytext-style percent script into an nbformat v4 notebook."""
     notebook = new_notebook()
+    kernelspec = _kernelspec_from_jupytext_front_matter(text)
+    if kernelspec is not None:
+        notebook = set_kernelspec(
+            notebook,
+            name=kernelspec["name"],
+            display_name=kernelspec.get("display_name"),
+            language=kernelspec.get("language"),
+        )
     cells: list[dict[str, Any]] = []
     current_kind = "code"
     current_meta: dict[str, Any] = {}
@@ -201,23 +209,81 @@ def _leading_list_literal(text: str) -> str | None:
     return None
 
 
-def _strip_jupytext_front_matter(text: str) -> str:
-    """Drop a leading ``# ---`` YAML header used by Jupytext percent scripts."""
-    lines = text.splitlines()
+def _jupytext_front_matter_span(lines: list[str]) -> tuple[int, int] | None:
     index = 0
     while index < len(lines) and not lines[index].strip():
         index += 1
     if index >= len(lines) or lines[index].strip() != _JUPYTEXT_FENCE:
-        return text
+        return None
     closer = index + 1
     while closer < len(lines) and lines[closer].strip() != _JUPYTEXT_FENCE:
         closer += 1
     if closer >= len(lines):
+        return None
+    return index, closer
+
+
+def _strip_jupytext_front_matter(text: str) -> str:
+    """Drop a leading ``# ---`` YAML header used by Jupytext percent scripts."""
+    lines = text.splitlines()
+    span = _jupytext_front_matter_span(lines)
+    if span is None:
         return text
+    _start, closer = span
     body = "\n".join(lines[closer + 1 :])
     if text.endswith("\n") and body:
         return f"{body}\n"
     return body
+
+
+def _uncomment_jupytext_yaml_line(line: str) -> str:
+    if line.startswith("# "):
+        return line[2:]
+    if line.startswith("#"):
+        return line[1:]
+    return line
+
+
+def _yaml_scalar(value: str) -> str:
+    stripped = value.strip()
+    if len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in {'"', "'"}:
+        return stripped[1:-1]
+    return stripped
+
+
+def _kernelspec_from_jupytext_front_matter(text: str) -> dict[str, str] | None:
+    """Read ``kernelspec`` name/display_name/language from a Jupytext YAML header."""
+    lines = text.splitlines()
+    span = _jupytext_front_matter_span(lines)
+    if span is None:
+        return None
+    start, closer = span
+    kernel_indent: int | None = None
+    fields: dict[str, str] = {}
+    for raw in lines[start + 1 : closer]:
+        yaml_line = _uncomment_jupytext_yaml_line(raw)
+        if not yaml_line.strip():
+            continue
+        indent = len(yaml_line) - len(yaml_line.lstrip(" "))
+        stripped = yaml_line.strip()
+        if kernel_indent is None:
+            if stripped.startswith("kernelspec:"):
+                kernel_indent = indent
+                inline = stripped.partition(":")[2].strip()
+                if inline:
+                    return None
+            continue
+        if indent <= kernel_indent:
+            break
+        key, sep, raw_value = stripped.partition(":")
+        if not sep:
+            continue
+        value = _yaml_scalar(raw_value)
+        if key in {"name", "display_name", "language"} and value:
+            fields[key] = value
+    if "name" not in fields:
+        return None
+    return fields
 
 
 def _unquote_percent_comment(source: str) -> str:

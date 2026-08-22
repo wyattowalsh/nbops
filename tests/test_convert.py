@@ -59,6 +59,44 @@ def test_from_percent_python_empty_and_preamble() -> None:
     assert "print(1)" in cell_source(preamble["cells"][0])
 
 
+def test_from_percent_python_applies_jupytext_kernelspec() -> None:
+    text = (
+        "# ---\n"
+        "# jupyter:\n"
+        "#   jupytext:\n"
+        "#     text_representation:\n"
+        "#       format_name: percent\n"
+        "#   kernelspec:\n"
+        '#     display_name: "R"\n'
+        "#     language: r\n"
+        "#     name: ir\n"
+        "#   extra:\n"
+        "#     ignored: true\n"
+        "# ---\n"
+        "# %%\n"
+        "x = 1\n"
+    )
+    notebook = from_percent_python(text)
+    kernelspec = notebook["metadata"]["kernelspec"]
+    assert kernelspec["name"] == "ir"
+    assert kernelspec["display_name"] == "R"
+    assert kernelspec["language"] == "r"
+    assert notebook["metadata"]["language_info"]["name"] == "r"
+    assert cell_source(notebook["cells"][0]).rstrip() == "x = 1"
+
+
+def test_from_percent_python_ignores_inline_kernelspec_mapping() -> None:
+    text = "# ---\n# kernelspec: {name: ir}\n# ---\n# %%\nprint(1)\n"
+    notebook = from_percent_python(text)
+    assert notebook["metadata"]["kernelspec"]["name"] == "python3"
+
+
+def test_from_percent_python_ignores_kernelspec_without_name() -> None:
+    text = "# ---\n# kernelspec:\n#   display_name: R\n# ---\n# %%\nprint(1)\n"
+    notebook = from_percent_python(text)
+    assert notebook["metadata"]["kernelspec"]["name"] == "python3"
+
+
 def test_from_percent_python_skips_jupytext_front_matter() -> None:
     text = (
         "\n"

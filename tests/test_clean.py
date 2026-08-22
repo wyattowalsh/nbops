@@ -42,6 +42,23 @@ def test_clean_strips_notebook_widget_metadata(sample_notebook: dict[str, Any]) 
     assert kept["metadata"]["widgets"] == {"state": {"x": {}}}
 
 
+def test_clean_keeps_output_cell_metadata_when_outputs_false(
+    sample_notebook: dict[str, Any],
+) -> None:
+    sample_notebook["cells"][1]["metadata"]["collapsed"] = True
+    sample_notebook["cells"][1]["metadata"]["scrolled"] = True
+    sample_notebook["cells"][1]["metadata"]["ExecuteTime"] = {"start": "1"}
+    kept = clean_notebook(sample_notebook, CleanOptions(outputs=False, execution_counts=False))
+    metadata = kept["cells"][1]["metadata"]
+    assert metadata["collapsed"] is True
+    assert metadata["scrolled"] is True
+    assert metadata["ExecuteTime"] == {"start": "1"}
+    stripped = clean_notebook(sample_notebook, CleanOptions(outputs=True))
+    assert "collapsed" not in stripped["cells"][1]["metadata"]
+    assert "scrolled" not in stripped["cells"][1]["metadata"]
+    assert "ExecuteTime" not in stripped["cells"][1]["metadata"]
+
+
 def test_clean_skips_non_mapping_notebook_metadata() -> None:
     notebook = {"cells": [], "metadata": ["nope"]}
     cleaned = clean_notebook(notebook)

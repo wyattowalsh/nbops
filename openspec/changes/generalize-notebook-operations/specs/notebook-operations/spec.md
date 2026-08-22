@@ -63,6 +63,36 @@ remove notebook-level widget state.
 #### Scenario: Clean widget metadata
 
 - **WHEN** `clean_notebook` runs with `outputs=True` on a notebook that has `metadata.widgets`
+- **THEN** `metadata.widgets` is absent on the cleaned copy and present on the original
+- **WHEN** `outputs=False`
+- **THEN** widget state and output-linked cell keys (`collapsed`, `scrolled`, `ExecuteTime`) remain
+
+### Requirement: Add or remove cell tags
+
+The library SHALL add and remove cell tags on a chosen cell index.
+
+#### Scenario: Tag add and remove
+
 - **WHEN** a caller adds or removes cell tags via `add_tags` / `remove_tags`,
   `nbops tag`, or `POST /notebooks/tag`
 - **THEN** the returned notebook has the requested tags present or absent on that cell
+
+### Requirement: Jupytext percent kernelspec
+
+`from_percent_python` SHALL apply `kernelspec` name, display name, and language from a
+leading Jupytext `# ---` YAML header when `name` is present.
+
+#### Scenario: Percent script kernelspec
+
+- **WHEN** a percent script includes a Jupytext header with `kernelspec.name`
+- **THEN** the restored notebook metadata uses that kernelspec
+
+### Requirement: New notebook display name
+
+`nbops new` SHALL default the kernelspec display name to `Python 3` for `python3`,
+matching `new_notebook` and `POST /notebooks/new`.
+
+#### Scenario: CLI new display name
+
+- **WHEN** a caller runs `nbops new path.ipynb` with the default kernel
+- **THEN** the written notebook has `metadata.kernelspec.display_name` of `Python 3`

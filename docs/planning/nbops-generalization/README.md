@@ -23,10 +23,10 @@ the exhaustive program derived from:
 | G1 | Domain-general notebook ops library (not NBA-specific, not stats-only) | `src/nbops/` package |
 | G2 | Load/save/validate/new via nbformat | `src/nbops/io.py`; `nbops validate`; `POST /notebooks/validate` |
 | G3 | Inspect: stats, outline, imports, outputs | `src/nbops/inspect.py`; CLI/API headings+imports+outputs |
-| G4 | Clean outputs, counts, ids, empty cells | `src/nbops/clean.py` (widget state stripped with outputs) |
+| G4 | Clean outputs, counts, ids, empty cells | `src/nbops/clean.py` (widgets and output-linked cell keys stripped with outputs) |
 | G5 | Transform: filter, concat, split, kernel, tags, cell ids | `src/nbops/transform.py` (`add_tags` / `remove_tags`) |
 | G6 | Structural lint catalog NB000–NB011 | `src/nbops/lint.py` `ISSUE_CATALOG` |
-| G7 | Convert to percent py, script, markdown, and percent roundtrip | `src/nbops/convert.py` (cell tags round-trip; `[md]` alias) |
+| G7 | Convert to percent py, script, markdown, and percent roundtrip | `src/nbops/convert.py` (cell tags round-trip; `[md]` alias; Jupytext YAML kernelspec) |
 | G8 | Cell-level diff | `src/nbops/diff.py` |
 | G9 | Directory batch operations | `src/nbops/batch.py` + `nbops batch {stats,lint,clean,validate}` |
 | G10 | Optional execute extra | `src/nbops/execute.py` + `[execute]` extra |
