@@ -122,7 +122,7 @@ curl -s -X POST http://127.0.0.1:8000/notebooks/stats \
 | `POST` | `/notebooks/new` | Empty nbformat v4 notebook |
 | `POST` | `/notebooks/validate` | nbformat schema validation |
 
-Interactive docs: `http://127.0.0.1:8000/docs`.
+Interactive API docs are available at `http://127.0.0.1:8000/docs`.
 
 ## Development
 

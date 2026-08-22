@@ -62,6 +62,8 @@ app = FastAPI(
 class StatsRequest(NotebookPayload):
     """Request body carrying a raw notebook document."""
 
+    notebook: dict[str, Any] = Field(..., description="A parsed nbformat v4 notebook document.")
+
 
 class InspectResponse(BaseModel):
     stats: NotebookStats

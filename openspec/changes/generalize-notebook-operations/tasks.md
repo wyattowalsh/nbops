@@ -26,3 +26,4 @@
 - [x] 1.24 `load_notebook` defaults to schema-lenient parse like the original scaffold
 - [x] 1.25 Original stats-scaffold docs/tests: uvicorn `nbops.api:app`, curl health/stats, seven-row CLI table, incomplete kernelspec fixture
 - [x] 1.26 Original `HealthResponse()` defaults, `StatsRequest` OpenAPI name, GitHub label catalog for Dependabot/release names
+- [x] 1.27 Original `/docs` README sentence, StatsRequest nbformat v4 field description, OpenAPI health defaults

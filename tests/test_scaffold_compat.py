@@ -34,6 +34,7 @@ def test_readme_documents_original_uvicorn_and_curl_stats() -> None:
     assert "uv run uvicorn nbops.api:app --host 0.0.0.0 --port 8000" in text
     assert "curl -s http://127.0.0.1:8000/health" in text
     assert "http://127.0.0.1:8000/notebooks/stats" in text
+    assert "Interactive API docs are available at `http://127.0.0.1:8000/docs`." in text
 
 
 def test_package_root_still_exports_original_compute_stats() -> None:
@@ -128,8 +129,23 @@ def test_original_scaffold_health_response_defaults() -> None:
 def test_original_scaffold_stats_request_openapi_name() -> None:
     assert issubclass(StatsRequest, NotebookPayload)
     schema = api_app.openapi()
+    assert schema["info"]["title"] == "nbops"
+    assert "Jupyter notebooks" in schema["info"]["summary"]
     assert "StatsRequest" in schema["components"]["schemas"]
     health_schema = schema["components"]["schemas"]["HealthResponse"]
     required = set(health_schema.get("required") or [])
     assert "status" not in required
     assert "version" not in required
+    assert health_schema["properties"]["status"].get("default") == "ok"
+    assert health_schema["properties"]["version"].get("default") == __version__
+    request_schema = StatsRequest.model_json_schema()
+    assert (
+        request_schema["properties"]["notebook"]["description"]
+        == "A parsed nbformat v4 notebook document."
+    )
+
+
+def test_original_scaffold_interactive_docs_available() -> None:
+    response = client.get("/docs")
+    assert response.status_code == 200
+    assert "text/html" in response.headers.get("content-type", "")

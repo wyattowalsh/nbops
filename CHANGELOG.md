@@ -40,3 +40,7 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - `POST /notebooks/stats` keeps the original OpenAPI request name `StatsRequest`
 - GitHub labels referenced by Dependabot and `.github/release.yml` are catalogued in
   `.github/labels.yml`
+- Original README interactive-docs sentence (`/docs`) and OpenAPI `HealthResponse`
+  defaults remain the stats-scaffold contract
+- `StatsRequest.notebook` keeps the original nbformat v4 field description
+- Pytest ignores Starlette's TestClient `httpx`/`httpx2` UserWarning so CI logs stay clean

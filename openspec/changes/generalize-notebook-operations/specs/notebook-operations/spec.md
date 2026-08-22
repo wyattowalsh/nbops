@@ -23,7 +23,10 @@ batch, and optional execute.
   returns its body
 - **THEN** `status` is `ok` and `version` is the installed package version
 - **WHEN** a client reads the OpenAPI schema for `POST /notebooks/stats`
-- **THEN** the request body model is named `StatsRequest`
+- **THEN** the request body model is named `StatsRequest` and its `notebook`
+  field description is the original stats-scaffold text
+- **WHEN** a caller opens `/docs`
+- **THEN** FastAPI serves the interactive API documentation advertised in the README
 
 ### Requirement: Lint catalog
 
