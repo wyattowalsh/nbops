@@ -146,11 +146,11 @@ Runtime settings use the `NBOPS_` prefix and can be placed in a working-director
 src/nbops/
   io.py         load, save, validate, new (v4 cell ids preserved as stored)
   inspect.py    stats, outline, imports, outputs
-  clean.py      strip outputs / counts / ids
+  clean.py      strip outputs / counts / ids (attachments kept)
   transform.py  filter, concat, split, kernel, tags
   lint.py       structural quality
   convert.py    percent Python, script, Markdown (inlines attachments)
-  diff.py       cell-level diff
+  diff.py       cell-level diff (type, source, attachments)
   batch.py      directory walks
   execute.py    optional nbclient execution
   cli.py        Typer CLI

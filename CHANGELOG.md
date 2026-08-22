@@ -90,3 +90,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
 - Cell `attachments` keep a cell from being treated as empty (stats / `clean`
   `empty_cells`); output cleaning does not strip them; cell diffs include
   attachment payloads; lint `NB003` still reports empty source
+- CI compatibility smoke matches `just smoke` convert coverage (`--to py`,
+  `--to script`, `--to md`)

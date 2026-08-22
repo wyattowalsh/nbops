@@ -35,3 +35,12 @@ def test_label_catalog_covers_dependabot_and_release_names() -> None:
     assert "skip-changelog" in release
     assert "github-actions" in release
     assert "- ci\n" in release
+
+
+def test_ci_compatibility_smoke_includes_just_smoke_converts() -> None:
+    ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    just = (ROOT / "justfile").read_text(encoding="utf-8")
+    for fmt in ("py", "script", "md"):
+        needle = f"nbops convert examples/demo.ipynb --to {fmt}"
+        assert needle in ci
+        assert needle in just

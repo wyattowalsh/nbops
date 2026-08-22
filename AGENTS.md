@@ -31,6 +31,9 @@ just quality-gates
 # If just is not installed: uvx --from rust-just just quality-gates
 ```
 
+CI compatibility smoke on 3.12/3.13 matches `just smoke` convert coverage
+(`--to py`, `--to script`, `--to md`).
+
 Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`.
 
 ## Conventions
