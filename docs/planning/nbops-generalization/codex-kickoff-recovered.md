@@ -23,7 +23,7 @@
 | TASK-005 | Transform (filter, concat, split, kernel, tags, ids) | done | `src/nbops/transform.py`; `add_tags` / `remove_tags` |
 | TASK-006 | Lint catalog NB000–NB011 | done | `src/nbops/lint.py`; `NB007` is IPython-aware and skipped for non-Python kernels and file-body magics; `NB002` uses the shared heading extractor |
 | TASK-007 | Convert to percent py / script / md, plus percent roundtrip | done | `src/nbops/convert.py`; tags, ids, optional Jupytext titles, generic `key=value`/JSON cell metadata, and kernelspec YAML round-trip; `[md]` alias; omitted ids stay omitted; markdown inlines `attachment:` and code-cell `image/*` outputs as `data:` URIs, emits stream/error/text outputs, and appends unreferenced image attachments |
-| TASK-008 | Cell-level diff | done | `src/nbops/diff.py`; signature is type + source + attachments + tags + outputs (not execution counts or ids) |
+| TASK-008 | Cell-level diff | done | `src/nbops/diff.py`; signature is type + source + attachments + tags + outputs (not execution counts or ids); kernelspec/`language_info.name` via `metadata_changed` |
 | TASK-009 | Directory batch + tqdm | done | `src/nbops/batch.py`; `nbops batch {stats,lint,clean,validate}` |
 | TASK-010 | Optional `nbops[execute]` | done | `src/nbops/execute.py`; omitted cell ids restored after execute |
 | TASK-011 | Typer CLI for every catalog operation | done | `src/nbops/cli.py`; system commands `version`/`serve` are not catalog ops |

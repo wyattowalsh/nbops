@@ -220,3 +220,57 @@ def test_diff_detects_tag_and_output_only_changes() -> None:
         ]
     }
     assert diff_notebooks(cycled_outputs, left).changed == 1
+
+
+def test_diff_detects_kernelspec_and_language_only_changes() -> None:
+    cells = [{"cell_type": "markdown", "metadata": {}, "source": "# Title\n"}]
+    python_nb = {
+        "cells": cells,
+        "metadata": {
+            "kernelspec": {
+                "name": "python3",
+                "display_name": "Python 3",
+                "language": "python",
+            },
+            "language_info": {"name": "python", "version": "3.12"},
+        },
+    }
+    r_nb = {
+        "cells": cells,
+        "metadata": {
+            "kernelspec": {"name": "ir", "display_name": "R", "language": "r"},
+            "language_info": {"name": "r", "version": "3.12"},
+        },
+    }
+    version_only = {
+        "cells": cells,
+        "metadata": {
+            "kernelspec": {
+                "name": "python3",
+                "display_name": "Python 3",
+                "language": "python",
+            },
+            "language_info": {"name": "python", "version": "3.13"},
+        },
+    }
+    language_info_only = {
+        "cells": cells,
+        "metadata": {
+            "kernelspec": {
+                "name": "python3",
+                "display_name": "Python 3",
+                "language": "python",
+            },
+            "language_info": {"name": "r"},
+        },
+    }
+    report = diff_notebooks(python_nb, r_nb)
+    assert report.changed == 0
+    assert report.equal == 1
+    assert report.metadata_changed is True
+    assert report.identical is False
+    assert diff_notebooks(python_nb, version_only).identical is True
+    assert diff_notebooks(python_nb, version_only).metadata_changed is False
+    assert diff_notebooks(python_nb, language_info_only).metadata_changed is True
+    assert diff_notebooks(python_nb, python_nb).metadata_changed is False
+    assert diff_notebooks({"cells": []}, {"cells": []}).metadata_changed is False

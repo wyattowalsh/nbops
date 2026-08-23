@@ -53,7 +53,8 @@ CLI, and HTTP surfaces.
   without removing the original seven table rows. Inspect JSON lists each
   attachment (library `list_attachments`) without a dedicated catalog operation.
   Cell-level diff compares type, source, attachments, tags, and outputs; it
-  ignores execution counts and cell ids.
+  ignores execution counts and cell ids. Kernelspec name/display/language and
+  `language_info.name` participate in `identical` via `metadata_changed`.
 
 ## Risks / Trade-offs
 

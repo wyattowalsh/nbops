@@ -58,6 +58,8 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
   operation).
 - Cell-level diff (`nbops diff`) compares cell type, source, attachments, tags,
   and outputs. Execution counts and cell ids are not part of the signature.
+  Kernelspec name/display/language and `language_info.name` participate in
+  `identical` via `metadata_changed` (`language_info.version` does not).
 - Empty-cell stats and `clean` with `empty_cells` ignore cells that still have
   attachments; cleaning outputs does not strip attachments. Lint `NB003` still
   reports empty source. `compute_stats` reports `attachment_cells` and

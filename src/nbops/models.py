@@ -135,6 +135,7 @@ class NotebookDiff(BaseModel):
     added: int = Field(..., ge=0)
     removed: int = Field(..., ge=0)
     identical: bool
+    metadata_changed: bool = False
     cells: list[CellDiff] = Field(default_factory=list)
 
 

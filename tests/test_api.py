@@ -305,9 +305,19 @@ def test_concat_kernel_diff(sample_notebook: dict[str, Any]) -> None:
     assert kernel.status_code == 200
     assert kernel.json()["notebook"]["metadata"]["kernelspec"]["name"] == "ir"
 
+    kernel_diff = client.post(
+        "/notebooks/diff",
+        json={"left": sample_notebook, "right": kernel.json()["notebook"]},
+    )
+    assert kernel_diff.status_code == 200
+    assert kernel_diff.json()["metadata_changed"] is True
+    assert kernel_diff.json()["identical"] is False
+    assert kernel_diff.json()["changed"] == 0
+
     diff = client.post("/notebooks/diff", json={"left": sample_notebook, "right": sample_notebook})
     assert diff.status_code == 200
     assert diff.json()["identical"] is True
+    assert diff.json()["metadata_changed"] is False
 
 
 def test_concat_http_preserves_omitted_cell_ids(

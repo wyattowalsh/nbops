@@ -92,7 +92,7 @@ OPERATIONS: tuple[Operation, ...] = (
     ),
     Operation(
         name="diff",
-        summary="Cell-level structural diff (type, source, attachments, tags, outputs).",
+        summary="Cell-level structural diff (type, source, attachments, tags, outputs, kernel).",
         library="nbops.diff.diff_notebooks",
         cli="nbops diff",
         api="POST /notebooks/diff",

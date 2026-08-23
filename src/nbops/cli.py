@@ -337,7 +337,7 @@ def diff_cmd(
     right: Annotated[Path, typer.Argument(exists=True, dir_okay=False, readable=True)],
     as_json: Annotated[bool, typer.Option("--json")] = False,
 ) -> None:
-    """Diff two notebooks at cell granularity."""
+    """Diff two notebooks at cell granularity, including kernelspec/language."""
     report = diff_notebooks(_load(left, validate=False), _load(right, validate=False))
     if as_json:
         _emit_json(report)
@@ -345,7 +345,8 @@ def diff_cmd(
     typer.echo(
         f"left={report.left_cells} right={report.right_cells} "
         f"equal={report.equal} changed={report.changed} "
-        f"added={report.added} removed={report.removed} identical={report.identical}"
+        f"added={report.added} removed={report.removed} "
+        f"metadata_changed={report.metadata_changed} identical={report.identical}"
     )
     for cell in report.cells:
         if cell.change == "equal":

@@ -266,6 +266,36 @@ def test_split_kernel_and_batch(tmp_path: Path, sample_notebook_file: Path) -> N
     assert payload
 
 
+def test_diff_reports_kernel_metadata_change(tmp_path: Path, sample_notebook_file: Path) -> None:
+    r_nb = tmp_path / "r.ipynb"
+    kernel = runner.invoke(
+        app,
+        [
+            "kernel",
+            str(sample_notebook_file),
+            "--name",
+            "ir",
+            "--language",
+            "r",
+            "--display-name",
+            "R",
+            "-o",
+            str(r_nb),
+        ],
+    )
+    assert kernel.exit_code == 0
+    result = runner.invoke(app, ["diff", str(sample_notebook_file), str(r_nb)])
+    assert result.exit_code == 0
+    assert "metadata_changed=True" in result.stdout
+    assert "identical=False" in result.stdout
+    payload = json.loads(
+        runner.invoke(app, ["diff", str(sample_notebook_file), str(r_nb), "--json"]).stdout
+    )
+    assert payload["metadata_changed"] is True
+    assert payload["identical"] is False
+    assert payload["changed"] == 0
+
+
 def test_clean_requires_output(sample_notebook_file: Path) -> None:
     result = runner.invoke(app, ["clean", str(sample_notebook_file)])
     assert result.exit_code != 0

@@ -150,7 +150,7 @@ src/nbops/
   transform.py  filter, concat, split, kernel, tags
   lint.py       structural quality
   convert.py    percent Python, script, Markdown (inlines attachments)
-  diff.py       cell-level diff (type, source, attachments, tags, outputs)
+  diff.py       cell-level diff (cells plus kernelspec/language)
   batch.py      directory walks
   execute.py    optional nbclient execution
   cli.py        Typer CLI

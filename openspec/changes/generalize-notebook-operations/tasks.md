@@ -53,3 +53,4 @@
 - [x] 1.51 `compute_stats` inventories attachments (`attachment_cells` / `attachment_files`); CLI extras print widgets and attachment counts; original seven stats rows stay
 - [x] 1.52 Inspect payload lists attachments (`list_attachments`); not a catalog operation
 - [x] 1.53 Cell-level diff includes tags and outputs (not execution counts or ids)
+- [x] 1.54 Notebook-level kernelspec/language participates in diff `identical` via `metadata_changed`

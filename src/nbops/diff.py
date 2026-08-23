@@ -3,18 +3,24 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from difflib import SequenceMatcher
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
-from nbops.cells import cell_attachments, cell_source, cell_tags, cells_of, preview
+from nbops.cells import (
+    as_mapping,
+    cell_attachments,
+    cell_source,
+    cell_tags,
+    cells_of,
+    nested_mapping,
+    preview,
+)
 from nbops.models import CellDiff, NotebookDiff
-
-if TYPE_CHECKING:
-    from collections.abc import Mapping
 
 
 def diff_notebooks(left: Mapping[str, object], right: Mapping[str, object]) -> NotebookDiff:
-    """Diff two notebooks by cell type, source, attachments, tags, and outputs."""
+    """Diff two notebooks by cells plus kernelspec/language metadata."""
     left_cells = [_signature(cell) for cell in cells_of(left)]
     right_cells = [_signature(cell) for cell in cells_of(right)]
     matcher = SequenceMatcher(a=left_cells, b=right_cells, autojunk=False)
@@ -87,6 +93,7 @@ def diff_notebooks(left: Mapping[str, object], right: Mapping[str, object]) -> N
             added += j2 - j1
             emit_index += j2 - j1
 
+    metadata_changed = _notebook_signature(left) != _notebook_signature(right)
     return NotebookDiff(
         left_cells=len(left_cells),
         right_cells=len(right_cells),
@@ -94,8 +101,25 @@ def diff_notebooks(left: Mapping[str, object], right: Mapping[str, object]) -> N
         changed=changed,
         added=added,
         removed=removed,
-        identical=changed == 0 and added == 0 and removed == 0,
+        identical=changed == 0 and added == 0 and removed == 0 and not metadata_changed,
+        metadata_changed=metadata_changed,
         cells=results,
+    )
+
+
+def _notebook_signature(notebook: Mapping[str, object]) -> str:
+    metadata = as_mapping(notebook.get("metadata") if isinstance(notebook, Mapping) else None)
+    kernelspec = nested_mapping(metadata, "kernelspec")
+    language_info = nested_mapping(metadata, "language_info")
+    return _json_signature(
+        {
+            "kernelspec": {
+                "name": kernelspec.get("name"),
+                "display_name": kernelspec.get("display_name"),
+                "language": kernelspec.get("language"),
+            },
+            "language": language_info.get("name"),
+        }
     )
 
 

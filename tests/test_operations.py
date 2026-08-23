@@ -60,6 +60,8 @@ def test_operation_catalog_names_are_unique() -> None:
     assert "attachments" not in names
     tag = next(item for item in OPERATIONS if item.name == "tag")
     assert "remove_tags" in tag.library
+    diff = next(item for item in OPERATIONS if item.name == "diff")
+    assert "kernel" in diff.summary.lower()
 
 
 def test_catalog_cli_and_api_surfaces_exist() -> None:

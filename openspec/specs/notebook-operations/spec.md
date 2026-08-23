@@ -138,7 +138,9 @@ empty source when attachments are present.
 
 `diff_notebooks` / `nbops diff` / `POST /notebooks/diff` SHALL compare cells by
 type, source, attachments, tags, and outputs. Execution counts and cell ids
-SHALL not participate in the signature.
+SHALL not participate in the signature. Notebook-level kernelspec name,
+display name, and language, plus `language_info.name`, SHALL participate in
+`identical` via `metadata_changed`. `language_info.version` SHALL not.
 
 #### Scenario: Tag and output changes are visible
 
@@ -148,6 +150,14 @@ SHALL not participate in the signature.
 - **THEN** `diff_notebooks` reports a changed cell
 - **WHEN** two notebooks differ only in `execution_count` or cell `id`
 - **THEN** `diff_notebooks` reports them identical
+
+#### Scenario: Kernel-only changes are visible
+
+- **WHEN** two notebooks have the same cells but different kernelspec name or
+  `language_info.name`
+- **THEN** `metadata_changed` is true, cell `changed` is 0, and `identical` is false
+- **WHEN** they differ only in `language_info.version`
+- **THEN** they are identical
 
 ### Requirement: Percent-format tags and widget residue
 

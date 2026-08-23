@@ -99,3 +99,5 @@ General notebook operations toolkit (library, Typer CLI, FastAPI).
   attachment via `list_attachments` without adding a catalog operation
 - Cell-level diff compares type, source, attachments, tags, and outputs;
   execution counts and cell ids stay out of the signature
+- Diff `identical` is false when kernelspec or `language_info.name` differs
+  (`metadata_changed`); `language_info.version` is ignored
