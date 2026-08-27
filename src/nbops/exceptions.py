@@ -21,3 +21,19 @@ class ExecuteError(NbopsError):
 
 class MissingExtraError(NbopsError):
     """Raised when an optional extra is required but not installed."""
+
+
+class ObserverError(NbopsError):
+    """Raised when a notebook runtime observer operation fails."""
+
+
+class InvalidObserverConfigError(ObserverError, ValueError):
+    """Raised when observer configuration or control arguments are invalid."""
+
+
+class OutputPathError(ObserverError, ValueError):
+    """Raised when an observer output path fails preflight."""
+
+
+class TerminalObserverError(ObserverError):
+    """Raised when a terminal observer rejects a new control event."""

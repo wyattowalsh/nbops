@@ -1,12 +1,17 @@
 # nbops
 
-General operations toolkit for Jupyter notebooks.
+Local-first runtime observability for Python notebooks, built first for Google Colab.
 
-`nbops` is a Python library, Typer CLI, and FastAPI service for inspect, lint,
-clean, transform, convert, diff, batch, and optional execute workflows over
-standard `nbformat` documents. The toy stats-only scaffold is preserved as a
-compatibility surface (`compute_stats`, `nbops stats`, `POST /notebooks/stats`)
-and generalized into a full operations toolkit.
+`nbops` samples CPU, memory, and capability status from inside a Python kernel,
+persists a local SQLite run, and exports redacted HTML/Markdown reports plus a
+portable bundle. Static text/HTML is the universal display path. The historical
+Colab-first baseline is preserved as OpenSpec change `build-colab-observer`; the
+active change is `generalize-notebook-runtime-observer`.
+
+The repository also keeps a notebook **operations catalog** (inspect, lint, clean,
+transform, convert, diff, batch, optional execute, Typer CLI, FastAPI) so the
+stats-only scaffold remains a compatibility surface (`compute_stats`,
+`nbops stats`, `POST /notebooks/stats`).
 
 ## Requirements
 
@@ -27,6 +32,20 @@ uv sync --extra execute
 ```
 
 ## Library
+
+Runtime observer (kickoff public API):
+
+```python
+from nbops import ObserverConfig, observe
+
+observer = observe(project="my-run", interval_s=2.0, persist=True)
+observer.display()
+observer.stop()
+observer.export_report(format="markdown")
+observer.export_bundle()
+```
+
+Notebook operations catalog:
 
 ```python
 from nbops import (

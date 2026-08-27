@@ -1,0 +1,15 @@
+{
+  "checked_at": "2026-08-22",
+  "canonical_identity": "nbops",
+  "active_paths_checked": 69,
+  "candidate_name_hits": [],
+  "stale_deferred_naming_hits": [],
+  "forbidden_current_identity_hits": [],
+  "stable_historical_ids": [
+    "build-colab-observer",
+    "generalize-notebook-runtime-observer"
+  ],
+  "historical_baseline_retained": true,
+  "valid": true,
+  "bundle_file_count": 165
+}

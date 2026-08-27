@@ -1,0 +1,1187 @@
+{
+  "change_id": "generalize-notebook-runtime-observer",
+  "checkpoint_flow": [
+    "clarify",
+    "specify",
+    "plan",
+    "tasks",
+    "analyze",
+    "implement",
+    "handoff"
+  ],
+  "tasks": [
+    {
+      "id": "TASK-100-audit-current-coupling",
+      "title": "Audit Current Coupling",
+      "wave": "A \u2014 evidence and contracts",
+      "parallel_safe": true,
+      "depends_on": [],
+      "read": [
+        "openspec/changes/build-colab-observer/",
+        "src/",
+        "docs/planning/build-colab-observer/"
+      ],
+      "write_scope": [
+        "docs/planning/generalize-notebook-runtime-observer/context-map.md",
+        "docs/planning/generalize-notebook-runtime-observer/architecture.md"
+      ],
+      "validation": [
+        "Review path inventory and coupling table."
+      ],
+      "done_when": [
+        "Current generic and Colab-specific surfaces are mapped with evidence."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-101-research-platform-boundaries",
+      "title": "Research Platform Boundaries",
+      "wave": "A \u2014 evidence and contracts",
+      "parallel_safe": true,
+      "depends_on": [],
+      "read": [
+        "official Jupyter, IPython, Deepnote, Colab, WCAG, and jupyter-resource-usage sources"
+      ],
+      "write_scope": [
+        "docs/planning/generalize-notebook-runtime-observer/source-registry.md",
+        "docs/planning/generalize-notebook-runtime-observer/research.md"
+      ],
+      "validation": [
+        "Review dated source registry."
+      ],
+      "done_when": [
+        "Current platform facts, conflicts, confidence, and recheck triggers are recorded."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-102-write-follow-on-contracts",
+      "title": "Write Follow On Contracts",
+      "wave": "A \u2014 evidence and contracts",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-100-audit-current-coupling",
+        "TASK-101-research-platform-boundaries"
+      ],
+      "read": [
+        "current OpenSpec change and planning evidence"
+      ],
+      "write_scope": [
+        "openspec/changes/generalize-notebook-runtime-observer/"
+      ],
+      "validation": [
+        "Validate spec headings, normative language, scenarios, task IDs, and JSON contracts."
+      ],
+      "done_when": [
+        "Proposal, behavior deltas, design, task graph, risks, migration, and validation agree."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-103-freeze-colab-compatibility-fixtures",
+      "title": "Freeze Colab Behavior and Legacy Compatibility Fixtures",
+      "wave": "A \u2014 evidence and contracts",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-102-write-follow-on-contracts"
+      ],
+      "read": [
+        "current public API, current source/import graph, Colab defaults, run/bundle fixtures, notebook snippets, identity and migration specs"
+      ],
+      "write_scope": [
+        "tests/contract/",
+        "tests/fixtures/",
+        "docs/planning/generalize-notebook-runtime-observer/PLANS.md",
+        "docs/planning/generalize-notebook-runtime-observer/validation.md",
+        "docs/planning/generalize-notebook-runtime-observer/traceability-matrix.md"
+      ],
+      "validation": [
+        "Run focused public-behavior, Colab, notebook, legacy-artifact, and policy contract tests."
+      ],
+      "done_when": [
+        "Supported lifecycle, defaults, reports, bundles, static fallback, policy boundaries, and Colab behavior are frozen without treating the prior package path as canonical."
+      ],
+      "stop_conditions": [
+        "Stop if behavior cannot be captured without choosing an unapproved breaking change."
+      ]
+    },
+    {
+      "id": "TASK-104-approve-nbops-canonical-identity",
+      "title": "Approve nbops Canonical Identity",
+      "wave": "A \u2014 evidence and contracts",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-102-write-follow-on-contracts"
+      ],
+      "read": [
+        "explicit user decision dated 2026-08-22",
+        "ADR-016",
+        "package-identity spec",
+        "naming and compatibility plans"
+      ],
+      "write_scope": [
+        "openspec/changes/generalize-notebook-runtime-observer/",
+        "docs/planning/generalize-notebook-runtime-observer/",
+        "CODEX_KICKOFF_PROMPT.md"
+      ],
+      "validation": [
+        "Run active-surface identity, OpenSpec structure, link, task, and manifest reconciliation checks."
+      ],
+      "done_when": [
+        "The exact canonical current product, local repository, distribution, import package, CLI, source target, default artifact namespace, and current documentation identity is nbops; stable historical identifiers are explicitly provenance."
+      ],
+      "stop_conditions": [
+        "Stop if the user supersedes the decision or an authoritative legal or registry conflict requires a new ADR."
+      ],
+      "evidence": [
+        "User explicitly required nbops throughout the kickoff prompt and bundle on 2026-08-22."
+      ]
+    },
+    {
+      "id": "TASK-105-freeze-nbops-migration-fixtures",
+      "title": "Freeze nbops Identity Migration Fixtures",
+      "wave": "A \u2014 evidence and contracts",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-103-freeze-colab-compatibility-fixtures",
+        "TASK-104-approve-nbops-canonical-identity"
+      ],
+      "read": [
+        "package-identity spec, migration plan, package metadata, current import/CLI/default/artifact behavior"
+      ],
+      "write_scope": [
+        "tests/contract/",
+        "tests/fixtures/",
+        "tests/security/",
+        "docs/planning/generalize-notebook-runtime-observer/validation.md",
+        "docs/planning/generalize-notebook-runtime-observer/traceability-matrix.md"
+      ],
+      "validation": [
+        "Run source-package, wheel metadata, import, CLI, default path, artifact identity, legacy read, and identity-drift tests."
+      ],
+      "done_when": [
+        "Executable tests distinguish canonical nbops behavior from verified legacy compatibility and fail any mixed current identity."
+      ],
+      "stop_conditions": [
+        "Stop if compatibility cannot be captured without an unapproved breaking behavior change."
+      ]
+    },
+    {
+      "id": "TASK-106-implement-nbops-identity-migration",
+      "title": "Implement nbops Identity Migration",
+      "wave": "A \u2014 evidence and contracts",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-105-freeze-nbops-migration-fixtures"
+      ],
+      "read": [
+        "ADR-016, naming strategy, compatibility migration, package metadata, current source/import graph, snippets, examples, schemas, reports, and TASK-103/TASK-105 fixtures"
+      ],
+      "write_scope": [
+        "pyproject.toml",
+        "src/nbops/",
+        "the verified prior source-package path under src/ only for migration or an evidence-backed shim",
+        "tests/",
+        "notebooks/",
+        "examples/",
+        "schemas/",
+        "apps/docs/",
+        "docs/planning/generalize-notebook-runtime-observer/"
+      ],
+      "validation": [
+        "TASK-103/TASK-105 fixtures; clean source and wheel import; CLI smoke; stale-current-identity scan; package inspection; artifact-reader tests; notebook synchronization."
+      ],
+      "done_when": [
+        "Current product, local repository metadata, distribution, import, CLI, source ownership, docs, snippets, defaults, schemas, and new artifacts identify nbops; Google Colab is an adapter; supported behavior and prior artifacts remain readable."
+      ],
+      "stop_conditions": [
+        "Stop before remote repository mutation, registry/domain reservation, publication, network resolution, deployment, or OpenSpec apply/sync/archive without approval."
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-110-implement-runtime-profile-models",
+      "title": "Implement Runtime Profile Models",
+      "wave": "B \u2014 runtime profile foundation",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-106-implement-nbops-identity-migration"
+      ],
+      "read": [
+        "runtime-profile behavior specs and design"
+      ],
+      "write_scope": [
+        "src/nbops/runtime_profile.py",
+        "src/nbops/models.py",
+        "schemas/",
+        "src/nbops/schemas/"
+      ],
+      "validation": [
+        "Unit/property tests and schema validation."
+      ],
+      "done_when": [
+        "Typed profile, facet, evidence, confidence, conflict, support-tier, scope, storage, and transport models serialize deterministically."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-111-implement-evidence-validation",
+      "title": "Implement Evidence Validation",
+      "wave": "B \u2014 runtime profile foundation",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-110-implement-runtime-profile-models"
+      ],
+      "read": [
+        "security and runtime-profile specs"
+      ],
+      "write_scope": [
+        "src/nbops/runtime_profile.py",
+        "tests/unit/test_runtime_profile.py"
+      ],
+      "validation": [
+        "Negative/property tests."
+      ],
+      "done_when": [
+        "Evidence is bounded, allowlisted, redacted, finite, timestamped, and rejects malformed or sensitive values."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-112-implement-adapter-registry",
+      "title": "Implement Adapter Registry",
+      "wave": "B \u2014 runtime profile foundation",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-111-implement-evidence-validation"
+      ],
+      "read": [
+        "adapter and merge design"
+      ],
+      "write_scope": [
+        "src/nbops/adapters/",
+        "tests/unit/test_adapter_registry.py"
+      ],
+      "validation": [
+        "Registry order, timeout, cardinality, failure, and conflict tests."
+      ],
+      "done_when": [
+        "Adapters contribute evidence and capabilities deterministically; conflicts and failures remain isolated."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-113-implement-support-tier-evaluator",
+      "title": "Implement Support Tier Evaluator",
+      "wave": "B \u2014 runtime profile foundation",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-110-implement-runtime-profile-models"
+      ],
+      "read": [
+        "support-tier requirements and validation matrix"
+      ],
+      "write_scope": [
+        "src/nbops/support.py",
+        "tests/unit/test_support_tiers.py"
+      ],
+      "validation": [
+        "Tier promotion/downgrade tests."
+      ],
+      "done_when": [
+        "Support tiers are derived from named evidence gates and expose stale/blocked status."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-114-persist-profile-and-scope",
+      "title": "Persist Profile And Scope",
+      "wave": "B \u2014 runtime profile foundation",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-110-implement-runtime-profile-models"
+      ],
+      "read": [
+        "store/export schemas and migration plan"
+      ],
+      "write_scope": [
+        "src/nbops/stores/",
+        "src/nbops/exports/",
+        "schemas/",
+        "tests/unit/test_sqlite_store.py",
+        "tests/unit/test_export_queries.py"
+      ],
+      "validation": [
+        "Schema migration, golden read/write, and deterministic export tests."
+      ],
+      "done_when": [
+        "Run metadata and portable artifacts retain profile/scope/version/limitations without breaking legacy reads."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-115-expose-read-only-profile",
+      "title": "Expose Read Only Profile",
+      "wave": "B \u2014 runtime profile foundation",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-112-implement-adapter-registry",
+        "TASK-114-persist-profile-and-scope"
+      ],
+      "read": [
+        "public API compatibility policy"
+      ],
+      "write_scope": [
+        "src/nbops/observer.py",
+        "src/nbops/api.py",
+        "src/nbops/__init__.py"
+      ],
+      "validation": [
+        "API/import compatibility tests."
+      ],
+      "done_when": [
+        "Callers can inspect a read-only profile and capability view without changing current observer calls."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-120-implement-generic-python-adapter",
+      "title": "Implement Generic Python Adapter",
+      "wave": "C \u2014 environments, scope, and storage",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-112-implement-adapter-registry"
+      ],
+      "read": [
+        "generic fallback requirements"
+      ],
+      "write_scope": [
+        "src/nbops/adapters/generic_python.py",
+        "tests/unit/test_generic_adapter.py"
+      ],
+      "validation": [
+        "Unknown-provider and no-IPython tests."
+      ],
+      "done_when": [
+        "Every runtime receives a truthful generic Python/process/container-visible baseline."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-121-implement-ipython-adapter",
+      "title": "Implement Ipython Adapter",
+      "wave": "C \u2014 environments, scope, and storage",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-112-implement-adapter-registry"
+      ],
+      "read": [
+        "IPython display evidence and static baseline"
+      ],
+      "write_scope": [
+        "src/nbops/adapters/ipython.py",
+        "tests/unit/test_ipython_adapter.py"
+      ],
+      "validation": [
+        "IPython present/absent/malformed tests."
+      ],
+      "done_when": [
+        "IPython capability is detected without implying Jupyter/provider/server identity."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-122-extract-colab-adapter",
+      "title": "Extract Colab Adapter",
+      "wave": "C \u2014 environments, scope, and storage",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-106-implement-nbops-identity-migration",
+        "TASK-103-freeze-colab-compatibility-fixtures",
+        "TASK-112-implement-adapter-registry"
+      ],
+      "read": [
+        "current Colab runtime/config/Drive/TPU/diagnostic/comm paths"
+      ],
+      "write_scope": [
+        "src/nbops/adapters/colab.py",
+        "src/nbops/collectors/",
+        "src/nbops/diagnostics/",
+        "src/nbops/ui/"
+      ],
+      "validation": [
+        "Full Colab compatibility fixture suite and local fail-closed harness."
+      ],
+      "done_when": [
+        "Colab-specific behavior is adapter-owned under `nbops` while frozen Colab behavior and legacy compatibility fixtures remain green."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-123-implement-measurement-scope",
+      "title": "Implement Measurement Scope",
+      "wave": "C \u2014 environments, scope, and storage",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-110-implement-runtime-profile-models",
+        "TASK-120-implement-generic-python-adapter"
+      ],
+      "read": [
+        "measurement-scope requirements"
+      ],
+      "write_scope": [
+        "src/nbops/collectors/",
+        "src/nbops/models.py",
+        "tests/unit/"
+      ],
+      "validation": [
+        "Scope/limit tests across process, container, unknown, and optional server evidence."
+      ],
+      "done_when": [
+        "Metrics, summaries, reports, and exports preserve truthful scope and limit provenance."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-124-implement-storage-profile-registry",
+      "title": "Implement Storage Profile Registry",
+      "wave": "C \u2014 environments, scope, and storage",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-112-implement-adapter-registry"
+      ],
+      "read": [
+        "storage-profile requirements and migration"
+      ],
+      "write_scope": [
+        "src/nbops/storage_profiles.py",
+        "src/nbops/config.py",
+        "tests/unit/test_storage_profiles.py"
+      ],
+      "validation": [
+        "Path, persistence, staging, alias, and preflight tests."
+      ],
+      "done_when": [
+        "Locations are classified safely and working/artifact destinations preserve legacy output behavior."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-125-implement-deepnote-preview-adapter",
+      "title": "Implement Deepnote Preview Adapter",
+      "wave": "C \u2014 environments, scope, and storage",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-124-implement-storage-profile-registry",
+        "TASK-121-implement-ipython-adapter"
+      ],
+      "read": [
+        "Deepnote evidence plan"
+      ],
+      "write_scope": [
+        "src/nbops/adapters/deepnote.py",
+        "tests/unit/test_deepnote_adapter.py"
+      ],
+      "validation": [
+        "Fixture tests plus representative Deepnote runtime validation before promotion."
+      ],
+      "done_when": [
+        "Deepnote detection and `/work`/`/tmp` guidance are bounded, read-only, preview-tier, and fail back to generic behavior."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-126-implement-jupyter-profile-adapter",
+      "title": "Implement Jupyter Profile Adapter",
+      "wave": "C \u2014 environments, scope, and storage",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-121-implement-ipython-adapter"
+      ],
+      "read": [
+        "Jupyter architecture boundary"
+      ],
+      "write_scope": [
+        "src/nbops/adapters/jupyter.py",
+        "tests/unit/test_jupyter_adapter.py"
+      ],
+      "validation": [
+        "Local JupyterLab/Notebook 7 fixtures and runtime smoke."
+      ],
+      "done_when": [
+        "Jupyter frontend/kernel evidence is separate from server/provider/host claims."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-127-spike-optional-server-provider",
+      "title": "Spike Optional Server Provider",
+      "wave": "C \u2014 environments, scope, and storage",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-126-implement-jupyter-profile-adapter"
+      ],
+      "read": [
+        "server extension boundary and security requirements"
+      ],
+      "write_scope": [
+        "packages/jupyter-server-provider/",
+        "docs/planning/generalize-notebook-runtime-observer/jupyter-server-extension-boundary.md",
+        "tests/integration/"
+      ],
+      "validation": [
+        "Authn/authz, no-public-bind, least-privilege, disable, and absence fallback tests."
+      ],
+      "done_when": [
+        "An explicit authenticated read-only provider can supply bounded server evidence or the spike records a no-go decision."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-128-generalize-platform-diagnostics",
+      "title": "Generalize Platform Diagnostics",
+      "wave": "C \u2014 environments, scope, and storage",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-123-implement-measurement-scope",
+        "TASK-124-implement-storage-profile-registry"
+      ],
+      "read": [
+        "diagnostics requirements and catalog"
+      ],
+      "write_scope": [
+        "src/nbops/diagnostics/",
+        "tests/unit/test_diagnostics.py"
+      ],
+      "validation": [
+        "Catalog fixtures across generic, Colab, Deepnote, Jupyter, stale, and conflicting profiles."
+      ],
+      "done_when": [
+        "Platform findings activate only from required evidence and generic copy remains available."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-130-unify-semantic-dashboard-model",
+      "title": "Unify Semantic Dashboard Model",
+      "wave": "D \u2014 display and accessibility",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-114-persist-profile-and-scope",
+        "TASK-123-implement-measurement-scope"
+      ],
+      "read": [
+        "dashboard protocol and static UI"
+      ],
+      "write_scope": [
+        "src/nbops/ui/",
+        "packages/dashboard-ui/",
+        "schemas/dashboard-message.schema.json"
+      ],
+      "validation": [
+        "Python/JSON Schema/TypeScript parity and snapshot golden tests."
+      ],
+      "done_when": [
+        "Static and enhanced transports consume one bounded semantic snapshot containing scope/profile/support limitations."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-131-regress-static-universal-baseline",
+      "title": "Regress Static Universal Baseline",
+      "wave": "D \u2014 display and accessibility",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-130-unify-semantic-dashboard-model"
+      ],
+      "read": [
+        "static display requirements"
+      ],
+      "write_scope": [
+        "src/nbops/ui/dashboard.py",
+        "src/nbops/ui/fallback.py",
+        "tests/unit/test_ui_dashboard.py"
+      ],
+      "validation": [
+        "No-network browser, semantic, theme, reduced-motion, forced-color, and fallback tests."
+      ],
+      "done_when": [
+        "Text/static HTML/SVG/table output remains local, script-free, accessible, and provider-neutral."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-132-implement-transport-capability-registry",
+      "title": "Implement Transport Capability Registry",
+      "wave": "D \u2014 display and accessibility",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-130-unify-semantic-dashboard-model",
+        "TASK-112-implement-adapter-registry"
+      ],
+      "read": [
+        "transport negotiation requirements"
+      ],
+      "write_scope": [
+        "src/nbops/ui/transports.py",
+        "tests/unit/test_display_transports.py"
+      ],
+      "validation": [
+        "Capability, selection, activation-declined, failure, and offline tests."
+      ],
+      "done_when": [
+        "Only available and approved transports activate; failure returns to static output without affecting observation."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-133-keep-colab-comm-experimental",
+      "title": "Keep Colab Comm Experimental",
+      "wave": "D \u2014 display and accessibility",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-122-extract-colab-adapter",
+        "TASK-132-implement-transport-capability-registry"
+      ],
+      "read": [
+        "existing comm spike and support gates"
+      ],
+      "write_scope": [
+        "src/nbops/ui/colab_comm.py",
+        "tests/unit/test_colab_comm.py"
+      ],
+      "validation": [
+        "Mocked regressions plus representative managed-Colab lifecycle matrix."
+      ],
+      "done_when": [
+        "Direct comm remains explicit/non-default until managed Colab evidence satisfies promotion gates."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-134-validate-semantic-parity",
+      "title": "Validate Semantic Parity",
+      "wave": "D \u2014 display and accessibility",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-131-regress-static-universal-baseline",
+        "TASK-132-implement-transport-capability-registry"
+      ],
+      "read": [
+        "accessibility and parity requirements"
+      ],
+      "write_scope": [
+        "tests/accessibility/",
+        "tests/integration/",
+        "scripts/run_browser_smoke.py"
+      ],
+      "validation": [
+        "Automated browser checks plus manual AT plan."
+      ],
+      "done_when": [
+        "Every promoted chart has equivalent summary/table/CSV semantics and unavailable/scope labels across transports."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-135-enforce-cross-platform-payload-bounds",
+      "title": "Enforce Cross Platform Payload Bounds",
+      "wave": "D \u2014 display and accessibility",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-130-unify-semantic-dashboard-model"
+      ],
+      "read": [
+        "boundedness/security requirements"
+      ],
+      "write_scope": [
+        "src/nbops/ui/",
+        "tests/security/"
+      ],
+      "validation": [
+        "Cardinality, size, malformed-message, injection, and recovery tests."
+      ],
+      "done_when": [
+        "Profile evidence, histories, tables, labels, errors, and transport messages remain bounded under hostile provider input."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-140-migrate-run-and-export-schemas",
+      "title": "Migrate Run And Export Schemas",
+      "wave": "E \u2014 migration, examples, and adoption",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-114-persist-profile-and-scope"
+      ],
+      "read": [
+        "migration requirements"
+      ],
+      "write_scope": [
+        "schemas/",
+        "src/nbops/schemas/",
+        "src/nbops/stores/",
+        "src/nbops/exports/"
+      ],
+      "validation": [
+        "Old/new fixture matrix and schema validation."
+      ],
+      "done_when": [
+        "New schemas are additive/versioned, use current `nbops` identity, and preserve legacy reader behavior."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-141-preserve-legacy-bundle-readers",
+      "title": "Preserve Legacy Bundle Readers",
+      "wave": "E \u2014 migration, examples, and adoption",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-140-migrate-run-and-export-schemas"
+      ],
+      "read": [
+        "legacy bundles and reports"
+      ],
+      "write_scope": [
+        "src/nbops/exports/",
+        "tests/fixtures/legacy/",
+        "tests/contract/"
+      ],
+      "validation": [
+        "Golden legacy archive/readback tests."
+      ],
+      "done_when": [
+        "Prior bundles/databases/reports open with unknown/legacy profile metadata and no fabricated values."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-142-preserve-colab-behavior-and-legacy-compatibility",
+      "title": "Preserve Colab Behavior and Bounded Legacy Compatibility",
+      "wave": "E \u2014 migration, examples, and adoption",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-106-implement-nbops-identity-migration",
+        "TASK-115-expose-read-only-profile",
+        "TASK-122-extract-colab-adapter",
+        "TASK-124-implement-storage-profile-registry"
+      ],
+      "read": [
+        "canonical nbops API, verified migration fixtures, Colab defaults, notebook snippets, and legacy artifacts"
+      ],
+      "write_scope": [
+        "src/nbops/",
+        "src/colab_observer/ (legacy shim only)",
+        "notebooks/",
+        "examples/",
+        "tests/contract/"
+      ],
+      "validation": [
+        "Three-cell `nbops` snippet, legacy fixture, clean wheel, API signature, output-default, and identity-drift tests."
+      ],
+      "done_when": [
+        "Current nbops Colab notebooks retain supported defaults and lifecycle behavior; any verified temporary legacy shim delegates to nbops and has removal criteria; new profile behavior remains optional."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-143-add-platform-evidence-examples",
+      "title": "Add Platform Evidence Examples",
+      "wave": "E \u2014 migration, examples, and adoption",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-125-implement-deepnote-preview-adapter",
+        "TASK-126-implement-jupyter-profile-adapter",
+        "TASK-142-preserve-colab-behavior-and-legacy-compatibility"
+      ],
+      "read": [
+        "support matrix and shared snippets"
+      ],
+      "write_scope": [
+        "examples/",
+        "notebooks/"
+      ],
+      "validation": [
+        "Notebook/example source sync and supported-runtime smoke tests."
+      ],
+      "done_when": [
+        "Examples use `nbops` and demonstrate generic, Jupyter, Deepnote preview, Colab, degraded, and scope behavior without unsupported claims."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-144-generate-evidence-backed-support-docs",
+      "title": "Generate Evidence Backed Support Docs",
+      "wave": "E \u2014 migration, examples, and adoption",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-113-implement-support-tier-evaluator",
+        "TASK-143-add-platform-evidence-examples"
+      ],
+      "read": [
+        "support matrix and docs plan"
+      ],
+      "write_scope": [
+        "apps/docs/content/docs/",
+        "docs/planning/generalize-notebook-runtime-observer/platform-support-matrix.md"
+      ],
+      "validation": [
+        "Docs contract, stale evidence, and claim-drift tests."
+      ],
+      "done_when": [
+        "Docs labels and compatibility tables are generated or checked against support evidence records."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-145-validate-nbops-public-identity-readiness",
+      "title": "Validate nbops Public Identity Readiness",
+      "wave": "E \u2014 migration, examples, and adoption",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-106-implement-nbops-identity-migration",
+        "TASK-144-generate-evidence-backed-support-docs",
+        "TASK-150-run-profile-contract-matrix"
+      ],
+      "read": [
+        "ADR-016, package metadata, support evidence, migration plan, and current namespace, ownership, and legal-review evidence"
+      ],
+      "write_scope": [
+        "docs/planning/generalize-notebook-runtime-observer/naming-packaging-strategy.md",
+        "docs/planning/generalize-notebook-runtime-observer/decisions/",
+        "docs/planning/generalize-notebook-runtime-observer/validation.md"
+      ],
+      "validation": [
+        "Identity consistency scan, package/repository/domain evidence review, migration completeness checklist, and approval-boundary review."
+      ],
+      "done_when": [
+        "Canonical local identity remains nbops; external registry, repository, domain, support, and trademark readiness is accepted, blocked, or deferred with evidence; no external action occurs in this task."
+      ],
+      "stop_conditions": [
+        "Stop before remote repository creation or rename, registry reservation, domain action, publication, announcement, or legal conclusion without explicit approval and appropriate review."
+      ],
+      "approval_required": true
+    },
+    {
+      "id": "TASK-146-evaluate-optional-package-extras",
+      "title": "Evaluate Optional Package Extras",
+      "wave": "E \u2014 migration, examples, and adoption",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-127-spike-optional-server-provider",
+        "TASK-144-generate-evidence-backed-support-docs"
+      ],
+      "read": [
+        "package strategy"
+      ],
+      "write_scope": [
+        "pyproject.toml",
+        "docs/planning/generalize-notebook-runtime-observer/naming-packaging-strategy.md"
+      ],
+      "validation": [
+        "Build metadata and clean-install matrix."
+      ],
+      "done_when": [
+        "Optional extras are minimal, evidence-backed, and do not split the core distribution."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-150-run-profile-contract-matrix",
+      "title": "Run Profile Contract Matrix",
+      "wave": "F \u2014 representative validation and release",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-128-generalize-platform-diagnostics",
+        "TASK-135-enforce-cross-platform-payload-bounds",
+        "TASK-141-preserve-legacy-bundle-readers"
+      ],
+      "read": [
+        "all profile/scope/storage/support contracts"
+      ],
+      "write_scope": [
+        "tests/",
+        "validation/"
+      ],
+      "validation": [
+        "Hermetic full repository gate and coverage."
+      ],
+      "done_when": [
+        "Unit, property, mutation, golden, failure, security, and compatibility gates pass."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-151-run-generic-python-ipython-runtime",
+      "title": "Run Generic Python Ipython Runtime",
+      "wave": "F \u2014 representative validation and release",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-120-implement-generic-python-adapter",
+        "TASK-121-implement-ipython-adapter",
+        "TASK-131-regress-static-universal-baseline"
+      ],
+      "read": [
+        "generic and IPython runtime harnesses"
+      ],
+      "write_scope": [
+        "validation/generic-python/",
+        "validation/ipython/"
+      ],
+      "validation": [
+        "Clean source/wheel runtime smokes."
+      ],
+      "done_when": [
+        "Plain Python and IPython evidence confirms fallback, static display, persistence, export, and no-network behavior."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-152-run-local-jupyter-runtime",
+      "title": "Run Local Jupyter Runtime",
+      "wave": "F \u2014 representative validation and release",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-126-implement-jupyter-profile-adapter",
+        "TASK-134-validate-semantic-parity"
+      ],
+      "read": [
+        "JupyterLab and Notebook 7 harnesses"
+      ],
+      "write_scope": [
+        "validation/jupyter/"
+      ],
+      "validation": [
+        "Captured environment and clean-wheel matrix."
+      ],
+      "done_when": [
+        "Supported Python versions and representative JupyterLab/Notebook 7 sessions pass lifecycle, scope, static UI, export, and failure tests."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-153-run-managed-colab-runtime",
+      "title": "Run Managed Colab Runtime",
+      "wave": "F \u2014 representative validation and release",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-122-extract-colab-adapter",
+        "TASK-133-keep-colab-comm-experimental",
+        "TASK-142-preserve-colab-behavior-and-legacy-compatibility"
+      ],
+      "read": [
+        "managed Colab harness"
+      ],
+      "write_scope": [
+        "validation/colab/"
+      ],
+      "validation": [
+        "Managed runtime evidence and overhead matrix."
+      ],
+      "done_when": [
+        "CPU and available accelerator/Drive/comm paths are validated in real managed Colab without prohibited behavior."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-154-run-deepnote-runtime",
+      "title": "Run Deepnote Runtime",
+      "wave": "F \u2014 representative validation and release",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-125-implement-deepnote-preview-adapter",
+        "TASK-134-validate-semantic-parity",
+        "TASK-143-add-platform-evidence-examples"
+      ],
+      "read": [
+        "Deepnote harness"
+      ],
+      "write_scope": [
+        "validation/deepnote/"
+      ],
+      "validation": [
+        "Representative Deepnote evidence pack."
+      ],
+      "done_when": [
+        "A real Deepnote project validates static display, profile evidence, `/tmp` working behavior, `/work` finalization, export, and failure states."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-155-run-jupyterhub-server-boundary",
+      "title": "Run Jupyterhub Server Boundary",
+      "wave": "F \u2014 representative validation and release",
+      "parallel_safe": true,
+      "depends_on": [
+        "TASK-127-spike-optional-server-provider",
+        "TASK-152-run-local-jupyter-runtime"
+      ],
+      "read": [
+        "JupyterHub/server provider harness"
+      ],
+      "write_scope": [
+        "validation/jupyterhub/"
+      ],
+      "validation": [
+        "Representative deployment evidence or explicit no-go result."
+      ],
+      "done_when": [
+        "Kernel-only behavior is truthful and any optional server provider passes authn/authz and scope tests."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-156-run-security-privacy-negative-matrix",
+      "title": "Run Security Privacy Negative Matrix",
+      "wave": "F \u2014 representative validation and release",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-150-run-profile-contract-matrix"
+      ],
+      "read": [
+        "security requirements and prior negative suites"
+      ],
+      "write_scope": [
+        "tests/security/",
+        "validation/security/"
+      ],
+      "validation": [
+        "Security negative matrix and archive audit."
+      ],
+      "done_when": [
+        "Detection, adapters, storage, transports, server integration, artifacts, and docs preserve privacy and prohibited-behavior boundaries."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-157-run-cross-platform-performance-matrix",
+      "title": "Run Cross Platform Performance Matrix",
+      "wave": "F \u2014 representative validation and release",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-151-run-generic-python-ipython-runtime",
+        "TASK-152-run-local-jupyter-runtime",
+        "TASK-153-run-managed-colab-runtime",
+        "TASK-154-run-deepnote-runtime"
+      ],
+      "read": [
+        "performance plan"
+      ],
+      "write_scope": [
+        "validation/performance/"
+      ],
+      "validation": [
+        "Per-environment benchmark/soak artifacts."
+      ],
+      "done_when": [
+        "Observer-on/off overhead, lag, memory, persistence, and export behavior are measured per platform without borrowing thresholds."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    },
+    {
+      "id": "TASK-158-make-generalization-release-decision",
+      "title": "Make Generalization Release Decision",
+      "wave": "F \u2014 representative validation and release",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-144-generate-evidence-backed-support-docs",
+        "TASK-150-run-profile-contract-matrix",
+        "TASK-156-run-security-privacy-negative-matrix",
+        "TASK-157-run-cross-platform-performance-matrix"
+      ],
+      "read": [
+        "all evidence, risks, and `nbops` public-identity readiness gate"
+      ],
+      "write_scope": [
+        "docs/planning/generalize-notebook-runtime-observer/finalization-report.md",
+        "docs/planning/generalize-notebook-runtime-observer/PLANS.md",
+        "openspec/changes/generalize-notebook-runtime-observer/tasks.md"
+      ],
+      "validation": [
+        "Final reconciliation, artifact audit, and human review."
+      ],
+      "done_when": [
+        "Every task is complete, evidence-blocked, or deferred; support tiers and release/naming decisions are truthful; no publish/archive action occurs without approval."
+      ],
+      "stop_conditions": [
+        "Stop for approval-gated installs, network, server enablement, external repository/registry/domain action, Git mutation, publishing, deployment, or archive/sync."
+      ]
+    }
+  ]
+}

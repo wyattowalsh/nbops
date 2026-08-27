@@ -1,8 +1,38 @@
+project:
+  name: "nbops"
+  description: "Local-first runtime observability for Python notebooks, with Google Colab as the flagship adapter."
+workflow:
+  default_rigor: "full"
+  require_strict_validation: true
+  require_human_approval_before_apply: true
 schema: spec-driven
-
 context: |
-  nbops is a domain-general Jupyter notebook operations toolkit (library, Typer
-  CLI, FastAPI). Stack: Python >=3.12, uv, hatchling, pydantic v2, pydantic-settings,
-  loguru, tenacity, tqdm, ruff, ty, pytest. Keep compute_stats / nbops stats /
-  POST /notebooks/stats as the compatibility surface. Out of scope: full nbconvert
-  HTML/PDF, JupyterHub/Binder, Kaggle publishing.
+  Canonical product is local-first runtime observability (observe/display/export)
+  with Google Colab as the flagship adapter. The repository also preserves a
+  notebook operations catalog (compute_stats / nbops stats / POST /notebooks/stats,
+  lint, convert, FastAPI). Stack: Python >=3.12, uv, hatchling, pydantic v2,
+  loguru, tenacity, tqdm, ruff, ty, pytest. Historical OpenSpec ID
+  build-colab-observer is provenance only. Do not apply/sync/archive without
+  implementation evidence and explicit approval.
+specs:
+  domains:
+    - runtime-profiles
+    - measurement-scope
+    - platform-adapters
+    - storage-profiles
+    - notebook-display
+    - compatibility-support
+    - platform-diagnostics
+    - migration-compatibility
+    - security-policy
+    - package-identity
+    - notebook-operations
+validation:
+  commands:
+    - "openspec validate generalize-notebook-runtime-observer --strict"
+    - "openspec validate --all --strict"
+notes:
+  - "Canonical product, distribution, import, CLI, and source target identity is nbops."
+  - "The build-colab-observer change ID remains stable historical provenance."
+  - "Do not apply, sync, or archive without complete implementation evidence and explicit approval."
+

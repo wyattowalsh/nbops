@@ -1,0 +1,1258 @@
+{
+  "change_id": "build-colab-observer",
+  "title": "Build colab-observer",
+  "rigor": "full",
+  "rigor_reason": "Public Python API, cross-language UI, security/privacy, accessibility, release automation, and platform compatibility require full rigor.",
+  "domains": [
+    "runtime-observability",
+    "metrics-collectors",
+    "notebook-snippet",
+    "dashboard-ux",
+    "accessibility",
+    "diagnostics",
+    "export-reporting",
+    "docs-site",
+    "quality-automation",
+    "ci-cd",
+    "security-policy"
+  ],
+  "current_specs_read": [],
+  "artifacts": {
+    "proposal": "openspec/changes/build-colab-observer/proposal.md",
+    "design": "openspec/changes/build-colab-observer/design.md",
+    "tasks": "openspec/changes/build-colab-observer/tasks.md",
+    "delta_specs": [
+      {
+        "domain": "runtime-observability",
+        "path": "openspec/changes/build-colab-observer/specs/runtime-observability/spec.md"
+      },
+      {
+        "domain": "metrics-collectors",
+        "path": "openspec/changes/build-colab-observer/specs/metrics-collectors/spec.md"
+      },
+      {
+        "domain": "notebook-snippet",
+        "path": "openspec/changes/build-colab-observer/specs/notebook-snippet/spec.md"
+      },
+      {
+        "domain": "dashboard-ux",
+        "path": "openspec/changes/build-colab-observer/specs/dashboard-ux/spec.md"
+      },
+      {
+        "domain": "accessibility",
+        "path": "openspec/changes/build-colab-observer/specs/accessibility/spec.md"
+      },
+      {
+        "domain": "diagnostics",
+        "path": "openspec/changes/build-colab-observer/specs/diagnostics/spec.md"
+      },
+      {
+        "domain": "export-reporting",
+        "path": "openspec/changes/build-colab-observer/specs/export-reporting/spec.md"
+      },
+      {
+        "domain": "docs-site",
+        "path": "openspec/changes/build-colab-observer/specs/docs-site/spec.md"
+      },
+      {
+        "domain": "quality-automation",
+        "path": "openspec/changes/build-colab-observer/specs/quality-automation/spec.md"
+      },
+      {
+        "domain": "ci-cd",
+        "path": "openspec/changes/build-colab-observer/specs/ci-cd/spec.md"
+      },
+      {
+        "domain": "security-policy",
+        "path": "openspec/changes/build-colab-observer/specs/security-policy/spec.md"
+      }
+    ]
+  },
+  "requirements_trace": [
+    {
+      "requirement": "REQ-RUNTIME_OBSERVABILITY-01",
+      "scenarios": [
+        "REQ-RUNTIME_OBSERVABILITY-01-S01",
+        "REQ-RUNTIME_OBSERVABILITY-01-S02",
+        "REQ-RUNTIME_OBSERVABILITY-01-S03",
+        "REQ-RUNTIME_OBSERVABILITY-01-S04"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-011-implement-observer-lifecycle",
+        "TASK-012-implement-sampler-queue",
+        "TASK-014-wire-core-pipeline",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix",
+        "TASK-075-finalize-verify-sync-readiness"
+      ]
+    },
+    {
+      "requirement": "REQ-RUNTIME_OBSERVABILITY-02",
+      "scenarios": [
+        "REQ-RUNTIME_OBSERVABILITY-02-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-011-implement-observer-lifecycle",
+        "TASK-012-implement-sampler-queue",
+        "TASK-014-wire-core-pipeline",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix",
+        "TASK-075-finalize-verify-sync-readiness"
+      ]
+    },
+    {
+      "requirement": "REQ-RUNTIME_OBSERVABILITY-03",
+      "scenarios": [
+        "REQ-RUNTIME_OBSERVABILITY-03-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-011-implement-observer-lifecycle",
+        "TASK-012-implement-sampler-queue",
+        "TASK-014-wire-core-pipeline",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix",
+        "TASK-075-finalize-verify-sync-readiness"
+      ]
+    },
+    {
+      "requirement": "REQ-RUNTIME_OBSERVABILITY-04",
+      "scenarios": [
+        "REQ-RUNTIME_OBSERVABILITY-04-S01",
+        "REQ-RUNTIME_OBSERVABILITY-04-S02",
+        "REQ-RUNTIME_OBSERVABILITY-04-S03",
+        "REQ-RUNTIME_OBSERVABILITY-04-S04"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-011-implement-observer-lifecycle",
+        "TASK-012-implement-sampler-queue",
+        "TASK-014-wire-core-pipeline",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix",
+        "TASK-075-finalize-verify-sync-readiness"
+      ]
+    },
+    {
+      "requirement": "REQ-RUNTIME_OBSERVABILITY-05",
+      "scenarios": [
+        "REQ-RUNTIME_OBSERVABILITY-05-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-011-implement-observer-lifecycle",
+        "TASK-012-implement-sampler-queue",
+        "TASK-014-wire-core-pipeline",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix",
+        "TASK-075-finalize-verify-sync-readiness"
+      ]
+    },
+    {
+      "requirement": "REQ-METRICS_COLLECTORS-01",
+      "scenarios": [
+        "REQ-METRICS_COLLECTORS-01-S01",
+        "REQ-METRICS_COLLECTORS-01-S02",
+        "REQ-METRICS_COLLECTORS-01-S03"
+      ],
+      "tasks": [
+        "TASK-004-add-contract-fixtures",
+        "TASK-010-implement-models-config",
+        "TASK-020-core-system-collectors",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-023-framework-collectors",
+        "TASK-024-tpu-drive-collectors",
+        "TASK-025-integrate-collector-registry",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-METRICS_COLLECTORS-02",
+      "scenarios": [
+        "REQ-METRICS_COLLECTORS-02-S01"
+      ],
+      "tasks": [
+        "TASK-004-add-contract-fixtures",
+        "TASK-010-implement-models-config",
+        "TASK-020-core-system-collectors",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-023-framework-collectors",
+        "TASK-024-tpu-drive-collectors",
+        "TASK-025-integrate-collector-registry",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-METRICS_COLLECTORS-03",
+      "scenarios": [
+        "REQ-METRICS_COLLECTORS-03-S01",
+        "REQ-METRICS_COLLECTORS-03-S02"
+      ],
+      "tasks": [
+        "TASK-004-add-contract-fixtures",
+        "TASK-010-implement-models-config",
+        "TASK-020-core-system-collectors",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-023-framework-collectors",
+        "TASK-024-tpu-drive-collectors",
+        "TASK-025-integrate-collector-registry",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-METRICS_COLLECTORS-04",
+      "scenarios": [
+        "REQ-METRICS_COLLECTORS-04-S01",
+        "REQ-METRICS_COLLECTORS-04-S02"
+      ],
+      "tasks": [
+        "TASK-004-add-contract-fixtures",
+        "TASK-010-implement-models-config",
+        "TASK-020-core-system-collectors",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-023-framework-collectors",
+        "TASK-024-tpu-drive-collectors",
+        "TASK-025-integrate-collector-registry",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-METRICS_COLLECTORS-05",
+      "scenarios": [
+        "REQ-METRICS_COLLECTORS-05-S01"
+      ],
+      "tasks": [
+        "TASK-004-add-contract-fixtures",
+        "TASK-010-implement-models-config",
+        "TASK-020-core-system-collectors",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-023-framework-collectors",
+        "TASK-024-tpu-drive-collectors",
+        "TASK-025-integrate-collector-registry",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-METRICS_COLLECTORS-06",
+      "scenarios": [
+        "REQ-METRICS_COLLECTORS-06-S01",
+        "REQ-METRICS_COLLECTORS-06-S02"
+      ],
+      "tasks": [
+        "TASK-004-add-contract-fixtures",
+        "TASK-010-implement-models-config",
+        "TASK-020-core-system-collectors",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-023-framework-collectors",
+        "TASK-024-tpu-drive-collectors",
+        "TASK-025-integrate-collector-registry",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-METRICS_COLLECTORS-07",
+      "scenarios": [
+        "REQ-METRICS_COLLECTORS-07-S01"
+      ],
+      "tasks": [
+        "TASK-004-add-contract-fixtures",
+        "TASK-010-implement-models-config",
+        "TASK-020-core-system-collectors",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-023-framework-collectors",
+        "TASK-024-tpu-drive-collectors",
+        "TASK-025-integrate-collector-registry",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-NOTEBOOK_SNIPPET-01",
+      "scenarios": [
+        "REQ-NOTEBOOK_SNIPPET-01-S01"
+      ],
+      "tasks": [
+        "TASK-050-create-colab-snippets",
+        "TASK-051-create-example-notebooks",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-NOTEBOOK_SNIPPET-02",
+      "scenarios": [
+        "REQ-NOTEBOOK_SNIPPET-02-S01"
+      ],
+      "tasks": [
+        "TASK-050-create-colab-snippets",
+        "TASK-051-create-example-notebooks",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-NOTEBOOK_SNIPPET-03",
+      "scenarios": [
+        "REQ-NOTEBOOK_SNIPPET-03-S01",
+        "REQ-NOTEBOOK_SNIPPET-03-S02"
+      ],
+      "tasks": [
+        "TASK-050-create-colab-snippets",
+        "TASK-051-create-example-notebooks",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-NOTEBOOK_SNIPPET-04",
+      "scenarios": [
+        "REQ-NOTEBOOK_SNIPPET-04-S01"
+      ],
+      "tasks": [
+        "TASK-050-create-colab-snippets",
+        "TASK-051-create-example-notebooks",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-NOTEBOOK_SNIPPET-05",
+      "scenarios": [
+        "REQ-NOTEBOOK_SNIPPET-05-S01"
+      ],
+      "tasks": [
+        "TASK-050-create-colab-snippets",
+        "TASK-051-create-example-notebooks",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-DASHBOARD_UX-01",
+      "scenarios": [
+        "REQ-DASHBOARD_UX-01-S01"
+      ],
+      "tasks": [
+        "TASK-040-freeze-ui-message-contract",
+        "TASK-041-build-dashboard-shell",
+        "TASK-042-build-charts-tables-controls",
+        "TASK-044-integrate-widget-transport",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-DASHBOARD_UX-02",
+      "scenarios": [
+        "REQ-DASHBOARD_UX-02-S01"
+      ],
+      "tasks": [
+        "TASK-040-freeze-ui-message-contract",
+        "TASK-041-build-dashboard-shell",
+        "TASK-042-build-charts-tables-controls",
+        "TASK-044-integrate-widget-transport",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-DASHBOARD_UX-03",
+      "scenarios": [
+        "REQ-DASHBOARD_UX-03-S01"
+      ],
+      "tasks": [
+        "TASK-040-freeze-ui-message-contract",
+        "TASK-041-build-dashboard-shell",
+        "TASK-042-build-charts-tables-controls",
+        "TASK-044-integrate-widget-transport",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-DASHBOARD_UX-04",
+      "scenarios": [
+        "REQ-DASHBOARD_UX-04-S01"
+      ],
+      "tasks": [
+        "TASK-040-freeze-ui-message-contract",
+        "TASK-041-build-dashboard-shell",
+        "TASK-042-build-charts-tables-controls",
+        "TASK-044-integrate-widget-transport",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-DASHBOARD_UX-05",
+      "scenarios": [
+        "REQ-DASHBOARD_UX-05-S01"
+      ],
+      "tasks": [
+        "TASK-040-freeze-ui-message-contract",
+        "TASK-041-build-dashboard-shell",
+        "TASK-042-build-charts-tables-controls",
+        "TASK-044-integrate-widget-transport",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-DASHBOARD_UX-06",
+      "scenarios": [
+        "REQ-DASHBOARD_UX-06-S01"
+      ],
+      "tasks": [
+        "TASK-040-freeze-ui-message-contract",
+        "TASK-041-build-dashboard-shell",
+        "TASK-042-build-charts-tables-controls",
+        "TASK-044-integrate-widget-transport",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-070-run-performance-soak",
+        "TASK-072-run-colab-smoke-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-ACCESSIBILITY-01",
+      "scenarios": [
+        "REQ-ACCESSIBILITY-01-S01"
+      ],
+      "tasks": [
+        "TASK-043-implement-dashboard-accessibility",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-073-run-final-accessibility-audit"
+      ]
+    },
+    {
+      "requirement": "REQ-ACCESSIBILITY-02",
+      "scenarios": [
+        "REQ-ACCESSIBILITY-02-S01"
+      ],
+      "tasks": [
+        "TASK-043-implement-dashboard-accessibility",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-073-run-final-accessibility-audit"
+      ]
+    },
+    {
+      "requirement": "REQ-ACCESSIBILITY-03",
+      "scenarios": [
+        "REQ-ACCESSIBILITY-03-S01"
+      ],
+      "tasks": [
+        "TASK-043-implement-dashboard-accessibility",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-073-run-final-accessibility-audit"
+      ]
+    },
+    {
+      "requirement": "REQ-ACCESSIBILITY-04",
+      "scenarios": [
+        "REQ-ACCESSIBILITY-04-S01"
+      ],
+      "tasks": [
+        "TASK-043-implement-dashboard-accessibility",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-073-run-final-accessibility-audit"
+      ]
+    },
+    {
+      "requirement": "REQ-ACCESSIBILITY-05",
+      "scenarios": [
+        "REQ-ACCESSIBILITY-05-S01"
+      ],
+      "tasks": [
+        "TASK-043-implement-dashboard-accessibility",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-073-run-final-accessibility-audit"
+      ]
+    },
+    {
+      "requirement": "REQ-ACCESSIBILITY-06",
+      "scenarios": [
+        "REQ-ACCESSIBILITY-06-S01",
+        "REQ-ACCESSIBILITY-06-S02"
+      ],
+      "tasks": [
+        "TASK-043-implement-dashboard-accessibility",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-073-run-final-accessibility-audit"
+      ]
+    },
+    {
+      "requirement": "REQ-ACCESSIBILITY-07",
+      "scenarios": [
+        "REQ-ACCESSIBILITY-07-S01"
+      ],
+      "tasks": [
+        "TASK-043-implement-dashboard-accessibility",
+        "TASK-045-build-static-fallback",
+        "TASK-046-run-dashboard-integration",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-073-run-final-accessibility-audit"
+      ]
+    },
+    {
+      "requirement": "REQ-DIAGNOSTICS-01",
+      "scenarios": [
+        "REQ-DIAGNOSTICS-01-S01"
+      ],
+      "tasks": [
+        "TASK-030-implement-diagnostics-engine",
+        "TASK-031-implement-diagnostic-catalog",
+        "TASK-033-implement-reports",
+        "TASK-046-run-dashboard-integration",
+        "TASK-053-write-product-docs",
+        "TASK-070-run-performance-soak"
+      ]
+    },
+    {
+      "requirement": "REQ-DIAGNOSTICS-02",
+      "scenarios": [
+        "REQ-DIAGNOSTICS-02-S01"
+      ],
+      "tasks": [
+        "TASK-030-implement-diagnostics-engine",
+        "TASK-031-implement-diagnostic-catalog",
+        "TASK-033-implement-reports",
+        "TASK-046-run-dashboard-integration",
+        "TASK-053-write-product-docs",
+        "TASK-070-run-performance-soak"
+      ]
+    },
+    {
+      "requirement": "REQ-DIAGNOSTICS-03",
+      "scenarios": [
+        "REQ-DIAGNOSTICS-03-S01"
+      ],
+      "tasks": [
+        "TASK-030-implement-diagnostics-engine",
+        "TASK-031-implement-diagnostic-catalog",
+        "TASK-033-implement-reports",
+        "TASK-046-run-dashboard-integration",
+        "TASK-053-write-product-docs",
+        "TASK-070-run-performance-soak"
+      ]
+    },
+    {
+      "requirement": "REQ-DIAGNOSTICS-04",
+      "scenarios": [
+        "REQ-DIAGNOSTICS-04-S01"
+      ],
+      "tasks": [
+        "TASK-030-implement-diagnostics-engine",
+        "TASK-031-implement-diagnostic-catalog",
+        "TASK-033-implement-reports",
+        "TASK-046-run-dashboard-integration",
+        "TASK-053-write-product-docs",
+        "TASK-070-run-performance-soak"
+      ]
+    },
+    {
+      "requirement": "REQ-DIAGNOSTICS-05",
+      "scenarios": [
+        "REQ-DIAGNOSTICS-05-S01"
+      ],
+      "tasks": [
+        "TASK-030-implement-diagnostics-engine",
+        "TASK-031-implement-diagnostic-catalog",
+        "TASK-033-implement-reports",
+        "TASK-046-run-dashboard-integration",
+        "TASK-053-write-product-docs",
+        "TASK-070-run-performance-soak"
+      ]
+    },
+    {
+      "requirement": "REQ-DIAGNOSTICS-06",
+      "scenarios": [
+        "REQ-DIAGNOSTICS-06-S01"
+      ],
+      "tasks": [
+        "TASK-030-implement-diagnostics-engine",
+        "TASK-031-implement-diagnostic-catalog",
+        "TASK-033-implement-reports",
+        "TASK-046-run-dashboard-integration",
+        "TASK-053-write-product-docs",
+        "TASK-070-run-performance-soak"
+      ]
+    },
+    {
+      "requirement": "REQ-EXPORT_REPORTING-01",
+      "scenarios": [
+        "REQ-EXPORT_REPORTING-01-S01"
+      ],
+      "tasks": [
+        "TASK-013-implement-sqlite-store",
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-050-create-colab-snippets",
+        "TASK-070-run-performance-soak",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-EXPORT_REPORTING-02",
+      "scenarios": [
+        "REQ-EXPORT_REPORTING-02-S01"
+      ],
+      "tasks": [
+        "TASK-013-implement-sqlite-store",
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-050-create-colab-snippets",
+        "TASK-070-run-performance-soak",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-EXPORT_REPORTING-03",
+      "scenarios": [
+        "REQ-EXPORT_REPORTING-03-S01"
+      ],
+      "tasks": [
+        "TASK-013-implement-sqlite-store",
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-050-create-colab-snippets",
+        "TASK-070-run-performance-soak",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-EXPORT_REPORTING-04",
+      "scenarios": [
+        "REQ-EXPORT_REPORTING-04-S01"
+      ],
+      "tasks": [
+        "TASK-013-implement-sqlite-store",
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-050-create-colab-snippets",
+        "TASK-070-run-performance-soak",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-EXPORT_REPORTING-05",
+      "scenarios": [
+        "REQ-EXPORT_REPORTING-05-S01"
+      ],
+      "tasks": [
+        "TASK-013-implement-sqlite-store",
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-050-create-colab-snippets",
+        "TASK-070-run-performance-soak",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-EXPORT_REPORTING-06",
+      "scenarios": [
+        "REQ-EXPORT_REPORTING-06-S01",
+        "REQ-EXPORT_REPORTING-06-S02"
+      ],
+      "tasks": [
+        "TASK-013-implement-sqlite-store",
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-050-create-colab-snippets",
+        "TASK-070-run-performance-soak",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-EXPORT_REPORTING-07",
+      "scenarios": [
+        "REQ-EXPORT_REPORTING-07-S01",
+        "REQ-EXPORT_REPORTING-07-S02",
+        "REQ-EXPORT_REPORTING-07-S03"
+      ],
+      "tasks": [
+        "TASK-002-freeze-public-contracts",
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-EXPORT_REPORTING-08",
+      "scenarios": [
+        "REQ-EXPORT_REPORTING-08-S01",
+        "REQ-EXPORT_REPORTING-08-S02"
+      ],
+      "tasks": [
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-EXPORT_REPORTING-09",
+      "scenarios": [
+        "REQ-EXPORT_REPORTING-09-S01"
+      ],
+      "tasks": [
+        "TASK-002-freeze-public-contracts",
+        "TASK-004-add-contract-fixtures",
+        "TASK-010-implement-models-config",
+        "TASK-034-implement-bundle-export",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-DOCS_SITE-01",
+      "scenarios": [
+        "REQ-DOCS_SITE-01-S01"
+      ],
+      "tasks": [
+        "TASK-052-scaffold-fumadocs-site",
+        "TASK-053-write-product-docs",
+        "TASK-054-add-seo-ai-ready-docs",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-064-plan-vercel-deployment"
+      ]
+    },
+    {
+      "requirement": "REQ-DOCS_SITE-02",
+      "scenarios": [
+        "REQ-DOCS_SITE-02-S01"
+      ],
+      "tasks": [
+        "TASK-052-scaffold-fumadocs-site",
+        "TASK-053-write-product-docs",
+        "TASK-054-add-seo-ai-ready-docs",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-064-plan-vercel-deployment"
+      ]
+    },
+    {
+      "requirement": "REQ-DOCS_SITE-03",
+      "scenarios": [
+        "REQ-DOCS_SITE-03-S01"
+      ],
+      "tasks": [
+        "TASK-052-scaffold-fumadocs-site",
+        "TASK-053-write-product-docs",
+        "TASK-054-add-seo-ai-ready-docs",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-064-plan-vercel-deployment"
+      ]
+    },
+    {
+      "requirement": "REQ-DOCS_SITE-04",
+      "scenarios": [
+        "REQ-DOCS_SITE-04-S01"
+      ],
+      "tasks": [
+        "TASK-052-scaffold-fumadocs-site",
+        "TASK-053-write-product-docs",
+        "TASK-054-add-seo-ai-ready-docs",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-064-plan-vercel-deployment"
+      ]
+    },
+    {
+      "requirement": "REQ-DOCS_SITE-05",
+      "scenarios": [
+        "REQ-DOCS_SITE-05-S01"
+      ],
+      "tasks": [
+        "TASK-052-scaffold-fumadocs-site",
+        "TASK-053-write-product-docs",
+        "TASK-054-add-seo-ai-ready-docs",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-064-plan-vercel-deployment"
+      ]
+    },
+    {
+      "requirement": "REQ-DOCS_SITE-06",
+      "scenarios": [
+        "REQ-DOCS_SITE-06-S01"
+      ],
+      "tasks": [
+        "TASK-052-scaffold-fumadocs-site",
+        "TASK-053-write-product-docs",
+        "TASK-054-add-seo-ai-ready-docs",
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-064-plan-vercel-deployment"
+      ]
+    },
+    {
+      "requirement": "REQ-QUALITY_AUTOMATION-01",
+      "scenarios": [
+        "REQ-QUALITY_AUTOMATION-01-S01"
+      ],
+      "tasks": [
+        "TASK-003-scaffold-workspaces",
+        "TASK-004-add-contract-fixtures",
+        "TASK-060-configure-pre-commit",
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-QUALITY_AUTOMATION-02",
+      "scenarios": [
+        "REQ-QUALITY_AUTOMATION-02-S01"
+      ],
+      "tasks": [
+        "TASK-003-scaffold-workspaces",
+        "TASK-004-add-contract-fixtures",
+        "TASK-060-configure-pre-commit",
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-QUALITY_AUTOMATION-03",
+      "scenarios": [
+        "REQ-QUALITY_AUTOMATION-03-S01",
+        "REQ-QUALITY_AUTOMATION-03-S02"
+      ],
+      "tasks": [
+        "TASK-003-scaffold-workspaces",
+        "TASK-004-add-contract-fixtures",
+        "TASK-060-configure-pre-commit",
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-QUALITY_AUTOMATION-04",
+      "scenarios": [
+        "REQ-QUALITY_AUTOMATION-04-S01"
+      ],
+      "tasks": [
+        "TASK-003-scaffold-workspaces",
+        "TASK-004-add-contract-fixtures",
+        "TASK-060-configure-pre-commit",
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-QUALITY_AUTOMATION-05",
+      "scenarios": [
+        "REQ-QUALITY_AUTOMATION-05-S01"
+      ],
+      "tasks": [
+        "TASK-003-scaffold-workspaces",
+        "TASK-004-add-contract-fixtures",
+        "TASK-060-configure-pre-commit",
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-QUALITY_AUTOMATION-06",
+      "scenarios": [
+        "REQ-QUALITY_AUTOMATION-06-S01"
+      ],
+      "tasks": [
+        "TASK-003-scaffold-workspaces",
+        "TASK-004-add-contract-fixtures",
+        "TASK-060-configure-pre-commit",
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-CI_CD-01",
+      "scenarios": [
+        "REQ-CI_CD-01-S01"
+      ],
+      "tasks": [
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-064-plan-vercel-deployment",
+        "TASK-065-plan-package-release",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-CI_CD-02",
+      "scenarios": [
+        "REQ-CI_CD-02-S01"
+      ],
+      "tasks": [
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-064-plan-vercel-deployment",
+        "TASK-065-plan-package-release",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-CI_CD-03",
+      "scenarios": [
+        "REQ-CI_CD-03-S01"
+      ],
+      "tasks": [
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-064-plan-vercel-deployment",
+        "TASK-065-plan-package-release",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-CI_CD-04",
+      "scenarios": [
+        "REQ-CI_CD-04-S01"
+      ],
+      "tasks": [
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-064-plan-vercel-deployment",
+        "TASK-065-plan-package-release",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-CI_CD-05",
+      "scenarios": [
+        "REQ-CI_CD-05-S01"
+      ],
+      "tasks": [
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-064-plan-vercel-deployment",
+        "TASK-065-plan-package-release",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-CI_CD-06",
+      "scenarios": [
+        "REQ-CI_CD-06-S01"
+      ],
+      "tasks": [
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-064-plan-vercel-deployment",
+        "TASK-065-plan-package-release",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-01",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-01-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-044-integrate-widget-transport",
+        "TASK-050-create-colab-snippets",
+        "TASK-060-configure-pre-commit",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-02",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-02-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-044-integrate-widget-transport",
+        "TASK-050-create-colab-snippets",
+        "TASK-060-configure-pre-commit",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-03",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-03-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-044-integrate-widget-transport",
+        "TASK-050-create-colab-snippets",
+        "TASK-060-configure-pre-commit",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-04",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-04-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-044-integrate-widget-transport",
+        "TASK-050-create-colab-snippets",
+        "TASK-060-configure-pre-commit",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-05",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-05-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-044-integrate-widget-transport",
+        "TASK-050-create-colab-snippets",
+        "TASK-060-configure-pre-commit",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-06",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-06-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-044-integrate-widget-transport",
+        "TASK-050-create-colab-snippets",
+        "TASK-060-configure-pre-commit",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-07",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-07-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-044-integrate-widget-transport",
+        "TASK-050-create-colab-snippets",
+        "TASK-060-configure-pre-commit",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-08",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-08-S01"
+      ],
+      "tasks": [
+        "TASK-010-implement-models-config",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-044-integrate-widget-transport",
+        "TASK-050-create-colab-snippets",
+        "TASK-060-configure-pre-commit",
+        "TASK-063-add-notebook-policy-ci",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-09",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-09-S01",
+        "REQ-SECURITY_POLICY-09-S02"
+      ],
+      "tasks": [
+        "TASK-002-freeze-public-contracts",
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports",
+        "TASK-034-implement-bundle-export",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    },
+    {
+      "requirement": "REQ-SECURITY_POLICY-10",
+      "scenarios": [
+        "REQ-SECURITY_POLICY-10-S01",
+        "REQ-SECURITY_POLICY-10-S02"
+      ],
+      "tasks": [
+        "TASK-002-freeze-public-contracts",
+        "TASK-013-implement-sqlite-store",
+        "TASK-034-implement-bundle-export",
+        "TASK-071-run-security-privacy-audit",
+        "TASK-074-build-release-candidate"
+      ]
+    }
+  ],
+  "validation": [
+    "OpenSpec strict validation after tool/profile confirmation",
+    "Planning-vault validation",
+    "Requirement/task/traceability consistency",
+    "JSON Schema validation for this change pack and task graph"
+  ],
+  "archive_ready": false,
+  "open_questions": [
+    "Current Colab/Python/widget matrix",
+    "Package/build backend after bundled-asset spike",
+    "PyPI/GitHub name availability before publication",
+    "Optional DuckDB timing"
+  ],
+  "source_evidence": [
+    {
+      "source": "docs/planning/build-colab-observer/source-registry.md",
+      "supports": "Current platform, library, standards, docs, and delivery facts"
+    },
+    {
+      "source": "docs/planning/build-colab-observer/github-ecosystem-audit.md",
+      "supports": "OSS comparison and differentiators"
+    },
+    {
+      "source": "docs/planning/build-colab-observer/source-skill-audit.md",
+      "supports": "Static attached-skill provenance and distilled lenses"
+    },
+    {
+      "source": "docs/planning/build-colab-observer/representative-runtime-hardening-20260716.md",
+      "supports": "Strict public model/schema boundaries, unavailable-value semantics, export path containment, atomic publication cleanup, and 2026-07-16 validation evidence",
+      "notes": "Local Linux/Python 3.13.5 evidence only; managed Colab and release gates remain open"
+    },
+    {
+      "source": "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md",
+      "supports": "Pre-existing filesystem alias containment, bounded subprocess output, collector-construction isolation, impossible-value handling, and final local validation evidence",
+      "notes": "Local Linux/Python 3.13.5 evidence only; managed Colab and release gates remain open"
+    },
+    {
+      "source": "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+      "supports": "Drive dot-segment preflight normalization, package-generated export-root alias containment, optional module-discovery failure isolation, and 2026-07-17 validation evidence",
+      "notes": "Local Linux/Python 3.13.5 evidence only; managed Colab and release gates remain open"
+    },
+    {
+      "source": "Makefile, tests/contract/test_imports_and_versions.py, and pytest hermetic-run evidence",
+      "supports": "Default test and coverage gates disable ambient plugin autoload and explicitly enable the required coverage plugin.",
+      "notes": "An intermittent post-summary aggregate non-exit was not consistently reproducible, so the repair is framed as deterministic isolation rather than a product-thread claim."
+    }
+  ]
+}

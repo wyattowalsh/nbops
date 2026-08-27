@@ -1,0 +1,27 @@
+project:
+  name: "nbops"
+  description: "Local-first runtime observability for Python notebooks, with Google Colab as the flagship adapter."
+workflow:
+  default_rigor: "full"
+  require_strict_validation: true
+  require_human_approval_before_apply: true
+specs:
+  domains:
+    - runtime-profiles
+    - measurement-scope
+    - platform-adapters
+    - storage-profiles
+    - notebook-display
+    - compatibility-support
+    - platform-diagnostics
+    - migration-compatibility
+    - security-policy
+    - package-identity
+validation:
+  commands:
+    - "openspec validate generalize-notebook-runtime-observer --strict"
+    - "openspec validate --all --strict"
+notes:
+  - "Canonical product, distribution, import, CLI, and source target identity is nbops."
+  - "The build-colab-observer change ID remains stable historical provenance."
+  - "Do not apply, sync, or archive without complete implementation evidence and explicit approval."

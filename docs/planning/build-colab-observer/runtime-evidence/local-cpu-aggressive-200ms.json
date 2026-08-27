@@ -1,0 +1,46 @@
+{
+  "artifacts": {
+    "bundle_bytes": 81226,
+    "database_bytes": 540672,
+    "html_report_bytes": 30810
+  },
+  "benchmark_kind": "bounded-local-smoke",
+  "caveat": "Local smoke benchmark only. Re-run on representative Colab CPU and accelerator runtimes before setting or claiming performance budgets.",
+  "configuration": {
+    "collect_gpu": false,
+    "collect_processes": false,
+    "duration_actual_s": 3.302487,
+    "duration_requested_s": 3.0,
+    "interval_s": 0.2
+  },
+  "environment": {
+    "platform": "Linux-4.4.0-x86_64-with-glibc2.41",
+    "processor_count": 56,
+    "python": "3.13.5"
+  },
+  "observer": {
+    "batches_dropped": 0,
+    "last_error": null,
+    "observations_seen": 1322,
+    "queue_depth": 0,
+    "sampler_lag_max_s": 0.167162,
+    "sampler_lag_mean_s": 0.037829,
+    "sampler_lag_samples": 16,
+    "status": "stopped"
+  },
+  "process": {
+    "baseline_cpu_percent_of_one_core": 0.0,
+    "incremental_cpu_percent_of_one_core": 17.2597,
+    "observer_cpu_percent_of_one_core": 17.2597,
+    "rss_before_bytes": 306098176,
+    "rss_delta_peak_bytes": 5189632,
+    "rss_peak_bytes": 311287808
+  },
+  "representative_colab_result": false,
+  "sanity": {
+    "no_dropped_batches": true,
+    "observed_data": true,
+    "rss_delta_under_128_mib": true,
+    "stopped_cleanly": true
+  }
+}

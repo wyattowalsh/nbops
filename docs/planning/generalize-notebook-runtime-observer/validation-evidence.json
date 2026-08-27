@@ -1,0 +1,114 @@
+{
+  "generated_at": "2026-08-21",
+  "change_id": "generalize-notebook-runtime-observer",
+  "decision": {
+    "planning": "planning-ready",
+    "implementation": "not-started",
+    "baseline": "build-colab-observer remains final-with-known-risks",
+    "public_positioning": "Colab-first notebook runtime observability",
+    "direct_comm": "experimental-explicit-non-default-not-promoted",
+    "rename": "deferred pending representative evidence and explicit approval"
+  },
+  "source_baseline": {
+    "bundle": "/mnt/data/colab-observer-runtime-evidence-source-20260725.zip",
+    "sha256": "70b1d5979f7cda1f450d83d70079748393a59deec20a364e4a453efcf0e7374b",
+    "working_copy": "/mnt/data/colab-observer-notebook-generalization-plan-20260821",
+    "product_files_compared": 130,
+    "product_code_drift": 0
+  },
+  "openspec": {
+    "domains": 9,
+    "requirements": 26,
+    "scenarios": 52,
+    "tasks": 41,
+    "planning_tasks_complete": 3,
+    "adrs": 7,
+    "implementation_start_task": "TASK-103-freeze-colab-compatibility-fixtures"
+  },
+  "planning_pack": {
+    "planning_files_including_this_evidence": 44,
+    "progressive_map": "docs/maps/generalize-notebook-runtime-observer-moc.md",
+    "read_first": "docs/planning/generalize-notebook-runtime-observer/README.md",
+    "handoff": "docs/planning/generalize-notebook-runtime-observer/codex-handoff.md",
+    "living_plan": "docs/planning/generalize-notebook-runtime-observer/PLANS.md",
+    "outer_loop": "docs/planning/generalize-notebook-runtime-observer/outer-loop.md"
+  },
+  "validation": {
+    "structural": {
+      "status": "PASS",
+      "artifact": "/mnt/data/colab-observer-notebook-generalization-structural-validation-final-20260821.json",
+      "json_files_parsed": 44,
+      "broken_wikilinks": 0,
+      "broken_markdown_links": 0,
+      "errors": [],
+      "warnings": []
+    },
+    "repository_gate": {
+      "status": "PASS",
+      "command": "TERM=xterm PYTHONDONTWRITEBYTECODE=1 make check",
+      "tests": 249,
+      "log": "/mnt/data/colab-observer-notebook-generalization-make-check-term-20260821.log",
+      "notes": "The initial aggregate wrapper reached its outer timeout after displaying 100% tests. Re-running with TERM=xterm exited 0; the direct hermetic pytest suite also exited 0."
+    },
+    "coverage": {
+      "status": "PASS",
+      "command": "TERM=xterm COVERAGE_FILE=<outside-root> PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -W error::ResourceWarning -m pytest -p pytest_cov.plugin -p no:cacheprovider --cov=nbops --cov-branch --cov-report=json:<outside-root> --cov-fail-under=85",
+      "tests": 249,
+      "gate_percent": 85,
+      "combined_percent": 87.41758241758242,
+      "statements": 4162,
+      "covered_statements": 3750,
+      "branches": 1298,
+      "covered_branches": 1023,
+      "partial_branches": 241,
+      "artifact": "/mnt/data/colab-observer-notebook-generalization-coverage-20260821.json"
+    },
+    "machine_schemas": {
+      "status": "PASS",
+      "artifact": "/mnt/data/colab-observer-notebook-generalization-machine-schema-validation-20260821.json",
+      "results": [
+        {
+          "artifact": "openspec/changes/generalize-notebook-runtime-observer/change-pack.json",
+          "schema": "/mnt/data/schema_openspec_change_pack.schema.json",
+          "valid": true,
+          "errors": []
+        },
+        {
+          "artifact": "docs/planning/generalize-notebook-runtime-observer/task-graph.json",
+          "schema": "/mnt/data/schema_codex_task_graph.schema.json",
+          "valid": true,
+          "errors": []
+        }
+      ]
+    },
+    "product_source_integrity": {
+      "status": "PASS",
+      "scope": "src/, tests/, scripts/, packages/, notebooks/, examples/",
+      "files_compared": 130,
+      "drift": 0
+    }
+  },
+  "evidence_boundaries": {
+    "new_runtime_evidence": "BLOCKED: no JupyterLab/Notebook 7, Deepnote, JupyterHub, or managed Colab execution occurred in this planning pass",
+    "python_311_312": "BLOCKED: no additional interpreter execution",
+    "dependency_locks": "BLOCKED: no approved network/install resolution",
+    "manual_accessibility": "BLOCKED: requires representative browsers and assistive technologies",
+    "public_rename_release": "BLOCKED: requires representative platform evidence and explicit approval"
+  },
+  "prohibited_actions": {
+    "dependency_installation": false,
+    "online_resolution": false,
+    "product_code_modification": false,
+    "git_mutation": false,
+    "publication_or_deployment": false,
+    "secret_or_account_action": false,
+    "openspec_apply_sync_archive": false
+  },
+  "manifest_contract": {
+    "product_repository_exact_manifest": "PENDING_FINAL_REGENERATION_AND_PARITY_CHECK",
+    "physical_file_count_including_manifest": 375,
+    "manifest_records_excluding_self": 374,
+    "flat_project_config_schema": "NOT_APPLICABLE",
+    "reason": "The available planning-manifest schema requires an exact 40-file flat ChatGPT Project-config release. This artifact is a nested product repository with a product-specific manifest; exact physical path, count, byte, and SHA-256 parity is validated directly instead of falsifying the flat-config contract."
+  }
+}

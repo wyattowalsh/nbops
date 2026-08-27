@@ -5,9 +5,13 @@ from __future__ import annotations
 from nbops.exceptions import (
     ExecuteError,
     InvalidNotebookError,
+    InvalidObserverConfigError,
     MissingExtraError,
     NbopsError,
     NotebookNotFoundError,
+    ObserverError,
+    OutputPathError,
+    TerminalObserverError,
 )
 
 
@@ -18,6 +22,11 @@ def test_exception_hierarchy() -> None:
     assert issubclass(InvalidNotebookError, ValueError)
     assert issubclass(ExecuteError, NbopsError)
     assert issubclass(MissingExtraError, NbopsError)
+    assert issubclass(ObserverError, NbopsError)
+    assert issubclass(InvalidObserverConfigError, ObserverError)
+    assert issubclass(InvalidObserverConfigError, ValueError)
+    assert issubclass(OutputPathError, ObserverError)
+    assert issubclass(TerminalObserverError, ObserverError)
 
 
 def test_exception_messages() -> None:

@@ -1,0 +1,1468 @@
+{
+  "change_id": "build-colab-observer",
+  "checkpoint_flow": [
+    "clarify",
+    "specify",
+    "checklist",
+    "plan",
+    "tasks",
+    "analyze",
+    "implement",
+    "handoff"
+  ],
+  "tasks": [
+    {
+      "id": "TASK-001-ground-repository",
+      "title": "Ground Repository",
+      "wave": "Wave 0 \u2014 Preflight and contracts",
+      "parallel_safe": false,
+      "depends_on": [],
+      "read": [
+        "root files, active OpenSpec change, current Colab and registry evidence"
+      ],
+      "write_scope": [
+        "`docs/planning/build-colab-observer/context-map.md`, `source-registry.md`, `PLANS.md`"
+      ],
+      "validation": [
+        "evidence paths and assumptions ledger are complete"
+      ],
+      "done_when": [
+        "no implementation command or existing convention is guessed"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-002-freeze-public-contracts",
+      "title": "Freeze Public Contracts",
+      "wave": "Wave 0 \u2014 Preflight and contracts",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-001-ground-repository"
+      ],
+      "read": [
+        "all delta specs, `design.md`, decision records"
+      ],
+      "write_scope": [
+        "`openspec/changes/build-colab-observer/**`, `docs/planning/build-colab-observer/requirements-map.md`"
+      ],
+      "validation": [
+        "OpenSpec strict validation when available; traceability review"
+      ],
+      "done_when": [
+        "public behavior is testable and design-only details remain outside specs"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/representative-runtime-hardening-20260716.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-003-scaffold-workspaces",
+      "title": "Scaffold Workspaces",
+      "wave": "Wave 0 \u2014 Preflight and contracts",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-002-freeze-public-contracts"
+      ],
+      "read": [
+        "`architecture.md`, `agents-instruction-map.md`, `quality-automation.md`"
+      ],
+      "write_scope": [
+        "root manifests/config",
+        "`src/`",
+        "`packages/dashboard-ui/`",
+        "`apps/docs/`",
+        "`tests/`",
+        "nested `AGENTS.md`"
+      ],
+      "validation": [
+        "lockfiles parse; package/workspace discovery; no overwrite of unreviewed files"
+      ],
+      "done_when": [
+        "empty workspaces import/build with explicit commands"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-004-add-contract-fixtures",
+      "title": "Add Contract Fixtures",
+      "wave": "Wave 0 \u2014 Preflight and contracts",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-003-scaffold-workspaces"
+      ],
+      "read": [
+        "metrics and export specs"
+      ],
+      "write_scope": [
+        "`tests/fixtures/`, `tests/contract/`, `schemas/`"
+      ],
+      "validation": [
+        "schema/golden fixture checks"
+      ],
+      "done_when": [
+        "core components can be implemented against deterministic evidence"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-010-implement-models-config",
+      "title": "Implement Models Config",
+      "wave": "Wave 1 \u2014 Core observer and persistence",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-004-add-contract-fixtures"
+      ],
+      "read": [
+        "runtime, metrics, export, security specs"
+      ],
+      "write_scope": [
+        "`src/colab_observer/config.py`, `models.py`, `tests/unit/test_config.py`, `test_models.py`"
+      ],
+      "validation": [
+        "unit tests, type check, schema round trip"
+      ],
+      "done_when": [
+        "invalid and privacy-sensitive configurations fail clearly"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "docs/planning/build-colab-observer/representative-runtime-hardening-20260716.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-011-implement-observer-lifecycle",
+      "title": "Implement Observer Lifecycle",
+      "wave": "Wave 1 \u2014 Core observer and persistence",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-010-implement-models-config"
+      ],
+      "read": [
+        "runtime spec and lifecycle design"
+      ],
+      "write_scope": [
+        "`src/colab_observer/api.py`, `observer.py`, `__init__.py`, lifecycle tests"
+      ],
+      "validation": [
+        "lifecycle, rerun, double-stop, interrupted-start tests"
+      ],
+      "done_when": [
+        "public lifecycle behavior matches the spec"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-012-implement-sampler-queue",
+      "title": "Implement Sampler Queue",
+      "wave": "Wave 1 \u2014 Core observer and persistence",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-011-implement-observer-lifecycle"
+      ],
+      "read": [
+        "collector design and metrics model"
+      ],
+      "write_scope": [
+        "`src/colab_observer/sampler.py`, `events.py`, sampler tests"
+      ],
+      "validation": [
+        "fake-clock timing, slow collector, queue overflow, shutdown timeout tests"
+      ],
+      "done_when": [
+        "sampler failures are bounded and observable"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-013-implement-sqlite-store",
+      "title": "Implement Sqlite Store",
+      "wave": "Wave 1 \u2014 Core observer and persistence",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-010-implement-models-config"
+      ],
+      "read": [
+        "metrics model and export spec"
+      ],
+      "write_scope": [
+        "`src/colab_observer/stores/base.py`, `sqlite.py`, SQLite tests"
+      ],
+      "validation": [
+        "transaction, concurrent read, disk-full simulation, restart/readback tests"
+      ],
+      "done_when": [
+        "observations survive a normal stop and partial write failures are explicit"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-014-wire-core-pipeline",
+      "title": "Wire Core Pipeline",
+      "wave": "Wave 1 \u2014 Core observer and persistence",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-012-implement-sampler-queue",
+        "TASK-013-implement-sqlite-store"
+      ],
+      "read": [
+        "architecture and contracts"
+      ],
+      "write_scope": [
+        "core integration files and `tests/integration/test_core_pipeline.py`"
+      ],
+      "validation": [
+        "CPU-only end-to-end fake run"
+      ],
+      "done_when": [
+        "one run samples, persists, stops, and reopens deterministically"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-020-core-system-collectors",
+      "title": "Core System Collectors",
+      "wave": "Wave 2 \u2014 Collectors",
+      "parallel_safe": true,
+      "parallel_group": "Wave 2 \u2014 Collectors",
+      "depends_on": [
+        "TASK-014-wire-core-pipeline"
+      ],
+      "read": [],
+      "write_scope": [
+        "corresponding `collectors/*.py`",
+        "dedicated `tests/unit/collectors/test_system_*.py`"
+      ],
+      "validation": [
+        "fake counter, wraparound, permission, unavailable-field tests"
+      ],
+      "done_when": [
+        "CPU-only contract scenarios pass"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-021-process-collector",
+      "title": "Process Collector",
+      "wave": "Wave 2 \u2014 Collectors",
+      "parallel_safe": true,
+      "parallel_group": "Wave 2 \u2014 Collectors",
+      "depends_on": [
+        "TASK-014-wire-core-pipeline"
+      ],
+      "read": [],
+      "write_scope": [
+        "`collectors/process.py`",
+        "`tests/unit/collectors/test_process.py`"
+      ],
+      "validation": [
+        "permission-denied, process-exit race, redaction, row-limit tests"
+      ],
+      "done_when": [
+        "process data is useful without default command-line leakage"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-022-nvidia-collectors",
+      "title": "Nvidia Collectors",
+      "wave": "Wave 2 \u2014 Collectors",
+      "parallel_safe": true,
+      "parallel_group": "Wave 2 \u2014 Collectors",
+      "depends_on": [
+        "TASK-014-wire-core-pipeline"
+      ],
+      "read": [],
+      "write_scope": [
+        "`collectors/gpu_nvml.py`, `gpu_nvidia_smi.py`",
+        "dedicated provider tests"
+      ],
+      "validation": [
+        "fake NVML, malformed fallback, timeout, multi-GPU, unavailable-field tests"
+      ],
+      "done_when": [
+        "GPU paths degrade cleanly without hardware"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-023-framework-collectors",
+      "title": "Framework Collectors",
+      "wave": "Wave 2 \u2014 Collectors",
+      "parallel_safe": true,
+      "parallel_group": "Wave 2 \u2014 Collectors",
+      "depends_on": [
+        "TASK-014-wire-core-pipeline"
+      ],
+      "read": [],
+      "write_scope": [
+        "framework collector files and dedicated tests"
+      ],
+      "validation": [
+        "not-installed, already-imported, device present/absent, import-failure tests"
+      ],
+      "done_when": [
+        "framework collectors never install or mutate frameworks"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-024-tpu-drive-collectors",
+      "title": "Tpu Drive Collectors",
+      "wave": "Wave 2 \u2014 Collectors",
+      "parallel_safe": true,
+      "parallel_group": "Wave 2 \u2014 Collectors",
+      "depends_on": [
+        "TASK-014-wire-core-pipeline"
+      ],
+      "read": [],
+      "write_scope": [
+        "`collectors/tpu.py`, mounted-path helpers, dedicated tests"
+      ],
+      "validation": [
+        "detected/no-utilization, absent TPU, unmounted path, slow I/O fixtures"
+      ],
+      "done_when": [
+        "limitations are explicit and no synthetic utilization appears"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-025-integrate-collector-registry",
+      "title": "Integrate Collector Registry",
+      "wave": "Wave 2 \u2014 Collectors",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-020-core-system-collectors",
+        "TASK-021-process-collector",
+        "TASK-022-nvidia-collectors",
+        "TASK-023-framework-collectors",
+        "TASK-024-tpu-drive-collectors"
+      ],
+      "read": [],
+      "write_scope": [
+        "`collectors/base.py`, registry/init, collector integration tests"
+      ],
+      "validation": [
+        "mixed-capability matrix and failure-isolation tests"
+      ],
+      "done_when": [
+        "all requested capabilities resolve to an honest status"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-030-implement-diagnostics-engine",
+      "title": "Implement Diagnostics Engine",
+      "wave": "Wave 3 \u2014 Diagnostics and exports",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-025-integrate-collector-registry"
+      ],
+      "read": [],
+      "write_scope": [
+        "`src/colab_observer/diagnostics/engine.py`",
+        "engine tests"
+      ],
+      "validation": [
+        "state-transition and flapping tests"
+      ],
+      "done_when": [
+        "deterministic findings are reproducible from fixtures"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-031-implement-diagnostic-catalog",
+      "title": "Implement Diagnostic Catalog",
+      "wave": "Wave 3 \u2014 Diagnostics and exports",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-030-implement-diagnostics-engine"
+      ],
+      "read": [
+        "`diagnostics-rules.md`"
+      ],
+      "write_scope": [
+        "`diagnostics/rules.py`, `catalog.py`",
+        "per-rule tests"
+      ],
+      "validation": [
+        "positive, negative, alternative-explanation, and recovery fixtures"
+      ],
+      "done_when": [
+        "every rule exports evidence, confidence, limitation, and non-destructive guidance"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-032-implement-tabular-exports",
+      "title": "Implement Tabular Exports",
+      "wave": "Wave 3 \u2014 Diagnostics and exports",
+      "parallel_safe": true,
+      "parallel_group": "Wave 3 \u2014 Diagnostics and exports",
+      "depends_on": [
+        "TASK-025-integrate-collector-registry"
+      ],
+      "read": [],
+      "write_scope": [
+        "`exports/tabular.py`, `stores/duckdb.py`, export tests"
+      ],
+      "validation": [
+        "schema fidelity, missing values, labels, time-range, optional-extra tests"
+      ],
+      "done_when": [
+        "exported records round-trip without false zeros or lost provenance"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/representative-runtime-hardening-20260716.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-033-implement-reports",
+      "title": "Implement Reports",
+      "wave": "Wave 3 \u2014 Diagnostics and exports",
+      "parallel_safe": true,
+      "parallel_group": "Wave 3 \u2014 Diagnostics and exports",
+      "depends_on": [
+        "TASK-031-implement-diagnostic-catalog"
+      ],
+      "read": [],
+      "write_scope": [
+        "`exports/reports.py`, report templates, report snapshot/accessibility tests"
+      ],
+      "validation": [
+        "HTML escaping, offline assets, semantic headings/tables, partial data tests"
+      ],
+      "done_when": [
+        "reports remain readable without scripts or network"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/representative-runtime-hardening-20260716.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-034-implement-bundle-export",
+      "title": "Implement Bundle Export",
+      "wave": "Wave 3 \u2014 Diagnostics and exports",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-032-implement-tabular-exports",
+        "TASK-033-implement-reports"
+      ],
+      "read": [],
+      "write_scope": [
+        "`exports/bundle.py`",
+        "bundle tests"
+      ],
+      "validation": [
+        "deterministic file list, checksum, corruption, low-disk, partial-report tests"
+      ],
+      "done_when": [
+        "bundle integrity and redaction state are machine-verifiable"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/representative-runtime-hardening-20260716.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-040-freeze-ui-message-contract",
+      "title": "Freeze Ui Message Contract",
+      "wave": "Wave 4 \u2014 Accessible notebook dashboard",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-014-wire-core-pipeline",
+        "TASK-031-implement-diagnostic-catalog"
+      ],
+      "read": [],
+      "write_scope": [
+        "UI protocol schemas, Python/TypeScript generated types, contract tests"
+      ],
+      "validation": [
+        "cross-language schema fixtures"
+      ],
+      "done_when": [
+        "frontend and Python can evolve without implicit payload contracts"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-041-build-dashboard-shell",
+      "title": "Build Dashboard Shell",
+      "wave": "Wave 4 \u2014 Accessible notebook dashboard",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-040-freeze-ui-message-contract"
+      ],
+      "read": [],
+      "write_scope": [
+        "`packages/dashboard-ui/src/shell/**`",
+        "component tests/stories"
+      ],
+      "validation": [
+        "keyboard order, responsive snapshots, theme checks"
+      ],
+      "done_when": [
+        "shell works with fixture data and no live transport"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-042-build-charts-tables-controls",
+      "title": "Build Charts Tables Controls",
+      "wave": "Wave 4 \u2014 Accessible notebook dashboard",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-041-build-dashboard-shell"
+      ],
+      "read": [],
+      "write_scope": [
+        "`packages/dashboard-ui/src/features/**`",
+        "UI tests"
+      ],
+      "validation": [
+        "chart/table parity, keyboard operation, exact-value access, large-series performance"
+      ],
+      "done_when": [
+        "no chart is the sole access path to data"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-043-implement-dashboard-accessibility",
+      "title": "Implement Dashboard Accessibility",
+      "wave": "Wave 4 \u2014 Accessible notebook dashboard",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-042-build-charts-tables-controls"
+      ],
+      "read": [
+        "accessibility spec and manual test script"
+      ],
+      "write_scope": [
+        "dashboard UI accessibility utilities/styles/tests"
+      ],
+      "validation": [
+        "axe, keyboard script, screen-reader spot checks, contrast, reduced-motion snapshots"
+      ],
+      "done_when": [
+        "WCAG 2.2 AA release checklist has no known blocker"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-044-integrate-widget-transport",
+      "title": "Integrate Widget Transport",
+      "wave": "Wave 4 \u2014 Accessible notebook dashboard",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-040-freeze-ui-message-contract",
+        "TASK-043-implement-dashboard-accessibility"
+      ],
+      "read": [],
+      "write_scope": [
+        "`src/colab_observer/ui/transport.py`, `notebook.py`, static assets, widget integration tests"
+      ],
+      "validation": [
+        "Jupyter/Colab adapter tests, missing manager, rejected activation, transport loss, wheel asset tests"
+      ],
+      "done_when": [
+        "enhanced display is local, bounded, and optional"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-045-build-static-fallback",
+      "title": "Build Static Fallback",
+      "wave": "Wave 4 \u2014 Accessible notebook dashboard",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-040-freeze-ui-message-contract"
+      ],
+      "read": [],
+      "write_scope": [
+        "`src/colab_observer/ui/fallback.py`",
+        "fallback tests"
+      ],
+      "validation": [
+        "no-JavaScript rendering, screen-reader structure, unavailable-capability tests"
+      ],
+      "done_when": [
+        "monitoring remains usable without custom widgets"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-046-run-dashboard-integration",
+      "title": "Run Dashboard Integration",
+      "wave": "Wave 4 \u2014 Accessible notebook dashboard",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-044-integrate-widget-transport",
+        "TASK-045-build-static-fallback"
+      ],
+      "read": [],
+      "write_scope": [
+        "UI integration/e2e tests and validation evidence"
+      ],
+      "validation": [
+        "browser/widget e2e, payload/backpressure, focus, resize, long-run tests"
+      ],
+      "done_when": [
+        "enhanced and fallback paths share the same truthful data contract"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-050-create-colab-snippets",
+      "title": "Create Colab Snippets",
+      "wave": "Wave 5 \u2014 Notebook adoption and documentation",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-034-implement-bundle-export",
+        "TASK-046-run-dashboard-integration"
+      ],
+      "read": [],
+      "write_scope": [
+        "`notebooks/colab_monitor_snippet.py`, snippet source fragments, snippet tests"
+      ],
+      "validation": [
+        "static safety scan and source/docs equality"
+      ],
+      "done_when": [
+        "snippets contain no hidden behavior and return concrete paths"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-051-create-example-notebooks",
+      "title": "Create Example Notebooks",
+      "wave": "Wave 5 \u2014 Notebook adoption and documentation",
+      "parallel_safe": true,
+      "parallel_group": "Wave 5 \u2014 Notebook adoption and documentation",
+      "depends_on": [
+        "TASK-050-create-colab-snippets"
+      ],
+      "read": [],
+      "write_scope": [
+        "`notebooks/*.ipynb`, `examples/**`, notebook-specific tests"
+      ],
+      "validation": [
+        "notebook structure/output hygiene and smoke execution where supported"
+      ],
+      "done_when": [
+        "examples are reproducible and do not duplicate drifting snippets"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-052-scaffold-fumadocs-site",
+      "title": "Scaffold Fumadocs Site",
+      "wave": "Wave 5 \u2014 Notebook adoption and documentation",
+      "parallel_safe": true,
+      "parallel_group": "Wave 5 \u2014 Notebook adoption and documentation",
+      "depends_on": [
+        "TASK-003-scaffold-workspaces"
+      ],
+      "read": [],
+      "write_scope": [
+        "`apps/docs/**` excluding generated API/snippet pages owned by later tasks"
+      ],
+      "validation": [
+        "locked install, typecheck, build, route smoke, theme/keyboard checks"
+      ],
+      "done_when": [
+        "docs shell is production-buildable and product-first"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-053-write-product-docs",
+      "title": "Write Product Docs",
+      "wave": "Wave 5 \u2014 Notebook adoption and documentation",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-051-create-example-notebooks",
+        "TASK-052-scaffold-fumadocs-site"
+      ],
+      "read": [],
+      "write_scope": [
+        "`apps/docs/content/docs/**`, docs source generators"
+      ],
+      "validation": [
+        "link, snippet, API/schema, terminology, and content-coverage checks"
+      ],
+      "done_when": [
+        "all public capabilities and limitations are documented"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-054-add-seo-ai-ready-docs",
+      "title": "Add Seo Ai Ready Docs",
+      "wave": "Wave 5 \u2014 Notebook adoption and documentation",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-053-write-product-docs"
+      ],
+      "read": [],
+      "write_scope": [
+        "docs metadata/routes/generators/public outputs"
+      ],
+      "validation": [
+        "structured-data parse, canonical/robots/sitemap, generated-index drift, XSS fixture tests"
+      ],
+      "done_when": [
+        "conventional SEO is primary and AI aids are accurate and bounded"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-055-audit-docs-accessibility",
+      "title": "Audit Docs Accessibility",
+      "wave": "Wave 5 \u2014 Notebook adoption and documentation",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-054-add-seo-ai-ready-docs"
+      ],
+      "read": [],
+      "write_scope": [
+        "docs-only accessibility repairs and evidence"
+      ],
+      "validation": [
+        "axe, keyboard, contrast, reduced motion, screen-reader spot checks"
+      ],
+      "done_when": [
+        "docs meet the same WCAG 2.2 AA target as the dashboard"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-060-configure-pre-commit",
+      "title": "Configure Pre Commit",
+      "wave": "Wave 6 \u2014 Quality, CI/CD, release readiness",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-003-scaffold-workspaces"
+      ],
+      "read": [],
+      "write_scope": [
+        "`.pre-commit-config.yaml`, tool configs, `scripts/check_*`, contributor docs"
+      ],
+      "validation": [
+        "clean full run plus negative fixtures"
+      ],
+      "done_when": [
+        "hooks are deterministic, documented, and do not hide broad rewrites"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "Makefile",
+        "tests/contract/test_imports_and_versions.py"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-061-add-python-ci",
+      "title": "Add Python Ci",
+      "wave": "Wave 6 \u2014 Quality, CI/CD, release readiness",
+      "parallel_safe": true,
+      "parallel_group": "Wave 6 \u2014 Quality, CI/CD, release readiness",
+      "depends_on": [
+        "TASK-060-configure-pre-commit"
+      ],
+      "read": [],
+      "write_scope": [
+        "`.github/workflows/ci-python.yml`, Python CI scripts"
+      ],
+      "validation": [
+        "workflow lint and local command parity"
+      ],
+      "done_when": [
+        "supported versions and package contents are exercised"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "Makefile",
+        "tests/contract/test_imports_and_versions.py"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-062-add-ui-docs-ci",
+      "title": "Add Ui Docs Ci",
+      "wave": "Wave 6 \u2014 Quality, CI/CD, release readiness",
+      "parallel_safe": true,
+      "parallel_group": "Wave 6 \u2014 Quality, CI/CD, release readiness",
+      "depends_on": [
+        "TASK-060-configure-pre-commit"
+      ],
+      "read": [],
+      "write_scope": [
+        "`.github/workflows/ci-web.yml`, web CI scripts"
+      ],
+      "validation": [
+        "workflow lint and local command parity"
+      ],
+      "done_when": [
+        "dashboard assets and docs cannot drift silently"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-063-add-notebook-policy-ci",
+      "title": "Add Notebook Policy Ci",
+      "wave": "Wave 6 \u2014 Quality, CI/CD, release readiness",
+      "parallel_safe": true,
+      "parallel_group": "Wave 6 \u2014 Quality, CI/CD, release readiness",
+      "depends_on": [
+        "TASK-060-configure-pre-commit"
+      ],
+      "read": [],
+      "write_scope": [
+        "`.github/workflows/ci-notebooks.yml`, notebook scripts"
+      ],
+      "validation": [
+        "safe negative fixtures and CPU-only smoke"
+      ],
+      "done_when": [
+        "distributed notebooks are inspectable and policy-safe"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-064-plan-vercel-deployment",
+      "title": "Plan Vercel Deployment",
+      "wave": "Wave 6 \u2014 Quality, CI/CD, release readiness",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-055-audit-docs-accessibility",
+        "TASK-062-add-ui-docs-ci"
+      ],
+      "read": [
+        "`vercel-deploy-plan.md`"
+      ],
+      "write_scope": [
+        "Vercel/docs deployment config and workflow only after approval"
+      ],
+      "validation": [
+        "preview smoke, headers, canonical domain, rollback drill"
+      ],
+      "done_when": [
+        "preview and production boundaries are reviewable and reversible"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": true
+    },
+    {
+      "id": "TASK-065-plan-package-release",
+      "title": "Plan Package Release",
+      "wave": "Wave 6 \u2014 Quality, CI/CD, release readiness",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-061-add-python-ci",
+        "TASK-063-add-notebook-policy-ci"
+      ],
+      "read": [],
+      "write_scope": [
+        "release workflow/config/docs only after approval"
+      ],
+      "validation": [
+        "dry-run artifact build/inspection; no publication in planning"
+      ],
+      "done_when": [
+        "publication cannot be triggered from normal pull-request CI"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": true
+    },
+    {
+      "id": "TASK-070-run-performance-soak",
+      "title": "Run Performance Soak",
+      "wave": "Wave 7 \u2014 Final verification and handoff",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-034-implement-bundle-export",
+        "TASK-046-run-dashboard-integration"
+      ],
+      "read": [],
+      "write_scope": [
+        "benchmarks, evidence, bounded performance repairs"
+      ],
+      "validation": [
+        "documented methodology and raw evidence"
+      ],
+      "done_when": [
+        "release budgets are evidence-based and regressions are gated"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-071-run-security-privacy-audit",
+      "title": "Run Security Privacy Audit",
+      "wave": "Wave 7 \u2014 Final verification and handoff",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-061-add-python-ci",
+        "TASK-062-add-ui-docs-ci",
+        "TASK-063-add-notebook-policy-ci"
+      ],
+      "read": [],
+      "write_scope": [
+        "security fixes, threat model, validation evidence"
+      ],
+      "validation": [
+        "policy scan, secret scan, artifact audit, malicious fixture tests"
+      ],
+      "done_when": [
+        "no critical/high unresolved issue is hidden"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "docs/planning/build-colab-observer/representative-runtime-hardening-20260716.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-072-run-colab-smoke-matrix",
+      "title": "Run Colab Smoke Matrix",
+      "wave": "Wave 7 \u2014 Final verification and handoff",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-051-create-example-notebooks",
+        "TASK-070-run-performance-soak",
+        "TASK-071-run-security-privacy-audit"
+      ],
+      "read": [],
+      "write_scope": [
+        "validation evidence and compatibility docs only unless repairs are needed"
+      ],
+      "validation": [
+        "install/start/display/collect/diagnose/stop/export evidence"
+      ],
+      "done_when": [
+        "supported and degraded runtime claims match observed behavior"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-073-run-final-accessibility-audit",
+      "title": "Run Final Accessibility Audit",
+      "wave": "Wave 7 \u2014 Final verification and handoff",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-055-audit-docs-accessibility",
+        "TASK-072-run-colab-smoke-matrix"
+      ],
+      "read": [],
+      "write_scope": [
+        "accessibility repairs and conformance report"
+      ],
+      "validation": [
+        "WCAG 2.2 AA matrix and known-exception ledger"
+      ],
+      "done_when": [
+        "no blocking accessibility defect remains"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-074-build-release-candidate",
+      "title": "Build Release Candidate",
+      "wave": "Wave 7 \u2014 Final verification and handoff",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-065-plan-package-release",
+        "TASK-072-run-colab-smoke-matrix",
+        "TASK-073-run-final-accessibility-audit"
+      ],
+      "read": [],
+      "write_scope": [
+        "generated release artifacts outside tracked source plus release docs"
+      ],
+      "validation": [
+        "clean-environment install, artifact manifest, docs build, policy scan"
+      ],
+      "done_when": [
+        "candidate is reproducible and inspectable"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "docs/planning/build-colab-observer/representative-runtime-hardening-20260716.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    },
+    {
+      "id": "TASK-075-finalize-verify-sync-readiness",
+      "title": "Finalize Verify Sync Readiness",
+      "wave": "Wave 7 \u2014 Final verification and handoff",
+      "parallel_safe": false,
+      "depends_on": [
+        "TASK-074-build-release-candidate"
+      ],
+      "read": [],
+      "write_scope": [
+        "OpenSpec/planning/status docs"
+      ],
+      "validation": [
+        "full quality suite and OpenSpec strict validation"
+      ],
+      "done_when": [
+        "readiness decision and residual risks have evidence"
+      ],
+      "stop_conditions": [
+        "approval-gated action required",
+        "scope or OpenSpec contradiction",
+        "unsafe or prohibited Colab behavior",
+        "validation cannot be interpreted safely"
+      ],
+      "evidence": [
+        "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+        "openspec/changes/build-colab-observer/tasks.md",
+        "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+        "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md"
+      ],
+      "approval_required": false
+    }
+  ]
+}

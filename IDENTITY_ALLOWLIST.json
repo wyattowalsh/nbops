@@ -1,0 +1,27 @@
+{
+  "canonical_identity": "nbops",
+  "canonical_surfaces": [
+    "product",
+    "repository",
+    "distribution",
+    "python_import",
+    "cli",
+    "source_package",
+    "new_artifact_metadata"
+  ],
+  "stable_openspec_ids": [
+    "build-colab-observer",
+    "generalize-notebook-runtime-observer"
+  ],
+  "stable_historical_prefixes": [
+    "openspec/changes/build-colab-observer/",
+    "docs/planning/build-colab-observer/",
+    "docs/maps/build-colab-observer-moc.md"
+  ],
+  "allowed_legacy_contexts": [
+    "migration input",
+    "compatibility shim",
+    "historical provenance"
+  ],
+  "forbidden_current_identity_policy": "Any current canonical identity other than nbops is rejected."
+}

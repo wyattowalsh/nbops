@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nbops:observation:v1",
+  "title": "nbops observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "sequence",
+    "observed_at_utc",
+    "monotonic_ns",
+    "metric",
+    "source",
+    "quality"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "run_id": { "type": "string" },
+    "sequence": { "type": "integer", "minimum": 0 },
+    "observed_at_utc": { "type": "string", "format": "date-time" },
+    "monotonic_ns": { "type": "integer" },
+    "metric": { "type": "string" },
+    "value_number": { "type": ["number", "null"] },
+    "value_text": { "type": ["string", "null"] },
+    "unit": { "type": ["string", "null"] },
+    "labels": { "type": "object", "additionalProperties": { "type": "string" } },
+    "source": { "type": "string" },
+    "quality": {
+      "type": "string",
+      "enum": ["exact", "estimated", "stale", "unavailable"]
+    },
+    "collection_duration_ms": { "type": "number" }
+  }
+}

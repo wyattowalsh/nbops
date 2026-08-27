@@ -1,0 +1,385 @@
+{
+  "bundle": {
+    "checksums_verified": 13,
+    "entries": 14,
+    "manifest": {
+      "capabilities": [
+        {
+          "capability_id": "drive",
+          "metadata": {},
+          "provider": null,
+          "reason": "collect_drive is false",
+          "requested": false,
+          "state": "disabled"
+        },
+        {
+          "capability_id": "tpu",
+          "metadata": {},
+          "provider": null,
+          "reason": "collect_tpu is false",
+          "requested": false,
+          "state": "disabled"
+        },
+        {
+          "capability_id": "framework.torch",
+          "metadata": {},
+          "provider": "torch",
+          "reason": "collect_frameworks is false",
+          "requested": false,
+          "state": "disabled"
+        },
+        {
+          "capability_id": "framework.tensorflow",
+          "metadata": {},
+          "provider": "tensorflow",
+          "reason": "collect_frameworks is false",
+          "requested": false,
+          "state": "disabled"
+        },
+        {
+          "capability_id": "framework.jax",
+          "metadata": {},
+          "provider": "jax",
+          "reason": "collect_frameworks is false",
+          "requested": false,
+          "state": "disabled"
+        },
+        {
+          "capability_id": "gpu",
+          "metadata": {},
+          "provider": null,
+          "reason": "collect_gpu is false",
+          "requested": false,
+          "state": "disabled"
+        },
+        {
+          "capability_id": "runtime",
+          "metadata": {},
+          "provider": "stdlib",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        {
+          "capability_id": "cpu",
+          "metadata": {},
+          "provider": "psutil",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        {
+          "capability_id": "memory",
+          "metadata": {},
+          "provider": "psutil",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        {
+          "capability_id": "disk",
+          "metadata": {
+            "path_roles": [
+              "tmp",
+              "output"
+            ]
+          },
+          "provider": "stdlib+psutil",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        {
+          "capability_id": "network",
+          "metadata": {},
+          "provider": "psutil",
+          "reason": "network counters unavailable",
+          "requested": true,
+          "state": "unavailable"
+        },
+        {
+          "capability_id": "processes",
+          "metadata": {
+            "command_lines": false,
+            "top_n": 3
+          },
+          "provider": "psutil",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        }
+      ],
+      "failures": [],
+      "files": [
+        {
+          "bytes": 406,
+          "path": "README.md",
+          "sha256": "3a2a0ae80dcb3633a336ff3c18b6e7060d4d048853f7bff83c412543d933842f"
+        },
+        {
+          "bytes": 2147,
+          "path": "capabilities.json",
+          "sha256": "571872c26b111ce2e16a9bf04ca51158530960e924526a0d2ed561068529d871"
+        },
+        {
+          "bytes": 0,
+          "path": "diagnostics.jsonl",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "bytes": 1581,
+          "path": "events.jsonl",
+          "sha256": "ca2cffc80f99f4d96ccb7fb270ecc75a6970759e66956d281c6693170a242454"
+        },
+        {
+          "bytes": 294910,
+          "path": "observations.csv",
+          "sha256": "0cdb5a1f0361d58d688a0f8be644a8424717936b9cef7044d70c6c88e7211e97"
+        },
+        {
+          "bytes": 610472,
+          "path": "observations.jsonl",
+          "sha256": "a4d98aa726ccd0e38f242a3ba6a32d9911b10afd30831208de78b0ae54650d5a"
+        },
+        {
+          "bytes": 688128,
+          "path": "observer.sqlite",
+          "sha256": "5427a6831aa04fce17e53e5641915e166d3e79087481244a4aad157c7388c44d"
+        },
+        {
+          "bytes": 4513,
+          "path": "processes.csv",
+          "sha256": "a71fee6048626a525899da342c27d557bbfa1aa6f93459572defcf7fbb5c934e"
+        },
+        {
+          "bytes": 10348,
+          "path": "processes.jsonl",
+          "sha256": "1d22f974363b176a24f531987d90192cc521d092225d936b55e76dcbe4bae1e5"
+        },
+        {
+          "bytes": 31221,
+          "path": "report.html",
+          "sha256": "c840fc9c6278530705a2f9e100b2b00f3ff0b2041ab7c47e14e75fc6095fe335"
+        },
+        {
+          "bytes": 3801,
+          "path": "run.json",
+          "sha256": "015af7000ad42517839434e79e13defc34757d9fede6a0ba47cc2b01ed20898d"
+        },
+        {
+          "bytes": 11497,
+          "path": "summary.md",
+          "sha256": "b3242383ca89f4d1f3059f9d77bbee056639abbe55ea389cbe7f244e6cb4dfbf"
+        }
+      ],
+      "local_only": true,
+      "manifest_schema_version": "1.0.0",
+      "omitted_artifacts": [],
+      "package_version": "0.1.0.dev0",
+      "partial": false,
+      "public_service_started": false,
+      "redaction": {
+        "excluded_by_default": [
+          "environment values",
+          "notebook source",
+          "file contents",
+          "full process command lines",
+          "network peer addresses"
+        ],
+        "remote_upload": false
+      },
+      "remote_telemetry_used": false,
+      "run_id": "22dc9be2-236f-4114-b84e-7ba5ca81fc3d",
+      "run_status": "stopped",
+      "size_warning": false
+    },
+    "sha256": "82d5f34805cfdc169229152f710b71e133a8128c8603d8dcb63079189192296c"
+  },
+  "diagnostic_count": 0,
+  "duration_s": 2.066126,
+  "event_count": 4,
+  "metric_count": 35,
+  "metrics": [
+    "filesystem.capacity.free",
+    "filesystem.capacity.percent",
+    "filesystem.capacity.total",
+    "filesystem.capacity.used",
+    "network.io.rx_bytes_total",
+    "network.io.tx_bytes_total",
+    "observer.process.cpu_percent",
+    "process.self.rss",
+    "process.self.uss",
+    "process.snapshot.count",
+    "runtime.cpu.logical_count",
+    "runtime.cpu.physical_count",
+    "runtime.is_colab",
+    "runtime.machine",
+    "runtime.os.release",
+    "runtime.os.system",
+    "runtime.process.pid",
+    "runtime.python.executable_kind",
+    "runtime.python.implementation",
+    "runtime.python.version",
+    "sampler.dropped_batches",
+    "sampler.lag",
+    "sampler.queue.depth",
+    "sampler.queue.utilization",
+    "system.cpu.core_utilization",
+    "system.cpu.load.15m",
+    "system.cpu.load.1m",
+    "system.cpu.load.5m",
+    "system.cpu.utilization",
+    "system.memory.available",
+    "system.memory.percent",
+    "system.memory.total",
+    "system.memory.used",
+    "system.swap.total",
+    "system.swap.used"
+  ],
+  "no_lingering_observer_threads": true,
+  "no_public_service_started": true,
+  "no_remote_telemetry_used": true,
+  "observation_count": 1736,
+  "observer_cpu_percent_of_one_core": 43.56,
+  "observer_cpu_seconds": 0.9,
+  "platform": {
+    "machine": "x86_64",
+    "release": "4.4.0",
+    "system": "Linux"
+  },
+  "process_snapshot_count": 33,
+  "python": "3.13.5",
+  "reports": {
+    "bundle": "/mnt/data/colab-observer-authoritative-validation-20260711/local-smoke/run/exports/22dc9be2-236f-4114-b84e-7ba5ca81fc3d.zip",
+    "html": "/mnt/data/colab-observer-authoritative-validation-20260711/local-smoke/run/exports/22dc9be2-236f-4114-b84e-7ba5ca81fc3d/report.html",
+    "markdown": "/mnt/data/colab-observer-authoritative-validation-20260711/local-smoke/run/exports/22dc9be2-236f-4114-b84e-7ba5ca81fc3d/summary.md"
+  },
+  "representative_colab_evidence": false,
+  "rss_delta_bytes": 3252224,
+  "sampler_lag_seconds": {
+    "count": 21,
+    "maximum": 0.150403,
+    "mean": 0.038725,
+    "p95": 0.0533
+  },
+  "scope": "local-cpu-sandbox-not-colab",
+  "status": {
+    "batches_dropped": 0,
+    "capabilities": [
+      {
+        "capability_id": "drive",
+        "metadata": {},
+        "provider": null,
+        "reason": "collect_drive is false",
+        "requested": false,
+        "state": "disabled"
+      },
+      {
+        "capability_id": "tpu",
+        "metadata": {},
+        "provider": null,
+        "reason": "collect_tpu is false",
+        "requested": false,
+        "state": "disabled"
+      },
+      {
+        "capability_id": "framework.torch",
+        "metadata": {},
+        "provider": "torch",
+        "reason": "collect_frameworks is false",
+        "requested": false,
+        "state": "disabled"
+      },
+      {
+        "capability_id": "framework.tensorflow",
+        "metadata": {},
+        "provider": "tensorflow",
+        "reason": "collect_frameworks is false",
+        "requested": false,
+        "state": "disabled"
+      },
+      {
+        "capability_id": "framework.jax",
+        "metadata": {},
+        "provider": "jax",
+        "reason": "collect_frameworks is false",
+        "requested": false,
+        "state": "disabled"
+      },
+      {
+        "capability_id": "gpu",
+        "metadata": {},
+        "provider": null,
+        "reason": "collect_gpu is false",
+        "requested": false,
+        "state": "disabled"
+      },
+      {
+        "capability_id": "runtime",
+        "metadata": {},
+        "provider": "stdlib",
+        "reason": null,
+        "requested": true,
+        "state": "available"
+      },
+      {
+        "capability_id": "cpu",
+        "metadata": {},
+        "provider": "psutil",
+        "reason": null,
+        "requested": true,
+        "state": "available"
+      },
+      {
+        "capability_id": "memory",
+        "metadata": {},
+        "provider": "psutil",
+        "reason": null,
+        "requested": true,
+        "state": "available"
+      },
+      {
+        "capability_id": "disk",
+        "metadata": {
+          "path_roles": [
+            "tmp",
+            "output"
+          ]
+        },
+        "provider": "stdlib+psutil",
+        "reason": null,
+        "requested": true,
+        "state": "available"
+      },
+      {
+        "capability_id": "network",
+        "metadata": {},
+        "provider": "psutil",
+        "reason": "network counters unavailable",
+        "requested": true,
+        "state": "unavailable"
+      },
+      {
+        "capability_id": "processes",
+        "metadata": {
+          "command_lines": false,
+          "top_n": 3
+        },
+        "provider": "psutil",
+        "reason": null,
+        "requested": true,
+        "state": "available"
+      }
+    ],
+    "database_path": "/mnt/data/colab-observer-authoritative-validation-20260711/local-smoke/run/observer.sqlite",
+    "last_error": null,
+    "last_sample_at_utc": "2026-07-11T05:40:04.411717Z",
+    "observations_seen": 1736,
+    "project": "local-cpu-smoke",
+    "queue_depth": 0,
+    "run_id": "22dc9be2-236f-4114-b84e-7ba5ca81fc3d",
+    "started_at_utc": "2026-07-11T05:40:02.385685Z",
+    "status": "stopped",
+    "stopped_at_utc": "2026-07-11T05:40:04.451323Z"
+  }
+}

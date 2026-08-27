@@ -1,0 +1,802 @@
+{
+  "generated_at": "2026-07-25",
+  "change_id": "build-colab-observer",
+  "version": "0.1.0.dev0",
+  "decision": {
+    "local_product_slice": "final-with-known-risks",
+    "overall_change": "one-more-material-loop",
+    "planning_layer": "final-assured maintenance after artifact freeze",
+    "direct_comm": "experimental-explicit-non-default-not-promoted"
+  },
+  "source_baseline": {
+    "bundle": "/mnt/data/colab-observer-runtime-boundary-source-20260717.zip",
+    "sha256": "f602a31f686708fda7445cfc3ee704e8cc6dd05fcee5b5e2859b67fd05457df0",
+    "recovered_workspace": "/mnt/data/colab-observer-next-runtime-20260725"
+  },
+  "openspec": {
+    "domains": 11,
+    "requirements": 73,
+    "scenarios": 93,
+    "tasks": 45,
+    "adrs": 9,
+    "task_state": {
+      "complete": 17,
+      "partial": 24,
+      "blocked_or_deferred": 4
+    }
+  },
+  "repository_gate": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 make check",
+    "result": "passed",
+    "tests": 249,
+    "resource_warning_promoted": true,
+    "runtime_module_imports": 47,
+    "python311_grammar_files": 104,
+    "schemas": 4,
+    "fixtures": 4,
+    "agent_files": 11,
+    "precommit_hooks": 18
+  },
+  "coverage": {
+    "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 python -W error::ResourceWarning -m pytest -p pytest_cov.plugin -p no:cacheprovider --cov=colab_observer --cov-branch --cov-fail-under=85",
+    "result": "passed",
+    "tests": 249,
+    "gate_percent": 85,
+    "percent_combined": 87.41758241758242,
+    "statements": 4162,
+    "covered_statements": 3750,
+    "branches": 1298,
+    "covered_branches": 1023,
+    "partial_branches": 241,
+    "evidence": "/mnt/data/colab-observer-next-evidence-20260725/full/coverage.json"
+  },
+  "runtime_evidence": {
+    "browser": {
+      "passed": true,
+      "checks_passed": 21,
+      "checks_total": 21,
+      "remote_requests": [],
+      "representative_colab": false,
+      "evidence": "/mnt/data/colab-observer-next-evidence-20260725/runtime/browser-smoke/browser-smoke.json"
+    },
+    "jupyter": {
+      "passed": true,
+      "checks_passed": 10,
+      "checks_total": 10,
+      "observations": 491,
+      "dropped_batches": 0,
+      "representative_colab": false,
+      "evidence": "/mnt/data/colab-observer-next-evidence-20260725/runtime/jupyter-smoke/jupyter-smoke.json"
+    },
+    "local_smoke": {
+      "observations": 1127,
+      "dropped_batches": 0,
+      "status": "stopped",
+      "representative_colab": false,
+      "evidence": "/mnt/data/colab-observer-next-evidence-20260725/runtime/local-smoke/runtime-smoke.json"
+    },
+    "benchmark_default": {
+      "artifacts": {
+        "bundle_bytes": 36377,
+        "database_bytes": 147456,
+        "html_report_bytes": 26069
+      },
+      "benchmark_kind": "bounded-local-smoke",
+      "caveat": "Local smoke benchmark only. Re-run on representative Colab CPU and accelerator runtimes before setting or claiming performance budgets.",
+      "configuration": {
+        "collect_gpu": false,
+        "collect_processes": false,
+        "duration_actual_s": 6.183636,
+        "duration_requested_s": 6.0,
+        "interval_s": 2.0
+      },
+      "environment": {
+        "platform": "Linux-6.12.13-x86_64-with-glibc2.41",
+        "processor_count": 5,
+        "python": "3.13.5"
+      },
+      "observer": {
+        "batches_dropped": 0,
+        "last_error": null,
+        "observations_seen": 211,
+        "queue_depth": 0,
+        "sampler_lag_max_s": 0.022382,
+        "sampler_lag_mean_s": 0.009476,
+        "sampler_lag_samples": 4,
+        "status": "stopped"
+      },
+      "process": {
+        "baseline_cpu_percent_of_one_core": 0.0034,
+        "incremental_cpu_percent_of_one_core": 0.6687,
+        "observer_cpu_percent_of_one_core": 0.6721,
+        "rss_before_bytes": 116363264,
+        "rss_delta_peak_bytes": 823296,
+        "rss_peak_bytes": 117186560
+      },
+      "representative_colab_result": false,
+      "sanity": {
+        "no_dropped_batches": true,
+        "observed_data": true,
+        "rss_delta_under_128_mib": true,
+        "stopped_cleanly": true
+      }
+    },
+    "benchmark_stress": {
+      "artifacts": {
+        "bundle_bytes": 71261,
+        "database_bytes": 364544,
+        "html_report_bytes": 26007
+      },
+      "benchmark_kind": "bounded-local-smoke",
+      "caveat": "Local smoke benchmark only. Re-run on representative Colab CPU and accelerator runtimes before setting or claiming performance budgets.",
+      "configuration": {
+        "collect_gpu": false,
+        "collect_processes": false,
+        "duration_actual_s": 3.43156,
+        "duration_requested_s": 3.0,
+        "interval_s": 0.2
+      },
+      "environment": {
+        "platform": "Linux-6.12.13-x86_64-with-glibc2.41",
+        "processor_count": 5,
+        "python": "3.13.5"
+      },
+      "observer": {
+        "batches_dropped": 0,
+        "last_error": null,
+        "observations_seen": 811,
+        "queue_depth": 0,
+        "sampler_lag_max_s": 0.021867,
+        "sampler_lag_mean_s": 0.006167,
+        "sampler_lag_samples": 16,
+        "status": "stopped"
+      },
+      "process": {
+        "baseline_cpu_percent_of_one_core": 0.0044,
+        "incremental_cpu_percent_of_one_core": 3.5489,
+        "observer_cpu_percent_of_one_core": 3.5533,
+        "rss_before_bytes": 116322304,
+        "rss_delta_peak_bytes": 1441792,
+        "rss_peak_bytes": 117764096
+      },
+      "representative_colab_result": false,
+      "sanity": {
+        "no_dropped_batches": true,
+        "observed_data": true,
+        "rss_delta_under_128_mib": true,
+        "stopped_cleanly": true
+      }
+    },
+    "soak_30s": {
+      "caveat": "Local regression evidence only. Managed Colab CPU/accelerator, mounted Drive, browser widget, and long-duration release budgets require representative runtimes.",
+      "configuration": {
+        "duration_actual_s": 30.056144,
+        "duration_requested_s": 30.0,
+        "history_max_observations": 2000,
+        "interval_s": 0.2,
+        "queue_max_batches": 64,
+        "storage_batch_size": 64
+      },
+      "environment": {
+        "logical_cpu_count": 5,
+        "platform": "Linux-6.12.13-x86_64-with-glibc2.41",
+        "python": "3.13.5"
+      },
+      "export": {
+        "bundle": "/mnt/data/colab-observer-next-evidence-20260725/runtime/local-soak-30s/run/exports/025a11a7-bd65-4ba7-b743-33f79d1c7272.zip",
+        "bundle_bytes": 15662,
+        "bundle_entries": [
+          "MANIFEST.json",
+          "README.md",
+          "capabilities.json",
+          "checksums.sha256",
+          "export-query.json",
+          "metrics-summary.csv",
+          "metrics-summary.json",
+          "report.html",
+          "run.json",
+          "summary.md"
+        ],
+        "bundle_partial": false,
+        "bundle_schema_version": "1.1.0",
+        "estimate": {
+          "basis": "source database bytes plus conservative selected-row coefficients",
+          "estimated_bytes": 219840,
+          "query": {
+            "end_elapsed_s": null,
+            "include_diagnostics": true,
+            "include_events": true,
+            "include_processes": true,
+            "include_raw_database": false,
+            "metrics": [],
+            "start_elapsed_s": 15.0,
+            "summary_only": true
+          },
+          "selected_rows": {
+            "diagnostics": 0,
+            "events": 0,
+            "observations": 3896,
+            "processes": 0
+          },
+          "warning": false,
+          "warning_threshold_bytes": 100000000
+        }
+      },
+      "observer": {
+        "dropped_batches": 0,
+        "history_final": 2000,
+        "history_peak": 2000,
+        "last_error": null,
+        "lingering_threads": [],
+        "observations_seen": 7747,
+        "persisted_observations": 7747,
+        "persisted_status": "stopped",
+        "queue_depth_final": 0,
+        "reader_failures": [],
+        "status": "stopped"
+      },
+      "process": {
+        "cpu_percent_of_one_core": 11.6449,
+        "rss_before_bytes": 116490240,
+        "rss_peak_bytes": 123351040,
+        "rss_peak_delta_bytes": 6860800
+      },
+      "representative_colab_evidence": false,
+      "sampler_lag_seconds": {
+        "maximum": 0.009047,
+        "mean": 0.005897,
+        "p95": 0.006409,
+        "samples": 39
+      },
+      "sanity": {
+        "backup_integrity_ok": true,
+        "bounded_history": true,
+        "database_integrity_ok": true,
+        "no_dropped_batches": true,
+        "no_lingering_threads": true,
+        "no_reader_failures": true,
+        "persisted_status_stopped": true,
+        "rss_peak_delta_under_128_mib": true,
+        "stopped_cleanly": true,
+        "summary_bundle_complete": true
+      },
+      "scope": "bounded-local-linux-soak-not-colab",
+      "storage": {
+        "backup_bytes": 2895872,
+        "backup_quick_check": [
+          "ok"
+        ],
+        "database_bytes_final": 2928640,
+        "database_bytes_peak": 7111504,
+        "quick_check": [
+          "ok"
+        ]
+      }
+    },
+    "frameworks": {
+      "torch": {
+        "available": true,
+        "caveat": "This validates a locally installed, explicitly loaded framework on the current Linux/Python environment. Re-run the same script in representative Colab runtimes before claiming Colab compatibility.",
+        "environment": {
+          "framework_version": "2.10.0+cpu",
+          "platform": "Linux-6.12.13-x86_64-with-glibc2.41",
+          "python": "3.13.5"
+        },
+        "framework": "torch",
+        "module_state": {
+          "after_observer": {
+            "jax": false,
+            "tensorflow": false,
+            "torch": true
+          },
+          "after_selected_workload": {
+            "jax": false,
+            "tensorflow": false,
+            "torch": true
+          },
+          "before_selected_workload": {
+            "jax": false,
+            "tensorflow": false,
+            "torch": false
+          },
+          "unexpected_framework_imports_by_observer": []
+        },
+        "observer": {
+          "batches_dropped": 0,
+          "framework_metrics": [
+            {
+              "collection_duration_ms": 0.050249,
+              "labels": {},
+              "metric": "framework.torch.loaded",
+              "monotonic_ns": 1753204360569,
+              "observed_at_utc": "2026-07-25T14:42:46.990901Z",
+              "quality": "exact",
+              "run_id": "df111b36-c8aa-4f0a-ba99-124b0ece6c01",
+              "schema_version": "1.0.0",
+              "sequence": 58,
+              "source": "sys.modules",
+              "unit": null,
+              "value_number": null,
+              "value_text": "true"
+            },
+            {
+              "collection_duration_ms": 0.050249,
+              "labels": {},
+              "metric": "framework.torch.cuda.initialized",
+              "monotonic_ns": 1753204360569,
+              "observed_at_utc": "2026-07-25T14:42:46.990901Z",
+              "quality": "exact",
+              "run_id": "df111b36-c8aa-4f0a-ba99-124b0ece6c01",
+              "schema_version": "1.0.0",
+              "sequence": 59,
+              "source": "torch-public-api",
+              "unit": null,
+              "value_number": null,
+              "value_text": "false"
+            },
+            {
+              "collection_duration_ms": 0.02042,
+              "labels": {},
+              "metric": "framework.tensorflow.loaded",
+              "monotonic_ns": 1753204532061,
+              "observed_at_utc": "2026-07-25T14:42:46.991072Z",
+              "quality": "exact",
+              "run_id": "df111b36-c8aa-4f0a-ba99-124b0ece6c01",
+              "schema_version": "1.0.0",
+              "sequence": 61,
+              "source": "sys.modules",
+              "unit": null,
+              "value_number": null,
+              "value_text": "false"
+            },
+            {
+              "collection_duration_ms": 0.016099,
+              "labels": {},
+              "metric": "framework.jax.loaded",
+              "monotonic_ns": 1753204633773,
+              "observed_at_utc": "2026-07-25T14:42:46.991173Z",
+              "quality": "exact",
+              "run_id": "df111b36-c8aa-4f0a-ba99-124b0ece6c01",
+              "schema_version": "1.0.0",
+              "sequence": 63,
+              "source": "sys.modules",
+              "unit": null,
+              "value_number": null,
+              "value_text": "false"
+            }
+          ],
+          "last_error": null,
+          "observations_seen": 418,
+          "selected_capability": {
+            "capability_id": "framework.torch",
+            "metadata": {},
+            "provider": "already-loaded-module",
+            "reason": "framework is already loaded",
+            "requested": true,
+            "state": "available"
+          },
+          "status": "stopped"
+        },
+        "representative_colab_evidence": false,
+        "scope": "local-framework-smoke-not-colab",
+        "status": "passed",
+        "workload": {
+          "device": "cpu",
+          "result_sum": 3680.0,
+          "workload": "4x4 CPU matrix multiplication"
+        }
+      },
+      "jax": {
+        "available": true,
+        "caveat": "This validates a locally installed, explicitly loaded framework on the current Linux/Python environment. Re-run the same script in representative Colab runtimes before claiming Colab compatibility.",
+        "environment": {
+          "framework_version": "0.9.0.1",
+          "platform": "Linux-6.12.13-x86_64-with-glibc2.41",
+          "python": "3.13.5"
+        },
+        "framework": "jax",
+        "module_state": {
+          "after_observer": {
+            "jax": true,
+            "tensorflow": false,
+            "torch": false
+          },
+          "after_selected_workload": {
+            "jax": true,
+            "tensorflow": false,
+            "torch": false
+          },
+          "before_selected_workload": {
+            "jax": false,
+            "tensorflow": false,
+            "torch": false
+          },
+          "unexpected_framework_imports_by_observer": []
+        },
+        "observer": {
+          "batches_dropped": 0,
+          "framework_metrics": [
+            {
+              "collection_duration_ms": 0.036684,
+              "labels": {},
+              "metric": "framework.torch.loaded",
+              "monotonic_ns": 1758703878910,
+              "observed_at_utc": "2026-07-25T14:42:52.490419Z",
+              "quality": "exact",
+              "run_id": "788cc876-07cf-4bb4-98ab-8bf582880af0",
+              "schema_version": "1.0.0",
+              "sequence": 58,
+              "source": "sys.modules",
+              "unit": null,
+              "value_number": null,
+              "value_text": "false"
+            },
+            {
+              "collection_duration_ms": 0.021088,
+              "labels": {},
+              "metric": "framework.tensorflow.loaded",
+              "monotonic_ns": 1758704040239,
+              "observed_at_utc": "2026-07-25T14:42:52.490580Z",
+              "quality": "exact",
+              "run_id": "788cc876-07cf-4bb4-98ab-8bf582880af0",
+              "schema_version": "1.0.0",
+              "sequence": 60,
+              "source": "sys.modules",
+              "unit": null,
+              "value_number": null,
+              "value_text": "false"
+            },
+            {
+              "collection_duration_ms": 0.016825,
+              "labels": {},
+              "metric": "framework.jax.loaded",
+              "monotonic_ns": 1758704141114,
+              "observed_at_utc": "2026-07-25T14:42:52.490681Z",
+              "quality": "exact",
+              "run_id": "788cc876-07cf-4bb4-98ab-8bf582880af0",
+              "schema_version": "1.0.0",
+              "sequence": 62,
+              "source": "sys.modules",
+              "unit": null,
+              "value_number": null,
+              "value_text": "true"
+            }
+          ],
+          "last_error": null,
+          "observations_seen": 417,
+          "selected_capability": {
+            "capability_id": "framework.jax",
+            "metadata": {},
+            "provider": "already-loaded-module",
+            "reason": "framework is already loaded",
+            "requested": true,
+            "state": "available"
+          },
+          "status": "stopped"
+        },
+        "representative_colab_evidence": false,
+        "scope": "local-framework-smoke-not-colab",
+        "status": "passed",
+        "workload": {
+          "device": "{CpuDevice(id=0)}",
+          "result_sum": 3680.0,
+          "workload": "4x4 CPU matrix multiplication"
+        }
+      },
+      "tensorflow": {
+        "available": false,
+        "framework": "tensorflow",
+        "reason": "framework package is not present in this environment",
+        "representative_colab_evidence": false,
+        "status": "skipped"
+      }
+    },
+    "managed_colab_default": {
+      "dependency_installation": false,
+      "drive_mount_attempted": false,
+      "experimental_direct_comm_activated": false,
+      "managed_colab_detected": false,
+      "network_requested": false,
+      "reason": "google.colab and /content were not both detected; run this unchanged in a managed Colab runtime",
+      "representative_colab_evidence": false,
+      "scope": "managed-google-colab-runtime-smoke",
+      "status": "blocked"
+    },
+    "managed_colab_local_harness": {
+      "bundle": {
+        "checksums_verified": 16,
+        "entries": 17,
+        "sha256": "041dc8efe33489f24727fed9ebd9ed19d0d23140f4304dc7d73f3068e1b15038"
+      },
+      "capabilities": {
+        "cpu": {
+          "provider": "psutil",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        "disk": {
+          "provider": "stdlib+psutil",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        "drive": {
+          "provider": "mount-probe+stdlib",
+          "reason": "Drive is not mounted; colab-observer does not mount or authenticate it",
+          "requested": true,
+          "state": "unavailable"
+        },
+        "framework.jax": {
+          "provider": null,
+          "reason": "framework is not loaded; observer will not import it solely for monitoring",
+          "requested": true,
+          "state": "unavailable"
+        },
+        "framework.tensorflow": {
+          "provider": null,
+          "reason": "framework is not loaded; observer will not import it solely for monitoring",
+          "requested": true,
+          "state": "unavailable"
+        },
+        "framework.torch": {
+          "provider": null,
+          "reason": "framework is not loaded; observer will not import it solely for monitoring",
+          "requested": true,
+          "state": "unavailable"
+        },
+        "gpu": {
+          "provider": null,
+          "reason": "no supported NVIDIA provider is accessible",
+          "requested": true,
+          "state": "unavailable"
+        },
+        "memory": {
+          "provider": "psutil",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        "network": {
+          "provider": "psutil",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        "processes": {
+          "provider": "psutil",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        "runtime": {
+          "provider": "stdlib",
+          "reason": null,
+          "requested": true,
+          "state": "available"
+        },
+        "tpu": {
+          "provider": null,
+          "reason": "no TPU presence signal detected",
+          "requested": true,
+          "state": "unavailable"
+        }
+      },
+      "caveat": "Representative managed-Colab evidence is true only when managed_colab_detected is true. This runner does not validate browser direct comm, accelerator performance, or WCAG conformance.",
+      "checks": {
+        "bundle_present": true,
+        "clean_terminal_state": true,
+        "no_dropped_batches": true,
+        "no_lingering_threads": true,
+        "observations_collected": true,
+        "persistence_available": true,
+        "reports_present": true,
+        "static_output_remote_free": true,
+        "static_output_script_free": true,
+        "static_semantic_region": true
+      },
+      "dependency_installation": false,
+      "display": {
+        "displayed": true,
+        "html_bytes": 31284,
+        "mode": "text-fallback"
+      },
+      "drive_mount_attempted": false,
+      "duration_s": 5.214258,
+      "environment": {
+        "colab_release_tag": null,
+        "content_root_present": false,
+        "direct_comm_available_but_not_activated": false,
+        "drive_mounted": false,
+        "packages": {
+          "colab-observer": "0.1.0.dev0",
+          "jax": "0.9.0.1",
+          "nvidia-ml-py": null,
+          "psutil": "7.2.2",
+          "tensorflow": null,
+          "torch": "2.10.0+cpu"
+        },
+        "platform": "Linux-6.12.13-x86_64-with-glibc2.41",
+        "python": "3.13.5"
+      },
+      "experimental_direct_comm_activated": false,
+      "interval_s": 2.0,
+      "lingering_threads": [],
+      "managed_colab_detected": false,
+      "metric_count": 61,
+      "network_requested": false,
+      "observation_count": 215,
+      "observer_status": {
+        "batches_dropped": 0,
+        "capabilities": [
+          {
+            "capability_id": "gpu",
+            "metadata": {},
+            "provider": null,
+            "reason": "no supported NVIDIA provider is accessible",
+            "requested": true,
+            "state": "unavailable"
+          },
+          {
+            "capability_id": "runtime",
+            "metadata": {},
+            "provider": "stdlib",
+            "reason": null,
+            "requested": true,
+            "state": "available"
+          },
+          {
+            "capability_id": "cpu",
+            "metadata": {},
+            "provider": "psutil",
+            "reason": null,
+            "requested": true,
+            "state": "available"
+          },
+          {
+            "capability_id": "memory",
+            "metadata": {},
+            "provider": "psutil",
+            "reason": null,
+            "requested": true,
+            "state": "available"
+          },
+          {
+            "capability_id": "disk",
+            "metadata": {
+              "inaccessible_path_roles": [],
+              "path_roles": [
+                "tmp",
+                "output"
+              ]
+            },
+            "provider": "stdlib+psutil",
+            "reason": null,
+            "requested": true,
+            "state": "available"
+          },
+          {
+            "capability_id": "network",
+            "metadata": {},
+            "provider": "psutil",
+            "reason": null,
+            "requested": true,
+            "state": "available"
+          },
+          {
+            "capability_id": "processes",
+            "metadata": {
+              "command_lines": false,
+              "top_n": 3
+            },
+            "provider": "psutil",
+            "reason": null,
+            "requested": true,
+            "state": "available"
+          },
+          {
+            "capability_id": "drive",
+            "metadata": {
+              "read_only": true,
+              "signals": [
+                "mount-presence",
+                "capacity",
+                "metadata-latency"
+              ]
+            },
+            "provider": "mount-probe+stdlib",
+            "reason": "Drive is not mounted; colab-observer does not mount or authenticate it",
+            "requested": true,
+            "state": "unavailable"
+          },
+          {
+            "capability_id": "tpu",
+            "metadata": {},
+            "provider": null,
+            "reason": "no TPU presence signal detected",
+            "requested": true,
+            "state": "unavailable"
+          },
+          {
+            "capability_id": "framework.torch",
+            "metadata": {},
+            "provider": null,
+            "reason": "framework is not loaded; observer will not import it solely for monitoring",
+            "requested": true,
+            "state": "unavailable"
+          },
+          {
+            "capability_id": "framework.tensorflow",
+            "metadata": {},
+            "provider": null,
+            "reason": "framework is not loaded; observer will not import it solely for monitoring",
+            "requested": true,
+            "state": "unavailable"
+          },
+          {
+            "capability_id": "framework.jax",
+            "metadata": {},
+            "provider": null,
+            "reason": "framework is not loaded; observer will not import it solely for monitoring",
+            "requested": true,
+            "state": "unavailable"
+          }
+        ],
+        "database_path": "/mnt/data/colab-observer-next-evidence-20260725/runtime/managed-colab-local/run/observer.sqlite",
+        "last_error": null,
+        "last_sample_at_utc": "2026-07-25T14:43:13.204634Z",
+        "observations_seen": 215,
+        "project": "local-colab-harness-smoke",
+        "queue_depth": 0,
+        "run_id": "d6412d49-5b1e-4334-9e45-e073e6778463",
+        "started_at_utc": "2026-07-25T14:43:09.195568Z",
+        "status": "stopped",
+        "stopped_at_utc": "2026-07-25T14:43:14.409328Z"
+      },
+      "public_service_started": false,
+      "remote_telemetry_used": false,
+      "reports": {
+        "bundle": "/mnt/data/colab-observer-next-evidence-20260725/runtime/managed-colab-local/run/exports/d6412d49-5b1e-4334-9e45-e073e6778463.zip",
+        "html": "/mnt/data/colab-observer-next-evidence-20260725/runtime/managed-colab-local/run/exports/d6412d49-5b1e-4334-9e45-e073e6778463/report.html",
+        "markdown": "/mnt/data/colab-observer-next-evidence-20260725/runtime/managed-colab-local/run/exports/d6412d49-5b1e-4334-9e45-e073e6778463/summary.md"
+      },
+      "representative_colab_evidence": false,
+      "scope": "local-harness-smoke-not-managed-colab",
+      "status": "passed"
+    }
+  },
+  "repairs": [
+    "reject terminal/fatal phase markers and user notes",
+    "report fatal sampler state as failed and non-running before stop",
+    "clear stale active-observer registration",
+    "reject invalid/non-finite public flush deadlines",
+    "contain writer close failure as bounded loss evidence",
+    "strict field-level provider numbers with valid sibling retention",
+    "cap per-core CPU rows and NVML device enumeration",
+    "reject export elapsed ranges outside datetime/SQLite timestamp domains before writes"
+  ],
+  "packaging": {
+    "status": "passed-at-release-freeze",
+    "source_root": "/mnt/data/colab-observer-runtime-evidence-final-20260725",
+    "source_bundle": "/mnt/data/colab-observer-runtime-evidence-source-20260725.zip",
+    "validation_bundle": "/mnt/data/colab-observer-runtime-evidence-validation-20260725.zip",
+    "distribution_bundle": "/mnt/data/colab-observer-distributions-0.1.0.dev0-runtime-evidence-20260725.zip",
+    "fixed_epoch": 1784937600,
+    "wheel_reproducible": true,
+    "normalized_sdist_reproducible": true,
+    "distribution_check": "passed",
+    "extracted_wheel_smoke": "passed",
+    "source_clean_extract_and_byte_compare": "passed",
+    "zip_integrity": "passed",
+    "hashes": "external delivery manifest and sidecars to avoid self-reference",
+    "planning_manifest_schema_note": "The supplied flat 40-file Project-config planning-manifest schema is not applicable to this nested product repository; validate-pack and exact manifest parity are the applicable gates."
+  },
+  "blocked": [
+    "managed Colab CPU/NVIDIA/TPU/Drive/direct-comm execution",
+    "Python 3.11 and 3.12 execution",
+    "reviewed uv and pnpm locks plus full lint/type/pre-commit/docs toolchain",
+    "manual assistive-technology and managed-notebook browser evidence",
+    "owner/license/repository/namespace/canonical URL/support/release decisions",
+    "Git operations, publication, deployment, secrets, accounts, permissions, and OpenSpec verify/sync/archive"
+  ]
+}

@@ -1,0 +1,494 @@
+{
+  "change_id": "generalize-notebook-runtime-observer",
+  "title": "Adopt nbops and generalize notebook runtime observability",
+  "rigor": "full",
+  "rigor_reason": "Canonical package/import/CLI migration, public API and artifact compatibility, multi-platform support claims, security boundaries, optional server integration, and representative-runtime evidence make rollback and false claims costly.",
+  "domains": [
+    "package-identity",
+    "runtime-profiles",
+    "measurement-scope",
+    "platform-adapters",
+    "storage-profiles",
+    "notebook-display",
+    "compatibility-support",
+    "platform-diagnostics",
+    "migration-compatibility",
+    "security-policy"
+  ],
+  "current_specs_read": [
+    "openspec/changes/build-colab-observer/proposal.md",
+    "openspec/changes/build-colab-observer/design.md",
+    "openspec/changes/build-colab-observer/specs/**/spec.md"
+  ],
+  "artifacts": {
+    "proposal": "openspec/changes/generalize-notebook-runtime-observer/proposal.md",
+    "design": "openspec/changes/generalize-notebook-runtime-observer/design.md",
+    "tasks": "openspec/changes/generalize-notebook-runtime-observer/tasks.md",
+    "delta_specs": [
+      {
+        "domain": "package-identity",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/package-identity/spec.md"
+      },
+      {
+        "domain": "runtime-profiles",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/runtime-profiles/spec.md"
+      },
+      {
+        "domain": "measurement-scope",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/measurement-scope/spec.md"
+      },
+      {
+        "domain": "platform-adapters",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/platform-adapters/spec.md"
+      },
+      {
+        "domain": "storage-profiles",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/storage-profiles/spec.md"
+      },
+      {
+        "domain": "notebook-display",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/notebook-display/spec.md"
+      },
+      {
+        "domain": "compatibility-support",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/compatibility-support/spec.md"
+      },
+      {
+        "domain": "platform-diagnostics",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/platform-diagnostics/spec.md"
+      },
+      {
+        "domain": "migration-compatibility",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/migration-compatibility/spec.md"
+      },
+      {
+        "domain": "security-policy",
+        "path": "openspec/changes/generalize-notebook-runtime-observer/specs/security-policy/spec.md"
+      }
+    ]
+  },
+  "requirements_trace": [
+    {
+      "requirement": "REQ-IDN-001",
+      "scenarios": [
+        "Canonical surfaces agree",
+        "Competing canonical identity is rejected"
+      ],
+      "tasks": [
+        "TASK-104-approve-nbops-canonical-identity",
+        "TASK-106-implement-nbops-identity-migration",
+        "TASK-145-validate-nbops-public-identity-readiness"
+      ]
+    },
+    {
+      "requirement": "REQ-IDN-002",
+      "scenarios": [
+        "Behavior is frozen before migration",
+        "Legacy artifacts remain readable"
+      ],
+      "tasks": [
+        "TASK-103-freeze-colab-compatibility-fixtures",
+        "TASK-105-freeze-nbops-migration-fixtures",
+        "TASK-106-implement-nbops-identity-migration",
+        "TASK-141-preserve-legacy-bundle-readers"
+      ]
+    },
+    {
+      "requirement": "REQ-IDN-003",
+      "scenarios": [
+        "No demonstrated external dependency",
+        "Demonstrated compatibility requirement"
+      ],
+      "tasks": [
+        "TASK-106-implement-nbops-identity-migration",
+        "TASK-142-preserve-colab-behavior-and-legacy-compatibility"
+      ]
+    },
+    {
+      "requirement": "REQ-IDN-004",
+      "scenarios": [
+        "Preliminary namespace signal is insufficient",
+        "External identity action remains approval-gated"
+      ],
+      "tasks": [
+        "TASK-145-validate-nbops-public-identity-readiness",
+        "TASK-158-make-generalization-release-decision"
+      ]
+    },
+    {
+      "requirement": "REQ-RTP-001",
+      "scenarios": [
+        "Profile is composed from available evidence",
+        "Profile survives portable export"
+      ],
+      "tasks": [
+        "TASK-110-implement-runtime-profile-models",
+        "TASK-111-implement-evidence-validation",
+        "TASK-112-implement-adapter-registry",
+        "TASK-115-expose-read-only-profile",
+        "TASK-150-run-profile-contract-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-RTP-002",
+      "scenarios": [
+        "Conflicting evidence remains visible",
+        "Sensitive raw evidence is minimized"
+      ],
+      "tasks": [
+        "TASK-110-implement-runtime-profile-models",
+        "TASK-111-implement-evidence-validation",
+        "TASK-112-implement-adapter-registry",
+        "TASK-115-expose-read-only-profile",
+        "TASK-150-run-profile-contract-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-RTP-003",
+      "scenarios": [
+        "Unknown notebook provider does not block observation",
+        "IPython does not imply a hosted provider"
+      ],
+      "tasks": [
+        "TASK-110-implement-runtime-profile-models",
+        "TASK-111-implement-evidence-validation",
+        "TASK-112-implement-adapter-registry",
+        "TASK-115-expose-read-only-profile",
+        "TASK-150-run-profile-contract-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-SCP-001",
+      "scenarios": [
+        "Container-visible value is not called host-wide",
+        "Process-tree value remains distinct"
+      ],
+      "tasks": [
+        "TASK-123-implement-measurement-scope",
+        "TASK-150-run-profile-contract-matrix",
+        "TASK-157-run-cross-platform-performance-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-SCP-002",
+      "scenarios": [
+        "Missing limit is not unlimited",
+        "Limit source is retained"
+      ],
+      "tasks": [
+        "TASK-123-implement-measurement-scope",
+        "TASK-150-run-profile-contract-matrix",
+        "TASK-157-run-cross-platform-performance-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-SCP-003",
+      "scenarios": [
+        "Kernel-only install remains kernel-scoped",
+        "Authorized server evidence is additive"
+      ],
+      "tasks": [
+        "TASK-123-implement-measurement-scope",
+        "TASK-150-run-profile-contract-matrix",
+        "TASK-157-run-cross-platform-performance-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-ADP-001",
+      "scenarios": [
+        "Provider and frontend may differ",
+        "Multiple adapters contribute safely"
+      ],
+      "tasks": [
+        "TASK-112-implement-adapter-registry",
+        "TASK-120-implement-generic-python-adapter",
+        "TASK-121-implement-ipython-adapter",
+        "TASK-122-extract-colab-adapter",
+        "TASK-125-implement-deepnote-preview-adapter",
+        "TASK-126-implement-jupyter-profile-adapter"
+      ]
+    },
+    {
+      "requirement": "REQ-ADP-002",
+      "scenarios": [
+        "Broken provider detector does not abort",
+        "Cleanup failure is contained"
+      ],
+      "tasks": [
+        "TASK-112-implement-adapter-registry",
+        "TASK-120-implement-generic-python-adapter",
+        "TASK-121-implement-ipython-adapter",
+        "TASK-122-extract-colab-adapter",
+        "TASK-125-implement-deepnote-preview-adapter",
+        "TASK-126-implement-jupyter-profile-adapter"
+      ]
+    },
+    {
+      "requirement": "REQ-ADP-003",
+      "scenarios": [
+        "Detection is read-only",
+        "Explicit platform override cannot fabricate scope"
+      ],
+      "tasks": [
+        "TASK-112-implement-adapter-registry",
+        "TASK-120-implement-generic-python-adapter",
+        "TASK-121-implement-ipython-adapter",
+        "TASK-122-extract-colab-adapter",
+        "TASK-125-implement-deepnote-preview-adapter",
+        "TASK-126-implement-jupyter-profile-adapter"
+      ]
+    },
+    {
+      "requirement": "REQ-STO-001",
+      "scenarios": [
+        "Ephemeral and persistent locations differ",
+        "Unknown storage remains unknown"
+      ],
+      "tasks": [
+        "TASK-124-implement-storage-profile-registry",
+        "TASK-125-implement-deepnote-preview-adapter",
+        "TASK-154-run-deepnote-runtime"
+      ]
+    },
+    {
+      "requirement": "REQ-STO-002",
+      "scenarios": [
+        "High-frequency writes stay local when configured",
+        "Legacy output remains compatible"
+      ],
+      "tasks": [
+        "TASK-124-implement-storage-profile-registry",
+        "TASK-125-implement-deepnote-preview-adapter",
+        "TASK-154-run-deepnote-runtime"
+      ]
+    },
+    {
+      "requirement": "REQ-STO-003",
+      "scenarios": [
+        "Unmounted destination fails safely",
+        "Final copy is explicit"
+      ],
+      "tasks": [
+        "TASK-124-implement-storage-profile-registry",
+        "TASK-125-implement-deepnote-preview-adapter",
+        "TASK-154-run-deepnote-runtime"
+      ]
+    },
+    {
+      "requirement": "REQ-DSP-001",
+      "scenarios": [
+        "Unknown frontend remains usable",
+        "Compatible IPython renders static output"
+      ],
+      "tasks": [
+        "TASK-130-unify-semantic-dashboard-model",
+        "TASK-131-regress-static-universal-baseline",
+        "TASK-132-implement-transport-capability-registry",
+        "TASK-134-validate-semantic-parity"
+      ]
+    },
+    {
+      "requirement": "REQ-DSP-002",
+      "scenarios": [
+        "Unavailable enhanced transport falls back",
+        "Experimental transport is explicit"
+      ],
+      "tasks": [
+        "TASK-130-unify-semantic-dashboard-model",
+        "TASK-131-regress-static-universal-baseline",
+        "TASK-132-implement-transport-capability-registry",
+        "TASK-134-validate-semantic-parity"
+      ]
+    },
+    {
+      "requirement": "REQ-DSP-003",
+      "scenarios": [
+        "Chart failure preserves data access",
+        "Transport does not change metric meaning"
+      ],
+      "tasks": [
+        "TASK-130-unify-semantic-dashboard-model",
+        "TASK-131-regress-static-universal-baseline",
+        "TASK-132-implement-transport-capability-registry",
+        "TASK-134-validate-semantic-parity"
+      ]
+    },
+    {
+      "requirement": "REQ-SUP-001",
+      "scenarios": [
+        "Detected platform is not automatically supported",
+        "Support evidence is inspectable"
+      ],
+      "tasks": [
+        "TASK-113-implement-support-tier-evaluator",
+        "TASK-144-generate-evidence-backed-support-docs",
+        "TASK-158-make-generalization-release-decision"
+      ]
+    },
+    {
+      "requirement": "REQ-SUP-002",
+      "scenarios": [
+        "Promotion requires all mandatory gates",
+        "Stale evidence is visible"
+      ],
+      "tasks": [
+        "TASK-113-implement-support-tier-evaluator",
+        "TASK-144-generate-evidence-backed-support-docs",
+        "TASK-158-make-generalization-release-decision"
+      ]
+    },
+    {
+      "requirement": "REQ-SUP-003",
+      "scenarios": [
+        "Deepnote-specific profile fails",
+        "Jupyter server provider absent"
+      ],
+      "tasks": [
+        "TASK-113-implement-support-tier-evaluator",
+        "TASK-144-generate-evidence-backed-support-docs",
+        "TASK-158-make-generalization-release-decision"
+      ]
+    },
+    {
+      "requirement": "REQ-DIA-001",
+      "scenarios": [
+        "Drive warning requires Drive evidence",
+        "Object-backed storage warning is scoped"
+      ],
+      "tasks": [
+        "TASK-128-generalize-platform-diagnostics",
+        "TASK-150-run-profile-contract-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-DIA-002",
+      "scenarios": [
+        "Provider limitation is not overclaimed",
+        "Generic copy replaces unsupported platform copy"
+      ],
+      "tasks": [
+        "TASK-128-generalize-platform-diagnostics",
+        "TASK-150-run-profile-contract-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-MIG-001",
+      "scenarios": [
+        "Canonical three-cell notebook works",
+        "Runtime profile is additive"
+      ],
+      "tasks": [
+        "TASK-103-freeze-colab-compatibility-fixtures",
+        "TASK-105-freeze-nbops-migration-fixtures",
+        "TASK-106-implement-nbops-identity-migration",
+        "TASK-142-preserve-colab-behavior-and-legacy-compatibility"
+      ]
+    },
+    {
+      "requirement": "REQ-MIG-002",
+      "scenarios": [
+        "Prior bundle remains readable",
+        "New artifact declares compatibility version"
+      ],
+      "tasks": [
+        "TASK-140-migrate-run-and-export-schemas",
+        "TASK-141-preserve-legacy-bundle-readers",
+        "TASK-142-preserve-colab-behavior-and-legacy-compatibility"
+      ]
+    },
+    {
+      "requirement": "REQ-MIG-003",
+      "scenarios": [
+        "Historical change ID remains resolvable",
+        "New execution evidence uses nbops"
+      ],
+      "tasks": [
+        "TASK-104-approve-nbops-canonical-identity",
+        "TASK-106-implement-nbops-identity-migration",
+        "TASK-141-preserve-legacy-bundle-readers",
+        "TASK-145-validate-nbops-public-identity-readiness"
+      ]
+    },
+    {
+      "requirement": "REQ-SEC-001",
+      "scenarios": [
+        "Environment marker is reduced",
+        "Connection secrets are excluded"
+      ],
+      "tasks": [
+        "TASK-111-implement-evidence-validation",
+        "TASK-127-spike-optional-server-provider",
+        "TASK-135-enforce-cross-platform-payload-bounds",
+        "TASK-156-run-security-privacy-negative-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-SEC-002",
+      "scenarios": [
+        "Unauthenticated request is rejected",
+        "Kernel package works without server integration"
+      ],
+      "tasks": [
+        "TASK-111-implement-evidence-validation",
+        "TASK-127-spike-optional-server-provider",
+        "TASK-135-enforce-cross-platform-payload-bounds",
+        "TASK-156-run-security-privacy-negative-matrix"
+      ]
+    },
+    {
+      "requirement": "REQ-SEC-003",
+      "scenarios": [
+        "Adapter cannot widen product authority",
+        "Transport failure does not trigger reconnect automation"
+      ],
+      "tasks": [
+        "TASK-111-implement-evidence-validation",
+        "TASK-127-spike-optional-server-provider",
+        "TASK-135-enforce-cross-platform-payload-bounds",
+        "TASK-156-run-security-privacy-negative-matrix"
+      ]
+    }
+  ],
+  "validation": [
+    "OpenSpec structural and behavior-boundary checks",
+    "Machine change-pack and task-graph schema validation",
+    "Legacy API/schema/bundle compatibility matrix",
+    "Generic Python/IPython/Jupyter/Colab/Deepnote representative runtime matrix",
+    "Security/privacy, accessibility, performance, and deterministic package checks",
+    "Canonical identity scan: active current surfaces use exactly `nbops`; rejected candidates are absent; historical identifiers are allowlisted and labeled legacy.",
+    "Clean source and wheel installation/import/CLI/default-path/artifact identity tests for `nbops`.",
+    "Legacy import and artifact fixtures where compatibility evidence requires them.",
+    "Canonical nbops identity scan across package metadata, imports, CLI, snippets, docs, and new artifacts.",
+    "Behavior-first migration fixture gate before source-package movement.",
+    "Publication identity readiness review with no external action."
+  ],
+  "archive_ready": false,
+  "open_questions": [
+    "Does target-repository evidence require a temporary legacy import shim, and for how long?",
+    "Which remote repository owner, package registry account, canonical domain, and release channels will be approved before publication?",
+    "Do representative runtime findings require any support-tier adjustment without changing the `nbops` identity?"
+  ],
+  "source_evidence": [
+    {
+      "source": "Current repository source and build-colab-observer planning pack",
+      "supports": "Existing generic core and concentrated Colab coupling."
+    },
+    {
+      "source": "Official Jupyter architecture and Jupyter Server documentation, checked 2026-08-21",
+      "supports": "Kernel/server/frontend separation and authenticated extension boundary."
+    },
+    {
+      "source": "Official Deepnote documentation, checked 2026-08-21",
+      "supports": "Jupyter interoperability, /work object-backed persistence, /tmp ephemeral storage, and existing machine monitoring."
+    },
+    {
+      "source": "Official Colab documentation and colabtools source, checked 2026-08-21",
+      "supports": "Dynamic runtime limits, policy boundary, hosted widget assets, and direct comm precedent."
+    },
+    {
+      "source": "Explicit user decision on 2026-08-22",
+      "supports": "Use `nbops` as the canonical product, distribution, import package, CLI, default artifact namespace, and current documentation identity.",
+      "notes": "Remote rename/publication and legal clearance remain separate gates."
+    }
+  ]
+}

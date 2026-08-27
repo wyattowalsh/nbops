@@ -2,10 +2,19 @@
 
 All notable changes to this project are documented in this file.
 
-## 0.2.0 — 2026-08-22
+## 0.2.0 — 2026-08-26
 
-General notebook operations toolkit (library, Typer CLI, FastAPI).
+Local-first runtime observability for Python notebooks (Google Colab flagship adapter),
+plus the notebook operations catalog.
 
+- Public observer API: `ObserverConfig`, `Observer`, `observe()`, `start_observer()`,
+  `display()`, `stop()`, `export_report()`, `export_bundle()`
+- Default artifact namespace `/content/nbops/` (Colab) or `./nbops/` (generic);
+  unmounted Drive paths fail closed
+- Faceted `RuntimeProfile`, adapter registry, and evidence-gated support tiers
+- Kickoff dump archived at `docs/planning/nbops-generalization-codex-kickoff-context-20260822/`
+- Historical OpenSpec `build-colab-observer` retained as provenance; active change
+  `generalize-notebook-runtime-observer`
 - Inspect, lint (`NB000`–`NB011`), clean, transform, convert, diff, batch
 - Output inventory (`nbops outputs` / `POST /notebooks/outputs`)
 - nbformat schema validation (`nbops validate` / `POST /notebooks/validate`)

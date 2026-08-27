@@ -1,0 +1,840 @@
+{
+  "generated_at": "2026-08-22",
+  "project": "nbops",
+  "change_id": "generalize-notebook-runtime-observer",
+  "baseline_change_id": "build-colab-observer",
+  "canonical_identity": "nbops",
+  "file_count_excluding_manifest_trio": 162,
+  "excluded_self_referential_manifests": [
+    "CONTEXT_MANIFEST.json",
+    "manifest.generated.json",
+    "planning-pack-manifest.json"
+  ],
+  "self_hash_note": "The manifest trio is excluded to prevent cross-manifest hash recursion.",
+  "read_order": [
+    "START_HERE.md",
+    "CODEX_KICKOFF_PROMPT.md",
+    "IDENTITY_MAP.md",
+    "LEGACY_IDENTITY_NOTICE.md",
+    "AGENTS.md",
+    "openspec/changes/generalize-notebook-runtime-observer/proposal.md",
+    "openspec/changes/generalize-notebook-runtime-observer/specs/",
+    "openspec/changes/generalize-notebook-runtime-observer/design.md",
+    "openspec/changes/generalize-notebook-runtime-observer/tasks.md",
+    "docs/planning/generalize-notebook-runtime-observer/PLANS.md",
+    "docs/planning/generalize-notebook-runtime-observer/validation.md",
+    "docs/planning/generalize-notebook-runtime-observer/codex-handoff.md"
+  ],
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 2252,
+      "sha256": "8fc5030a269ad2453f10f65f2a33b22b98a6907370d807393293e86db74c3d92"
+    },
+    {
+      "path": "CODEX_KICKOFF_PROMPT.md",
+      "bytes": 11978,
+      "sha256": "4e672a6e692c98ef02bd6fb9e3215375f55ba362abbd30bb60b7eaec3f7e97ab"
+    },
+    {
+      "path": "CONTINUATION_PROMPT.md",
+      "bytes": 1819,
+      "sha256": "d7ffca0396ba03ee4917afc7d7cec3237e5fa7123247ca28d80633601a7778c8"
+    },
+    {
+      "path": "IDENTITY_ALLOWLIST.json",
+      "bytes": 693,
+      "sha256": "cf64d36eabe7f16f453693e4d10105781066cb1a62b9f203695d6142ce630473"
+    },
+    {
+      "path": "IDENTITY_MAP.md",
+      "bytes": 1128,
+      "sha256": "f6320e9c0a02624122a01cdf3ff7440fc73dc771a59cd7f36bf33353d8b412d4"
+    },
+    {
+      "path": "KICKOFF_README.md",
+      "bytes": 896,
+      "sha256": "6c8e50dc441b3b2ed5d784d7a8d5d492d36a05f6799e6f0554ff7f16b51ac099"
+    },
+    {
+      "path": "LEGACY_IDENTITY_NOTICE.md",
+      "bytes": 738,
+      "sha256": "0a52a4915ecaddf6d594bffe7573ada76a3c6831233cfbf6eea53f298f03b67c"
+    },
+    {
+      "path": "NBOPS_IDENTITY_AUDIT.json",
+      "bytes": 392,
+      "sha256": "fa511cb8af2e61a8adbdb94b6089836427798f66bf646fb9b3c959fc31ab9e0d"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2791,
+      "sha256": "36490d473ddbf35aa48b17b194997198d0a4820795f14729467431ab7cce64a9"
+    },
+    {
+      "path": "START_HERE.md",
+      "bytes": 2251,
+      "sha256": "17dc4ee7cb9072b083151f3db8d05a6ac9408991edf6c837c19ee2445a051b13"
+    },
+    {
+      "path": "VALIDATION_REPORT.md",
+      "bytes": 1224,
+      "sha256": "7df629b43ba22f73b4748f007d795a1e20fbb704102151baa4eef626fc49c9e9"
+    },
+    {
+      "path": "docs/maps/build-colab-observer-moc.md",
+      "bytes": 3798,
+      "sha256": "65dc6563c911009092986a9f93220c138f9f9b9e3f0caa04f9abc6851cdf5ef7"
+    },
+    {
+      "path": "docs/maps/generalize-notebook-runtime-observer-moc.md",
+      "bytes": 6673,
+      "sha256": "563338cd4ae179e244ed22858a9a533ecda9e3c50db2de9d64fcf7db691ec509"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/PLANS.md",
+      "bytes": 9196,
+      "sha256": "1dbff76c75142469fdb127d490b3328c29578f77d2858fa2735ca385498b3584"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/README.md",
+      "bytes": 2471,
+      "sha256": "ee62b401d08aa942b43e91c67fbd06d721a93e8c969c5e15128c3e1fccd4581b"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/accessibility-ux.md",
+      "bytes": 6806,
+      "sha256": "3c9a959d8ac97afd952168b9176fa117dfbe017daf213dcaf49028b51672b069"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/agents-instruction-map.md",
+      "bytes": 3750,
+      "sha256": "2f00437cb434dc22cc62a5939664a3f7c516a0fdb402923de32b2f6ee0c1561a"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/architecture.md",
+      "bytes": 8137,
+      "sha256": "3d1a9e755efccd13da8fc40b76046230627997adbf2a753e3748f1b46a732f4d"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/ci-cd-plan.md",
+      "bytes": 5148,
+      "sha256": "99f1886554ee492d5b359e5eb9a570d8272a8a8fc7ac076749a1676ab451fbd7"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/codex-handoff.md",
+      "bytes": 3714,
+      "sha256": "16cb47ed9c23e646acef8123d4294497b2e7b5d09aca76e41ca99e8bd9625f17"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/codex-tooling.md",
+      "bytes": 3481,
+      "sha256": "7cad5fca2a4c022b7494a5a0e119c069a79b09de0978b7b4378cae9a6083d216"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/colab-notebook-snippet.md",
+      "bytes": 4843,
+      "sha256": "2a95162da1cd2ca95d9102e5af01c7e0113effd872dbb859fc6bd946d9172b42"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/collector-design.md",
+      "bytes": 6203,
+      "sha256": "d0926a9c44230376f992e10a9133401f0b672202b3cbfefb966e083f68cc8593"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/context-map.md",
+      "bytes": 12252,
+      "sha256": "44424b75a2051256d1a09a51e907a51470f99a2e0f18ea926703e23dab44b543"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/contract-lifecycle-hardening.md",
+      "bytes": 7705,
+      "sha256": "496125e881334065883393751ae9eae724356ba72f31e09e693bd6b9ad412d3b"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/dashboard-ux.md",
+      "bytes": 9532,
+      "sha256": "1366b615b6f537aa9d84789e9c5d56b665056621ef7e1685dbe7570525a40390"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decision-log.md",
+      "bytes": 2241,
+      "sha256": "f19dd800e2b18046b3bb8d490f7740dd2a783f4b9d59fdcb2bd410552dbd695c"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decision-records.md",
+      "bytes": 5488,
+      "sha256": "fbc71f8f06f0d908cd25e514e24dd582489414ee30351d9d8bac9b1e712ee8db"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-001-repository-shape.md",
+      "bytes": 1138,
+      "sha256": "41dafe0bb5d2a236e385966b63fbca03715bd97ef5c0e8461c028801a0b97d76"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-002-ui-transport.md",
+      "bytes": 1067,
+      "sha256": "15f4782b29fa07167de67163953b56eabfc65c90a194b7348776a04c008a55bd"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-003-storage.md",
+      "bytes": 1489,
+      "sha256": "c21cf41311f5025e905c27a988ffa53880dc965ef6c814a2a7faf81f58e26b19"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-004-sampler.md",
+      "bytes": 899,
+      "sha256": "38c554d9e9db5481ec2d0218cc7ef66f0f65c585c0622213e17af1ccbdf8a5fc"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-005-frontend.md",
+      "bytes": 926,
+      "sha256": "be00ce94d76ba3c781bf31c416395973425d4311f84c1c529d5a73e3d5910991"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-006-diagnostics.md",
+      "bytes": 907,
+      "sha256": "bddb4f391c4b7481d35d20ae583c3a9c8682f5c731085103fd06e63031d3f219"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-007-python-tooling.md",
+      "bytes": 948,
+      "sha256": "ede1ee75827b1bd044fdcc1aee2b1509bbbafa420576f5b462b542dfff477fc5"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-008-privacy.md",
+      "bytes": 946,
+      "sha256": "745bef9a7befbd47a6650c4f5370c7fbd502342ecb720a13bfc2a49d9a799223"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-009-artifact-naming.md",
+      "bytes": 3120,
+      "sha256": "8d2ea4c2828357de90b4e4534a7a8d6d0cac48ecbdafc60d968ad18f41c58e8d"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/decisions/ADR-010-generalization-sequencing.md",
+      "bytes": 3338,
+      "sha256": "bbf0149b114ef5181d23484466a26a227c2cefefda6e1a391a5b3e7cd714ff16"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/diagnostics-rules.md",
+      "bytes": 6659,
+      "sha256": "09491ae70c7c71f423908297144885c98c79867abf191fde7a5dcbc39cfb9388"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/diagram-index.md",
+      "bytes": 2100,
+      "sha256": "55f4749e027d1d54e2ea8df5c375a1e51a2f301330a64af38cdc7d8044124f14"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/docs-site-plan.md",
+      "bytes": 4893,
+      "sha256": "393ca78a83e7fc91dd00a80cbae7e9fbd9d58f3930c5ef1bec787199e14ee5dd"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/evidence-gated-hardening.md",
+      "bytes": 7593,
+      "sha256": "16a8fe6043ba804732948b2f650790a2c4a5a3ba54bf22d07020f1245c21cbb5"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/final-assurance-hardening-20260716.md",
+      "bytes": 5966,
+      "sha256": "e09027d5200566ab5bbb0fd19c890b6c296c1700dd392d298f77a72071a50cd2"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/finalization-report.md",
+      "bytes": 8068,
+      "sha256": "afbbf25bc6a6fe1a199744f2f2baefced663832ab328f9efac338cf0509cb9fb"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/first-build-evidence.md",
+      "bytes": 8894,
+      "sha256": "fb80fab12a02ce30bca67621691ed97a43fd0695dd3dafa96e7504c6786f31e0"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/github-ecosystem-audit.md",
+      "bytes": 4921,
+      "sha256": "2f4d1c5f950173883d26b7057e5b02436e71b01b56f766902a99342867de96a4"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/goal-prompts.md",
+      "bytes": 4270,
+      "sha256": "a167577b5f272dae2f7306bd8c74ef385e3c42ef3f52b4ca4d01edeef8b25166"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/goal.md",
+      "bytes": 4000,
+      "sha256": "477616c3452ee3aa5c5b3a58170fb8a6810cd03525f56dfdc58831d4b56f45c2"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/grill-me.md",
+      "bytes": 5814,
+      "sha256": "3e27e5d26f52c6fcd9d5b0b3a6aeb6ecadf7c74b8d2922b24076c0cd591a903f"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/hardening-evidence.md",
+      "bytes": 6677,
+      "sha256": "e0c4878fa21b0fb8c926f30440de30cbbc4d8829b263903c361655f1b447299b"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/implementation-plan.md",
+      "bytes": 3708,
+      "sha256": "388c8b8eb851b2adb816e75e3faf8108b696bc845a62f1e84ba202a061a88e97"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/manifest.md",
+      "bytes": 2017,
+      "sha256": "7d7b7991edb5211a23f81d9e39e564ab88ce3bb22ad5ae74ff22cc267d2ba240"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/metrics-model.md",
+      "bytes": 5000,
+      "sha256": "1ca2ad6785a4291adbe0e2ec4b5f19fd544dea702b611a5470e9971abbfe68a4"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/openspec-grounding.md",
+      "bytes": 2488,
+      "sha256": "fc230db32881cd244ac166a8e3e0bc536feb5f9031deb8a184961511c2d33503"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/outer-loop.md",
+      "bytes": 8188,
+      "sha256": "6db00bc14c7bcdbad0dc98c0c64d2640a60a0af7c3cba5e815cdf879633f0756"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/product-brief.md",
+      "bytes": 5548,
+      "sha256": "e01cbc6852db7410c6bb00652c66945b6f7e3568d61a5bb801e305c72b748059"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/qa-checklist.md",
+      "bytes": 2242,
+      "sha256": "3382121a5a4c52560d91bc6eabc4e9a28d874b6b35d56f678ee7c9d70323409b"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/quality-automation.md",
+      "bytes": 4587,
+      "sha256": "164cc5046261f2c67580a9c440965ff7936cd6b1e428929a596bde32f9df0702"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/release-evidence-hardening.md",
+      "bytes": 9469,
+      "sha256": "68d44f8dd447dbb2dfe705060a4bcfaab0b859985eccfca91bc38aca250175ee"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/representative-evidence-hardening.md",
+      "bytes": 7520,
+      "sha256": "3075a575b119670359f24b2286ea1a678022cda75da22ac3e3514fd773f0a930"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/representative-runtime-hardening-20260716.md",
+      "bytes": 8883,
+      "sha256": "53ab562024dfa24d1cb16fb1b82e37d4ced6e0ed7debd67b26fa4b5cfdab4398"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/requirements-map.md",
+      "bytes": 4219,
+      "sha256": "6ed829f4d6ccaf48711e5dff5d9ee53dd155fe4076264c078a4f046d4db31a5c"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/research.md",
+      "bytes": 3148,
+      "sha256": "69189b0b892f25600ee1078578e0e04e2f7eafbac9d00959e013fbbee85b625d"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/risk-register.md",
+      "bytes": 5174,
+      "sha256": "8db1c7a770f6bb008237ada76bf317a7ce8fabceda4a9c561481c2f3f545869c"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/runtime-boundary-hardening-20260717.md",
+      "bytes": 6598,
+      "sha256": "563707c1f8bf1823ebb4d8acc751703cb4852a831f027cee32c1cc459fb8671e"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/runtime-evidence/README.md",
+      "bytes": 1543,
+      "sha256": "391cea9de1505927686680e4dcbd5195e0b1dfe3c24f4e109de8271800e34f9e"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/runtime-evidence/local-cpu-aggressive-200ms.json",
+      "bytes": 1311,
+      "sha256": "ebf678675c62b24f281a816f746e61826d44985f2438aa1c4a5e55b11646c32f"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/runtime-evidence/local-cpu-default-2s.json",
+      "bytes": 1310,
+      "sha256": "346cc3ffd1198d48be24216e0821214b936de1cb06a60bf969c262cbbd512012"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/runtime-evidence/local-cpu-smoke.json",
+      "bytes": 10959,
+      "sha256": "d4db67dd9c8d4dc1bdeca3b71cc3a877f091fe703f93e7ac466735e0b391448a"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/runtime-evidence-hardening-20260725.md",
+      "bytes": 8938,
+      "sha256": "cdfbd163a1c8f2ae376461eec7a1b33d4aa7414ca4c097b6b26ac822b53a009c"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/security-policy.md",
+      "bytes": 5322,
+      "sha256": "b4282c0892fb79c299168265536d667f8ac1bab1925064b109c23e5bbc23f55e"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/seo-aeo-ai-ready.md",
+      "bytes": 4767,
+      "sha256": "617451e34212fb4c989af853156fc5e5c8a7779ca2bd01ed3e99b15fc6833947"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/source-registry.md",
+      "bytes": 18444,
+      "sha256": "57313db9b058171550472be3dd7b06bd94ca4fbdada3dd586177631af99dbc05"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/source-skill-audit.md",
+      "bytes": 3551,
+      "sha256": "ed6f2abb0c874850e65eea1ddca488e9d5a946d5c4746b623c7ef8a96d9785a3"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/task-graph.json",
+      "bytes": 50612,
+      "sha256": "6ba57682229ecd67bc9f0962994dfb62bc848d26286296f2dcb3b51ea0e7665c"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/task-graph.md",
+      "bytes": 2275,
+      "sha256": "d563a360c1f5d55a39ed3d6fd72dc1ff195b5b0ac9b46f66288eeb766ebeabc6"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/traceability-matrix.md",
+      "bytes": 42103,
+      "sha256": "dd056f701bf7dc996e3cd8b3782d9cae9fe06f06758a657af0688a40c06aefda"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/validation-evidence.json",
+      "bytes": 28039,
+      "sha256": "dec3b2341775d57defaed2ec334c64c6d7c02578f9507beee57adb02ecce36fd"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/validation.md",
+      "bytes": 9512,
+      "sha256": "7737db81b7ef734a42f79942eea573cfc240fe40333aa3cf23215231e39ddca9"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/vercel-deploy-plan.md",
+      "bytes": 3952,
+      "sha256": "01e08b348d0b7adce136c1ecf38be02e4095fd20a6f0b3f14047e0ec35f6ea80"
+    },
+    {
+      "path": "docs/planning/build-colab-observer/widget-transport-spike.md",
+      "bytes": 6878,
+      "sha256": "4e1a642b63cf058ca777643c84500383ea334f23af1b9a6c64c730a757dac148"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/PLANS.md",
+      "bytes": 3576,
+      "sha256": "cd7f6e85dfc240f2320d526db65ec9e3943fa897ab891849c6c3004845e79747"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/README.md",
+      "bytes": 3576,
+      "sha256": "678f2130b78355f15c0f977f7cd60df9a40a0ad813d0146e30a51459827db881"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/architecture.md",
+      "bytes": 11963,
+      "sha256": "bb86e4823cd65a4e02aa6abf9ca4f3b3b171a87e908a053ed5971b1ab92a6649"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/codex-handoff.md",
+      "bytes": 1965,
+      "sha256": "a187c73bc291958a2373d0f1e3f6467430c2a0d4b5ef17afb5fde652388053cc"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/codex-tooling.md",
+      "bytes": 1993,
+      "sha256": "bb8bcbed22a30bcebd4e6b80ef0f1dc7bff74426aa9bceeecc7131f93c89d360"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/compatibility-migration.md",
+      "bytes": 4438,
+      "sha256": "2c3838e436c53d9e4f9d6d92724b2931dbdf54765242e2f1a4c97d1d9c6bd623"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/context-map.md",
+      "bytes": 4887,
+      "sha256": "3306380bc2bd466f703f66e759c4a72246a541d0a8b7a7e579883a1bf5549055"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/decision-log.md",
+      "bytes": 1284,
+      "sha256": "4bd4ec5e13832e57a860bd1c38a60e305ab1070d10f3b8851e20f72747d926f9"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/decisions/ADR-010-use-a-separate-follow-on-openspec-change.md",
+      "bytes": 2141,
+      "sha256": "ecbb101073fc32feeee20153b06258361ca05b3eaf8cb16d7743862bf41e93ff"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/decisions/ADR-011-use-a-faceted-runtime-profile-and-internal-adapter-registry.md",
+      "bytes": 2190,
+      "sha256": "f11dad20ce58b9be852208f42b6eebb331f1723069defc9d2c3f78e38908aab6"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/decisions/ADR-012-make-measurement-scope-first-class-and-server-evidence-optional.md",
+      "bytes": 2170,
+      "sha256": "295c3e5da01877a4bdad36e4a621528d329a0d8ef2402d204418950bc1d725a9"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/decisions/ADR-013-keep-semantic-static-display-as-the-universal-baseline.md",
+      "bytes": 2044,
+      "sha256": "2a2f3e6f49b87559c82ddd2cb378a3e16bb5ea2906fb20ea4d81bf7004c956ad"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/decisions/ADR-014-separate-active-working-storage-from-finalized-artifacts.md",
+      "bytes": 2205,
+      "sha256": "22f871438efcbede35ed7d35bb1d729312ef3dfa620a770b03fc15a4c83e14a8"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/decisions/ADR-015-gate-support-tiers-on-representative-evidence.md",
+      "bytes": 1973,
+      "sha256": "9996872d538717f2d2d65f60bfdd754762a54028daef84c94a091939cefd8bae"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/decisions/ADR-016-adopt-nbops-before-first-publication.md",
+      "bytes": 3976,
+      "sha256": "b50358bc5f423b7db4e0644459bde27ec3ebd8c3155e51f6811df6045c7ec2e9"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/diagram-index.md",
+      "bytes": 1964,
+      "sha256": "2968c9543ff92a986f0f1891efbf2c6221d48f1b75bfcd7c7243e46bdd19d7f9"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/display-transport.md",
+      "bytes": 2980,
+      "sha256": "8a48ab737c60d24917ed2fd18f1b4460426c395a7a64dee702aac872e4cdca07"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/finalization-report.md",
+      "bytes": 2369,
+      "sha256": "3633aa2abea73a98b82f25659c3db27981f14f710dd9d1feda42af7ca5a21ddd"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/goal-prompts.md",
+      "bytes": 2727,
+      "sha256": "b0c74378e62e66a34ce9b4ff90238c36e1fea27873763d7df8008436ef4233f1"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/goal.md",
+      "bytes": 2453,
+      "sha256": "beefe0fa8af3a213592dd318cbb2ae708a53208811c99b825d1ed46afcc3e06c"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/grill-me.md",
+      "bytes": 1787,
+      "sha256": "efa5671bf704cb728a9567076ecab409169150ab82aebc42dc6f5f717850c8a7"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/implementation-plan.md",
+      "bytes": 2678,
+      "sha256": "199104307eb2538ecbd0fd90ebadddbb2943cf083266657d1d87f20f7629b3e3"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/jupyter-server-extension-boundary.md",
+      "bytes": 2582,
+      "sha256": "508a9d1d8217703dbf6826b6017d739dd9c40260c6b3ca63140d742a6a142884"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/manifest.md",
+      "bytes": 9167,
+      "sha256": "681d87a048828092193f7d41a88702be4fac02d8a5c84256a6e2962dcb73d7c5"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/measurement-scope.md",
+      "bytes": 4863,
+      "sha256": "47e7527c58b2cf7909391a357a78d973e2ed762db166c77a34179c2b073a6dd1"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/naming-packaging-strategy.md",
+      "bytes": 4039,
+      "sha256": "164c23dc1974f6aff82c023b92acc905de71d2f900e6850031c52410995a106f"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/openspec-grounding.md",
+      "bytes": 2363,
+      "sha256": "3f0e9aee19f8603d175d61a00f68ecbd91f8185d9a0a18b4d85116d784fd9392"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/outer-loop.md",
+      "bytes": 2328,
+      "sha256": "15b67bf12631ffa2021e08628ccb88593909329f6612517d4cf689389bb00aa4"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/platform-adapter-contract.md",
+      "bytes": 7671,
+      "sha256": "4428088b4cd5b77fca31a68a792ec8c4a93868015fb5e515b6eb01f0cdb533ed"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/platform-diagnostics.md",
+      "bytes": 7033,
+      "sha256": "2a1c26fb2a5f29aa4844dd3a14332ecfc8da1749b1fd3dca4f267c6112ced1cb"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/platform-support-matrix.md",
+      "bytes": 4232,
+      "sha256": "2de52f80e39ac999da2833237ac75fba0f1c29b7c630a7f37716b0893daf76f9"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/product-brief.md",
+      "bytes": 2664,
+      "sha256": "500ca16d1ecb2d68adbb28ca12b6c6fab992ca7c0b95bed46e8a30d1a76824a9"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/qa-checklist.md",
+      "bytes": 2224,
+      "sha256": "32539ac5c3101c09db2565d50d39cfb4e5c0c21b7f039eaba40b8555bcffb1b4"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/requirements-map.md",
+      "bytes": 1785,
+      "sha256": "d962f26ff2beda319151d3768005d126fa0905b2a4adba9d5f90a28db47f0e6f"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/research.md",
+      "bytes": 5166,
+      "sha256": "13567f9ed5ba706fa3be54adccf9a0cfc75ab263d5e51fee9b7d2d2c83c0cedd"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/risk-register.md",
+      "bytes": 3617,
+      "sha256": "7126026fd8d6d10ba2404e2977d8823cbfb3e4cc6123162b663ab04a0f7c6ca8"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/runtime-profile-model.md",
+      "bytes": 7659,
+      "sha256": "221f53ae4d88436a0936072dbd6c1ad293c6c581789b5439de6d6c459df2027e"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/source-registry.md",
+      "bytes": 4363,
+      "sha256": "c5db8a6d70a87a7a20bf7ab652dfb852a1d0e4df810e49e7a54941a11e650c66"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/storage-profiles.md",
+      "bytes": 5756,
+      "sha256": "230f025dd5cb5deb52284397ac6680583236c768e061b4edfe3459ae12ba2093"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/task-graph.json",
+      "bytes": 45360,
+      "sha256": "fc28be6c2a2afc1a643f91eff274ca4b6745a1186a8794959e8f35fe13dcabf5"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/task-graph.md",
+      "bytes": 3884,
+      "sha256": "3c5ca65c0c22541604a2766af929999a4155efcd9dbf893d3b05d060b63cb435"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/traceability-matrix.md",
+      "bytes": 11000,
+      "sha256": "a4cf20960e2395f4caba463a0490efd32670be92808fe79d4d44efaee7a339e9"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/validation-evidence.json",
+      "bytes": 5198,
+      "sha256": "454f185fd045fbf060bdfb03f89ed9e83288e01339a3ae9f0b86d121bf7078a4"
+    },
+    {
+      "path": "docs/planning/generalize-notebook-runtime-observer/validation.md",
+      "bytes": 3448,
+      "sha256": "530066b789d1ef914550ab88a5b9ba037c9d5c0188c012a5f5a6ae0bfaca89eb"
+    },
+    {
+      "path": "manifest.md",
+      "bytes": 754,
+      "sha256": "7a7304529de713c6da8d4c95107f798f17f8e2c0fa1de9fc54e3e2c1eca3cd18"
+    },
+    {
+      "path": "openspec/AGENTS.md",
+      "bytes": 781,
+      "sha256": "2f78fbaa5a911e0ee3e96f1dc182c377d4f1fcb1016bb282daff352ec3a5e936"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/change-pack.json",
+      "bytes": 39487,
+      "sha256": "e51fbbbcfe1df5e06fa9deebadd421efca1ed9f122e9146af50760aaa85ead1c"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/design.md",
+      "bytes": 20729,
+      "sha256": "aecd850749a8ea63709a3a6a8ea1507b763820534c2185b064d52c59da96460e"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/proposal.md",
+      "bytes": 9092,
+      "sha256": "e71720aa00c510e4f1f76b579c5f5a7fa90784871d79fa31eb5efefdb8e749ea"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/accessibility/spec.md",
+      "bytes": 3537,
+      "sha256": "186fbe2985452354bc0bdec521b9897680426782a6bed0a35315e679a0592afe"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/ci-cd/spec.md",
+      "bytes": 3001,
+      "sha256": "9ff9c6b82c1f1528ab9dfc240dc01b8e415e9d1eed14eef5dcf8835002c34d55"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/dashboard-ux/spec.md",
+      "bytes": 3051,
+      "sha256": "2728187f0d6467fa9cf113d44cea37095795cfcbb83a8ea9f735f73610083877"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/diagnostics/spec.md",
+      "bytes": 3275,
+      "sha256": "b70f5706c20f8cef85029ed1d80814d606a1393143f69809a6bc53bbf400e491"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/docs-site/spec.md",
+      "bytes": 3155,
+      "sha256": "b9b9a73a36c6020384acfb00451679f984b6ffc342d7d06c5dff4f18ff976c5e"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/export-reporting/spec.md",
+      "bytes": 6294,
+      "sha256": "ef0bdf1b8021da666f60e00a9a595401a6d3eb8e6f11add2a7d989de3cf8a58a"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/metrics-collectors/spec.md",
+      "bytes": 5754,
+      "sha256": "d1794d76ea6e98b92165c55871f5aa82bef30c722d45a6e9555645f610d1b3f8"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/notebook-snippet/spec.md",
+      "bytes": 3029,
+      "sha256": "f7331a6611e03edc53a6ce44f50237e8e29f8985a78938aba47b6d8976453983"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/quality-automation/spec.md",
+      "bytes": 3422,
+      "sha256": "1ccf9a6416b7c33d31e20f9759646195dca10be05258fe69bc8c601b267dd568"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/runtime-observability/spec.md",
+      "bytes": 4746,
+      "sha256": "538772faa4fa7256131a569be37241f72d1975faa8f0c2c1cb8fec70cac4e4b8"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/specs/security-policy/spec.md",
+      "bytes": 6198,
+      "sha256": "e03d0d198e75eda497d6f179686329bb4e655d2aab1710df2ea4fab882c23bb8"
+    },
+    {
+      "path": "openspec/changes/build-colab-observer/tasks.md",
+      "bytes": 41012,
+      "sha256": "7844638660aea0551f8a77b27d58c4a05e37881f36658e2ea3b210017676fabb"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/change-pack.json",
+      "bytes": 17089,
+      "sha256": "cf97c23129ef0227d2a305409f662bc37c3b871d8449b4c173d8d5221870e1ac"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/design.md",
+      "bytes": 21915,
+      "sha256": "9fea6bd2835d2c3e48047564b74d9272dda3207e7c3e19f9d16f4d0dffbebbd3"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/proposal.md",
+      "bytes": 15929,
+      "sha256": "cbc8985d44de71229d04b9580f798c8c989a3eafea5f7f9125cb4f4e4348ed5d"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/compatibility-support/spec.md",
+      "bytes": 2860,
+      "sha256": "f0158ed9168838e2312349ced8dc8afe2ed6a4075f765fee4c313cf6bab62d8a"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/measurement-scope/spec.md",
+      "bytes": 3004,
+      "sha256": "b480e743829fd2be2e939d7e362e81a51529e139bd3d0fb2be606b4a9c8f919d"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/migration-compatibility/spec.md",
+      "bytes": 2788,
+      "sha256": "4db242123e33b8dd878fb0ed824d857a2931b9166c9769f868b00f1bd574b9b3"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/notebook-display/spec.md",
+      "bytes": 2730,
+      "sha256": "17d6cf216ee630641922a629fbe922082ca09289c162cfc2b62125ec30a46bdd"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/package-identity/spec.md",
+      "bytes": 3621,
+      "sha256": "4819c25a85a8426abefbf24fbb8c5b4abbbb143c20e2be94776c75b1e48a42fe"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/platform-adapters/spec.md",
+      "bytes": 2801,
+      "sha256": "8749b55c0baa89f415dd67aca0cbfba12df8b0b88d14f3cfafa44c96fdb469d1"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/platform-diagnostics/spec.md",
+      "bytes": 2196,
+      "sha256": "0be6e608f1177b8c2f9d6566ac862396d3456535b67231dac3b653bc3dd72ddd"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/runtime-profiles/spec.md",
+      "bytes": 3169,
+      "sha256": "fd750d750166b10cd9215ca79b38f20eab4fcde7bf7adf8e0883504484315ab4"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/security-policy/spec.md",
+      "bytes": 3034,
+      "sha256": "fbd0f087cc93eb03fda3934d9a075bca1460d539474b2f4b8810437ef2236299"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/specs/storage-profiles/spec.md",
+      "bytes": 3022,
+      "sha256": "24b24928d084ddaf7399395aa432389fab353a8a70033a8dc3c4474f0c636b78"
+    },
+    {
+      "path": "openspec/changes/generalize-notebook-runtime-observer/tasks.md",
+      "bytes": 33845,
+      "sha256": "0155da180a2f265d475bebf668bf66771da9197ce22784d2913a56a14643fc22"
+    },
+    {
+      "path": "openspec/config.yaml",
+      "bytes": 931,
+      "sha256": "1b1f0248aa1f0b78ce6d6cfeb93bd39df73ca4c964a59969845040c97d877236"
+    },
+    {
+      "path": "openspec/specs/README.md",
+      "bytes": 2386,
+      "sha256": "46c530f67c64fd32ef057e2d3dd4cd5f343c2c62b16ee3d56fe836be51a5834e"
+    },
+    {
+      "path": "resources/glossary.md",
+      "bytes": 1415,
+      "sha256": "bf793e9c9b085a9e2d66cd86c207048daae475233b509d254e5eb53a72828a51"
+    },
+    {
+      "path": "resources/link-library.md",
+      "bytes": 1903,
+      "sha256": "49827361559effab4e38d320a46cfc1c4df3431fddff07aec203291ab3e98eb8"
+    },
+    {
+      "path": "resources/reading-guide.md",
+      "bytes": 1634,
+      "sha256": "b1b2ed908af0bc5b021945fe052401acc2b5f8e072c966bd6826514e0a981849"
+    },
+    {
+      "path": "resources/source-map.md",
+      "bytes": 1180,
+      "sha256": "68b3c8d6b1ad52e2a70e59a4af154894826636e08e96b9768283a2c00e5eeb11"
+    }
+  ]
+}

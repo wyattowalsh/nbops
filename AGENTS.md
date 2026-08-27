@@ -2,9 +2,15 @@
 
 ## Overview
 
-`nbops` is a general Jupyter notebook operations toolkit: inspect, lint, clean,
-transform, convert, diff, batch, CLI, and HTTP API. Optional execution lives
-behind the `nbops[execute]` extra.
+`nbops` is local-first runtime observability for Python notebooks (flagship
+adapter: Google Colab), plus a general notebook operations catalog: inspect,
+lint, clean, transform, convert, diff, batch, CLI, and HTTP API. Optional
+notebook execution lives behind the `nbops[execute]` extra.
+
+Canonical kickoff: `docs/planning/nbops-generalization-codex-kickoff-context-20260822/`
+and `CODEX_KICKOFF_PROMPT.md`. Active OpenSpec change:
+`openspec/changes/generalize-notebook-runtime-observer/`. Historical baseline:
+`openspec/changes/build-colab-observer/` (do not bulk-rename).
 
 ## Stack
 
@@ -39,6 +45,13 @@ Use `uv add` / `uv add --group dev` for dependencies. Do not hand-edit `uv.lock`
 ## Conventions
 
 - Package code lives in `src/nbops/` with absolute `nbops.*` imports.
+- Public observer API: `ObserverConfig`, `Observer`, `observe()`,
+  `start_observer()`, `stop()`, `display()`, `export_report()`, `export_bundle()`.
+  FastAPI remains at `nbops.api:app` (operations HTTP surface); do not clobber it
+  when adding observer library code.
+- Default artifact directory is `<root>/nbops/` (`/content/nbops/` on Colab).
+  Unmounted `/content/drive` paths fail closed. Missing metrics are unavailable,
+  never silently zero. No keepalive, telemetry, public endpoint, or Drive mount.
 - Unit tests mirror the package layout under `tests/`.
 - Mock optional extras and kernels in unit tests; do not start Jupyter kernels
   in the default suite.
